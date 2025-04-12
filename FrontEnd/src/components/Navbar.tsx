@@ -1,6 +1,6 @@
 import TechwiqLogo from '../assets/Techwiq.png'
 import '../assets/styles.css'
-const Narbar = () => {
+const Navbar = () => {
   return (
     <div className='navbar'>
         <div className='left_Navbar'>
@@ -23,4 +23,4 @@ const Narbar = () => {
   )
 }
 
-export default Narbar
+export default Navbar
