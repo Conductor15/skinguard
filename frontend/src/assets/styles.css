@@ -1,8 +1,17 @@
+/* Navbar first */
 .navbar {
     width: 1400px;
     height: 80px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.left_Navbar{
+    display: flex;
+    align-items: center;
+    margin-left: 80px;
+    flex-direction: row;
 }
 
 .name_Logo {
@@ -20,4 +29,24 @@
     color: #45B5F4;
     font-weight: bold;
     font-size: 36px;
+}
+
+.right_Navbar {
+    display: flex;
+    flex-direction: column;
+    margin-right: 28px;
+}
+
+.first_Letter_right_Navbar {
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.second_Letter_right_Navbar {
+    color: #007AFF;
+    font-weight: bold;
+    font-size: 20px;
+    text-transform: uppercase;
 }
