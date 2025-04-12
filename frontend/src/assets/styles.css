@@ -1,0 +1,23 @@
+.navbar {
+    width: 1400px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.name_Logo {
+    display: flex;
+    margin-left: 10px;
+}
+
+.skin_Logo {
+    color: black;
+    font-weight: bold;
+    font-size: 36px;
+}
+
+.guard_Logo {
+    color: #45B5F4;
+    font-weight: bold;
+    font-size: 36px;
+}
