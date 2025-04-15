@@ -8,6 +8,7 @@ import Main_Background from './components/Main_Background'
 import Content_1 from './components/content_1'
 import Content_2 from './components/content_2'
 import Content_3 from './components/content_3'
+import Content_4 from './components/content_4'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -17,5 +18,6 @@ createRoot(document.getElementById('root')!).render(
     <Content_1 />
     <Content_2 />
     <Content_3 />
+    <Content_4 />
   </StrictMode>,
 )
