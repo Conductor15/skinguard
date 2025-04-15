@@ -1,0 +1,57 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+.content_3 {
+    display: flex;
+    width: 990px;
+    margin: 20px auto;
+}
+
+.content_3_left {
+    display: flex;
+    flex-wrap: wrap;
+    width: 40%;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.content_3_left img {
+    width: 80%;
+}
+
+.content_3_right {
+    width: 60%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.content_3_right_first {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1F2B6C;
+}
+
+.content_3_right_second {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #139EF4;
+}
+
+.content_3_right_third {
+    font-size: 16px;
+    color: #1F2B6C;
+    cursor: pointer;
+    font-weight: bold;
+}
