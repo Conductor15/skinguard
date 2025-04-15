@@ -1,10 +1,10 @@
-import '../assets/content_3.css'
+import '../css/content_3.css'
 
 const Content_3 = () => {
     return (
         <div className='content_3'>
             <div className='content_3_left'>
-                <img src="/src/assets/AI_content_3.png" alt="" />
+                <img src="/src/assets/pictures/AI_content_3.png" alt="" />
             </div>
             <div className='content_3_right'>
                 <span className='content_3_right_first'>AI-Powered Diagnosis Through Images & Chat</span>

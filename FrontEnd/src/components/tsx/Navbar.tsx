@@ -1,5 +1,5 @@
-import TechwiqLogo from '../assets/Techwiq.png'
-import '../assets/styles.css'
+import TechwiqLogo from '../../assets/pictures/Techwiq.png'
+import '../css/navbar.css'
 const Navbar = () => {
   return (
     <div className='navbar'>

@@ -1,4 +1,4 @@
-import '../assets/content_2.css';
+import '../css/content_2.css'
 
 const Content_2 = () => {
     const features = [
@@ -71,7 +71,7 @@ const Content_2 = () => {
                 </div>
             </div>
             <div className="Content_2_right">
-                <img src="/src/assets/doctor_content_2.png" alt="Doctor" className="Content_2_right_img" />
+                <img src="/src/assets/pictures/doctor_content_2.png" alt="Doctor" className="Content_2_right_img" />
             </div>
         </div>
     );

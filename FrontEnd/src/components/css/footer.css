@@ -1,0 +1,135 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* giống trong ảnh mẫu */
+}
+
+.footer {
+    background-color: #1F2B6C;
+    padding: 40px 0;
+}
+
+.footer_content {
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer_content_sub {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: white;
+    width: 23%;
+    min-width: 220px;
+}
+
+.footer_content_sub img {
+    width: 150px;
+    margin-top: 10px;
+}
+
+.footer_content_1_title {
+    font-size: 32px;
+    text-transform: uppercase;
+    color: #BFD2F8;
+    font-weight: 700;
+}
+
+.footer_content_1_sub {
+    font-size: 15px;
+    color: #ffffffcc;
+    line-height: 1.6;
+}
+
+.footer_title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.footer_content_sub span {
+    font-size: 14px;
+    color: #ffffffcc;
+}
+
+.footer_input {
+    background-color: #BFD2F8;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    max-width: 280px;
+    margin-top: 10px;
+}
+
+.footer_input input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: #1F2B6C;
+}
+
+.footer_input svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 10px;
+    transition: transform 0.2s ease;
+}
+
+.footer_input svg:hover {
+    transform: scale(1.1);
+}
+
+.footer_line {
+    width: 100%;
+    height: 1px;
+    background-color: #ffffffcc;
+    margin: 10px 0;
+}
+
+.footer_bottom {
+    display: flex;
+    align-items: center;
+    padding: 1rem 2rem;
+    color: #BFD2F8; 
+    border-top: 1px solid #2c2c2c; 
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .footer_bottom span {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+  
+  .footer_bottom svg {
+    width: 24px;
+    height: 24px;
+    fill: #BFD2F8;
+    transition: transform 0.3s ease, fill 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .footer_bottom svg:hover {
+    transform: scale(1.1);
+    fill: #ffffff;
+  }
+
+  .footer_icons {
+    display: flex;
+    gap: 1rem;
+    position: absolute;
+    right: 240px;
+  }
+  
+  

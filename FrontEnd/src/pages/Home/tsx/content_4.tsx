@@ -1,4 +1,4 @@
-import '../assets/content_4.css'
+import '../css/content_4.css'
 
 const Content_4 = () => {
     return (
@@ -9,7 +9,7 @@ const Content_4 = () => {
                 <span className='content_4_left_third'>Learn More</span>
             </div>
             <div className='content_4_right'>
-                <img src="/src/assets/img_content_4.png" alt="" />
+                <img src="/src/assets/pictures/img_content_4.png" alt="" />
             </div>
         </div>
     )

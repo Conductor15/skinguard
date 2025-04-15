@@ -2,18 +2,19 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import App from './App'
-import Narbar from './components/Navbar.js'
-import Navbar_2 from './components/Navbar_2'
-import Main_Background from './components/Main_Background'
-import Content_1 from './components/content_1'
-import Content_2 from './components/content_2'
-import Content_3 from './components/content_3'
-import Content_4 from './components/content_4'
-import Contact from './components/contact'
+import Narbar from './components/tsx/Navbar.js'
+import Navbar_2 from './components/tsx/Navbar_2'
+import Main_Background from './pages/Home/tsx/Main_Background'
+import Content_1 from './pages/Home/tsx/content_1'
+import Content_2 from './pages/Home/tsx/content_2'
+import Content_3 from './pages/Home/tsx/content_3'
+import Content_4 from './pages/Home/tsx/content_4'
+import Contact from './pages/Home/tsx/contact'
+import Footer from './components/tsx/footer'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Narbar />
+    {/* <Narbar />
     <Navbar_2 />
     <Main_Background />
     <Content_1 />
@@ -21,5 +22,7 @@ createRoot(document.getElementById('root')!).render(
     <Content_3 />
     <Content_4 />
     <Contact />
+    <Footer /> */}
+    <App />
   </StrictMode>,
 )

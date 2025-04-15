@@ -1,4 +1,4 @@
-import '../assets/styles.css'
+import '../css/main_background.css'
 
 const Main_Background = () => {
     return (

@@ -1,4 +1,4 @@
-import '../assets/styles.css'
+import '../css/navbar.css'
 
 
 const Navbar_2 = () => {
