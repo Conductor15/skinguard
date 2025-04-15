@@ -1,0 +1,80 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+.contact {
+    display: flex;
+    width: 990px;
+    margin: 20px auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.contact_first {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #159EEC;
+}
+
+.contact_second {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1F2B6C;
+}
+
+.contact_list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.contact_item_next_1 {
+    display: flex;
+    flex-direction: column;
+    background-color: #1F2B6C;
+    width: 210px;
+    height: 210px;
+    border-radius: 10px;
+    justify-content: center;
+    color: #BFD2F8;
+}
+
+.contact_item_next_2 {
+    display: flex;
+    flex-direction: column;
+    background-color: #BFD2F8;
+    width: 210px;
+    height: 210px;
+    border-radius: 10px;
+    justify-content: center;
+    color: #1F2B6C;
+}
+
+.contact_item_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    margin-left: 24px;
+    margin-bottom: 4px;
+}
+
+.contact_item_text {
+    margin-left: 24px;
+    display: flex;
+    font-size: 16px;
+    flex-direction: column;
+    gap: 10px;
+}

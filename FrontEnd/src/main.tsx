@@ -9,6 +9,7 @@ import Content_1 from './components/content_1'
 import Content_2 from './components/content_2'
 import Content_3 from './components/content_3'
 import Content_4 from './components/content_4'
+import Contact from './components/contact'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,5 +20,6 @@ createRoot(document.getElementById('root')!).render(
     <Content_2 />
     <Content_3 />
     <Content_4 />
+    <Contact />
   </StrictMode>,
 )
