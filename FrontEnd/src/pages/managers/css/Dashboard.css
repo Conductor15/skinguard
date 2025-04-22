@@ -1,0 +1,12 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Public Sans'; /* giống trong ảnh mẫu */
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+}
