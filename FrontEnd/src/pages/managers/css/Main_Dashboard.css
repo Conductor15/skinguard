@@ -11,7 +11,7 @@
     height: 100%;
 }
 
-.Main_Dashboard_header {
+/* .Main_Dashboard_header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -71,7 +71,7 @@
 .Main_Dashboard_info svg {
     width: 16px;
     height: 16px;
-}
+} */
  /* -------------------- */
 .Main_Dashboard_content {
     background-color: #F5F7FD;

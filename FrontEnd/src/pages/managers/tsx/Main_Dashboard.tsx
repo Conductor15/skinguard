@@ -1,6 +1,7 @@
 import '../css//Main_Dashboard.css'
 import Avatar from '../../../assets/pictures/avatar.jpg'
 import Chart from '../../../assets/pictures/chart.png'
+import MainDashBoardHeader from '../../../components/tsx/MainDashBoardHeader'
 
 const Main_Dashboard = () => {
 
@@ -30,7 +31,7 @@ const Main_Dashboard = () => {
 
     return (
         <div className="Main_Dashboard">
-            <div className='Main_Dashboard_header'>
+            {/* <div className='Main_Dashboard_header'>
                 <div className='Main_Dashboard_look_up'>
                     <svg viewBox="0 0 1024.00 1024.00" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000" stroke="#000000" stroke-width="25.6"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M460 459.3m-245.2 0a245.2 245.2 0 1 0 490.4 0 245.2 245.2 0 1 0-490.4 0Z" fill="#FFFFFF"></path><path d="M460 719c-69.4 0-134.6-27-183.6-76.1s-76.1-114.3-76.1-183.6c0-69.4 27-134.6 76.1-183.6s114.3-76.1 183.6-76.1c69.4 0 134.6 27 183.6 76.1s76.1 114.3 76.1 183.6c0 69.4-27 134.6-76.1 183.6S529.4 719 460 719z m0-490.4c-61.6 0-119.6 24-163.1 67.6-43.6 43.6-67.6 101.5-67.6 163.1s24 119.6 67.6 163.1C340.4 666 398.4 690 460 690s119.6-24 163.1-67.6c43.6-43.6 67.6-101.5 67.6-163.1s-24-119.6-67.6-163.1c-43.5-43.6-101.5-67.6-163.1-67.6z" fill="#000000"></path><path d="M640.6 630.6c8.7-8.7 22.8-8.7 31.5 0L802 760.5c8.6 8.9 8.3 23-0.5 31.5-8.6 8.3-22.3 8.3-31 0L640.6 662.1c-8.4-8.6-8.1-22.6 0-31.5z" fill="#000000"></path></g></svg>
                     <input type="text" placeholder="Search" />
@@ -41,7 +42,8 @@ const Main_Dashboard = () => {
                     <img src={Avatar} alt="avatar" />
                     <span>Hi, Bro</span>
                 </div>
-            </div>
+            </div> */}
+            {/* <MainDashBoardHeader /> */}
             <div className='Main_Dashboard_content'>
                 <div className='Main_Dashboard_content_div'>Overview Metrics</div>
                 <div className='Main_Dashboard_metrics'>
