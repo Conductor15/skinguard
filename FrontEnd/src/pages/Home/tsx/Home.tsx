@@ -1,6 +1,6 @@
-import Navbar from '../../../components/tsx/Navbar'
-import Navbar_2 from '../../../components/tsx/Navbar_2'
-import Footer from '../../../components/tsx/footer'
+import Navbar from '../../../components/client/navbar/Navbar'
+import Navbar_2 from '../../../components/client/navbar/Navbar_2'
+import Footer from '../../../components/client/footer/footer'
 
 import Main_Background from './Main_Background'
 import Content_1 from './content_1'

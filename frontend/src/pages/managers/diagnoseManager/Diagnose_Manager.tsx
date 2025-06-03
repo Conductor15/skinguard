@@ -1,8 +1,6 @@
-import Slidebar from "../../../components/tsx/Slidebar";
-import MainDashBoardHeader from "../../../components/tsx/MainDashBoardHeader";
 import Diagnose from "../../../assets/pictures/diagnose.png";
 
-import "../css/Diagnose_Manager.css";
+import "./Diagnose_Manager.css";
 
 const Diagnose_Manager = () => {
 
@@ -59,9 +57,9 @@ const Diagnose_Manager = () => {
 
     return (
         <div className="diagnose_manager">
-            <Slidebar />
+            {/* <Slidebar /> */}
             <div className="diagnose_manager_content">
-                <MainDashBoardHeader />
+                {/* <MainDashBoardHeader /> */}
                 <span className="diagnose_manager_span">Dianosis List</span>
                 <div className="diagnose_manager_filter">
                     {/* 1 */}

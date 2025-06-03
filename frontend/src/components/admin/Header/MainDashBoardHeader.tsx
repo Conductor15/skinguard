@@ -1,5 +1,5 @@
-import "../css/MainDashBoardHeader.css"
-import Avatar from '../../assets/pictures/avatar.jpg'
+import "./MainDashBoardHeader.css"
+import Avatar from '../../../assets/pictures/avatar.jpg'
 
 const MainDashBoardHeader = () => {
     return (

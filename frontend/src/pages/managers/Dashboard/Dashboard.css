@@ -11,68 +11,6 @@
     height: 100%;
 }
 
-/* .Main_Dashboard_header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 70px;
-    padding: 0 20px; 
-    margin-right: 20px;
-}
-
-
-.Main_Dashboard_look_up {
-    background-color: #F5F7FD;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    max-width: 480px;
-}
-
-.Main_Dashboard_look_up input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-size: 14px;
-    color: black;
-}
-
-.Main_Dashboard_look_up svg {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    margin-left: 10px;
-    margin-right: 10px;
-    transition: transform 0.2s ease;
-}
-
-.Main_Dashboard_look_up svg:hover {
-    transform: scale(1.1);
-}
-
-
-.Main_Dashboard_info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.Main_Dashboard_info img {
-    width: 30.5px;
-    height: 30.5px;
-    border-radius: 50%;
-    margin-right: 5px;
-    cursor: pointer;
-    margin-left: 20px;
-}
-
-.Main_Dashboard_info svg {
-    width: 16px;
-    height: 16px;
-} */
- /* -------------------- */
 .Main_Dashboard_content {
     background-color: #F5F7FD;
     height: 100%;
@@ -98,7 +36,6 @@
 .Main_Dashboard_metric {
     display: flex;
     flex-direction: row;
-    /* justify-content: space-between; */
     align-items: center;
     padding: 20px;
     margin-right: 20px;
@@ -150,10 +87,6 @@
     align-items: center;
     padding: 10px;
 }
-
-/* .Main_Dashboard_Charts_left_header_button {
-    
-} */
 
 .Main_Dashboard_Charts_left_header_button_export {
     margin: 0 10px;

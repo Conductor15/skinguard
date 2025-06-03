@@ -1,6 +1,4 @@
-import '../css/navbar.css'
-
-
+import './navbar.css'
 const Navbar_2 = () => {
     return (
         <div className='navbar_2'>
