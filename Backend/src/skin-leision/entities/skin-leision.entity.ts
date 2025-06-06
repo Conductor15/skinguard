@@ -1,15 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type SkinLesionDocument = SkinLesion & Document;
 
 @Schema({ timestamps: true })
 export class SkinLesion {
   @Prop({ required: true, unique: true })
-  name: string;
+  leision_type: string;
 
-  @Prop({ required: true })
-  product_list_id: string;
+  @Prop([{ type: Types.ObjectId, ref: 'Product' }])
+  product_id_list: Types.ObjectId[];
 
   @Prop({ required: true })
   description: string;

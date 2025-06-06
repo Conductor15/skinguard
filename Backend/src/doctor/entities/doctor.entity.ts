@@ -20,8 +20,8 @@ export class Doctor {
   @Prop({ type: Number, min: 1, max: 5 })
   rating: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'ConsultList' })
-  consult_list_id: Types.ObjectId;
+  @Prop([{ type: Types.ObjectId, ref: 'ConsultList' }])
+  consult_list_id: Types.ObjectId[];
 
   @Prop()
   avatar: string;

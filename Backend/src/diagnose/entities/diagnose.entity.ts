@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type DiagnoseListDocument = DiagnoseList & Document;
 
@@ -7,9 +7,8 @@ export type DiagnoseListDocument = DiagnoseList & Document;
 export class DiagnoseList {
   @Prop({ required: true, unique: true })
   diagnose_list_id: string;
-
-  @Prop({ required: true })
-  lesion_type: string;
+  @Prop({ type: Types.ObjectId, ref: 'SkinLesion', required: true })
+  leison_type: Types.ObjectId;
 
   @Prop({ required: true })
   date: Date;
