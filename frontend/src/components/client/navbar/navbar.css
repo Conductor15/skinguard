@@ -90,8 +90,20 @@
     color: white;
     flex-direction: row;
     align-items: center;
-    gap: 40px;
-    margin-left: 240px;
+    margin-left: 160px;
+}
+
+.left_Navbar_2_item {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+.left_Navbar_2_item:hover {
+    background-color: #141C4D;
+    cursor: pointer;
 }
 
 .right_Navbar_2 {

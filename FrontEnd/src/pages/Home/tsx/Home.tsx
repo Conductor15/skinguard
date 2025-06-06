@@ -9,11 +9,17 @@ import Content_3 from './content_3'
 import Content_4 from './content_4'
 import Contact from './contact'
 
+import '../css/home.css'
+
 const Home = () => {
     return (
-        <>
-            <Navbar/>
-            <Navbar_2 />
+        <div className='home'>
+            <div className='home_navbar'>
+                <Navbar/>
+                <Navbar_2 />
+            </div>
+            {/* <Navbar/>
+            <Navbar_2 /> */}
             <Main_Background />
             <Content_1 />
             <Content_2 />
@@ -21,7 +27,7 @@ const Home = () => {
             <Content_4 />
             <Contact />
             <Footer />
-        </>
+        </div>
     )
 }
 
