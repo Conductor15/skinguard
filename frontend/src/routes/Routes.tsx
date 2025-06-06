@@ -5,6 +5,9 @@ import Home from "../pages/Home/tsx/Home";
 import Dashboard from "../pages/managers/Dashboard/Dashboard";
 import Diagnose_Manager from "../pages/managers/diagnoseManager/Diagnose_Manager";
 import Appointment from "../pages/managers/appointment/Appointment";
+import AboutUs from "../pages/AboutUs/tsx/AboutUs";
+import DoctorAI from "../pages/DoctorAI/tsx/DoctorAi";
+import Contact from "../pages/Home/tsx/contact";
 
 const Routes = () => {
     const elements = useRoutes(
@@ -16,6 +19,18 @@ const Routes = () => {
                   {
                       path:"/",
                       element: <Home/>
+                  },
+                  {
+                      path:"/about-us",
+                      element: <AboutUs/>
+                  },
+                  {
+                      path:"/doctors-ai",
+                      element: <DoctorAI/>
+                  },
+                  {
+                      path:"/contact",
+                      element: <Contact/>
                   }
                 ]
             },

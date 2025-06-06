@@ -14,7 +14,7 @@ const Slidebar = () => {
         usersRoles: true,
         systemSettings: true
     });
-    const [activeItem, setActiveItem] = useState<string>(''); // Thêm state để track active item
+    const [activeItem, setActiveItem] = useState<string>('dashboard'); // Thêm state để track active item
 
     const toggleSlidebar = () => {
         setIsOpenFather(!isOpenFather);
