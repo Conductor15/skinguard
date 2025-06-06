@@ -13,21 +13,14 @@ import '../css/home.css'
 
 const Home = () => {
     return (
-        <div className='home'>
-            <div className='home_navbar'>
-                <Navbar/>
-                <Navbar_2 />
-            </div>
-            {/* <Navbar/>
-            <Navbar_2 /> */}
+        <>
             <Main_Background />
             <Content_1 />
             <Content_2 />
             <Content_3 />
             <Content_4 />
             <Contact />
-            <Footer />
-        </div>
+        </>
     )
 }
 

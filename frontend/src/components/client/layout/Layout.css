@@ -1,0 +1,24 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+    padding-top: 160px; 
+}
+
+.home_navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: white; 
+}

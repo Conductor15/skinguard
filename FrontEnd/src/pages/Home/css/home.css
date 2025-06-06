@@ -8,17 +8,3 @@
     vertical-align: baseline;
 }
 
-.home {
-    display: flex;
-    flex-direction: column;
-    padding-top: 160px; 
-}
-
-.home_navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background-color: white; 
-}

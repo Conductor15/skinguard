@@ -101,6 +101,10 @@
     padding: 0 20px;
 }
 
+.left_Navbar_2_item.now {
+    background-color: #141C4D;
+}
+
 .left_Navbar_2_item:hover {
     background-color: #141C4D;
     cursor: pointer;
