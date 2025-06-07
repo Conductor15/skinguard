@@ -72,10 +72,10 @@ const Slidebar = () => {
         setActiveItem(item); // Set active item
         switch(item) {
             case 'users':
-                navigateTo('/users');
+                navigateTo('/dashboard/users');
                 break;
             case 'roles':
-                navigateTo('/roles-permissions');
+                navigateTo('/dashboard/roles-permissions');
                 break;
             default:
                 break;
@@ -86,13 +86,13 @@ const Slidebar = () => {
         setActiveItem(item); // Set active item
         switch(item) {
             case 'general':
-                navigateTo('/general-settings');
+                navigateTo('/dashboard/general-settings');
                 break;
             case 'ai':
-                navigateTo('/ai-configuration');
+                navigateTo('/dashboard/ai-configuration');
                 break;
             case 'payment':
-                navigateTo('/payment-settings');
+                navigateTo('/dashboard/payment-settings');
                 break;
             default:
                 break;

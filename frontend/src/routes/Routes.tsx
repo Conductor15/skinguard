@@ -8,6 +8,15 @@ import Appointment from "../pages/managers/appointment/Appointment";
 import AboutUs from "../pages/AboutUs/tsx/AboutUs";
 import DoctorAI from "../pages/DoctorAI/tsx/DoctorAi";
 import Contact from "../pages/Home/tsx/contact";
+import Doctor from "../pages/managers/doctors/Doctor";
+import Patient from "../pages/managers/patients/Patient";
+import Product from "../pages/managers/products/Product";
+import Order from "../pages/managers/orders/Order";
+import User from "../pages/managers/users/User";
+import RoleAndPermission from "../pages/managers/roleAndPermission/RoleAndPermission";
+import GeneralSetting from "../pages/managers/generalSettings/GeneralSetting";
+import ConfigurationAI from "../pages/managers/aiConfiguration/ConfigurationAI";
+import PaymentSettings from "../pages/managers/paymentSettings/PaymentSettings";
 
 const Routes = () => {
     const elements = useRoutes(
@@ -49,6 +58,42 @@ const Routes = () => {
                     {
                         path:"/dashboard/appointments",
                         element: <Appointment/>
+                    },
+                    {
+                        path:"/dashboard/doctors",
+                        element: <Doctor/>
+                    },
+                    {
+                        path:"/dashboard/patients",
+                        element: <Patient/>
+                    },
+                    {
+                        path:"/dashboard/products",
+                        element: <Product/>
+                    },
+                    {
+                        path:"/dashboard/orders",
+                        element: <Order/>
+                    },
+                    {
+                        path:"/dashboard/users",
+                        element: <User/>
+                    },
+                    {
+                        path:"/dashboard/roles-permissions",
+                        element: <RoleAndPermission/>
+                    },
+                    {
+                        path:"/dashboard/general-settings",
+                        element: <GeneralSetting/>
+                    },
+                    {
+                        path:"/dashboard/ai-configuration",
+                        element: <ConfigurationAI/>
+                    },
+                    {
+                        path:"/dashboard/payment-settings",
+                        element: <PaymentSettings/>
                     }
                 ]
             }
