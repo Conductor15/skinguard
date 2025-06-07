@@ -28,45 +28,46 @@
 
 /* Main Background */
 .main_Background {
-    background-image: url('/src/assets/pictures/Main_Backgroundd.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 100%;
-    height: 552px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  width: 100%;
+  height: 552px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
 }
 
 .box_main_Background {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 500px;
-    height: 200px;
-    margin-left: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 500px;
+  height: 200px;
+  margin-left: 160px;
+  position: absolute;
+  top: 40%;
+  left: 15%;
+  transform: translate(-50%, -50%);
 }
 
 .first_Letter_box_main_Background {
-    color: #159EEC;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 18px;
+  color: #159EEC;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .second_Letter_box_main_Background {
-    color: #1F2B6C;
-    text-transform: uppercase;
-    font-weight: bold;  
-    font-size: 48px;
+  color: #1F2B6C;
+  text-transform: uppercase;
+  font-weight: bold;  
+  font-size: 48px;
 }
 
 .button_box_main_Background {
-    width: 160px;
-    color: #1F2B6C;
-    background-color: #BFD2F8;
-    border-radius: 20px;
-    font-weight: bold;
-    padding: 12px;
+  width: 160px;
+  color: #1F2B6C;
+  background-color: #BFD2F8;
+  border-radius: 20px;
+  font-weight: bold;
+  padding: 12px;
 }
