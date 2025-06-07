@@ -13,7 +13,7 @@ import { DiagnoseModule } from './diagnose/diagnose.module';
 import { OrderModule } from './order/order.module';
 import { SkinLesionModule } from './skin-leision/skin-leision.module';
 import { ConsultModule } from './consult/consult.module';
-import { ProductModule } from './product/product.module'; 
+import { ProductModule } from './product/product.module';
 @Module({
   imports: [
     // MongooseModule.forRoot(
@@ -27,14 +27,13 @@ import { ProductModule } from './product/product.module';
       inject: [ConfigService],
     }),
     ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    // UsersModule,
-    AuthModule,
+      isGlobal: true,    }),
+    // UsersModule,    AuthModule,
     PatientModule,
     DoctorModule,
     DiagnoseModule,
-    /* ProductModule, */
+    OrderModule,
+    ProductModule,
     ConsultModule,
     SkinLesionModule,
   ],

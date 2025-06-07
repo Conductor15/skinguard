@@ -22,18 +22,18 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 export type DiagnoseListDocument = DiagnoseList & Document;
 export declare class DiagnoseList {
     diagnose_list_id: string;
-    lesion_type: string;
+    lesion_type: Types.ObjectId;
     date: Date;
     image: string;
     accuracy: number;
     rating: number;
 }
 export declare const DiagnoseListSchema: import("mongoose").Schema<DiagnoseList, import("mongoose").Model<DiagnoseList, any, any, any, Document<unknown, any, DiagnoseList> & Omit<DiagnoseList & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 }, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, DiagnoseList, Document<unknown, {}, import("mongoose").FlatRecord<DiagnoseList>> & Omit<import("mongoose").FlatRecord<DiagnoseList> & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 }, never>>;

@@ -36,6 +36,18 @@ let SkinLesionController = class SkinLesionController {
     remove(id) {
         return this.skinLesionService.remove(id);
     }
+    addProductToSkinLesion(skinLesionId, productId) {
+        return this.skinLesionService.addProductToSkinLesion(skinLesionId, productId);
+    }
+    removeProductFromSkinLesion(skinLesionId, productId) {
+        return this.skinLesionService.removeProductFromSkinLesion(skinLesionId, productId);
+    }
+    findAllForDisplay() {
+        return this.skinLesionService.findAllForDisplay();
+    }
+    findAllForAdmin() {
+        return this.skinLesionService.findAllForAdmin();
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -72,8 +84,36 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], SkinLesionController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Post)(':skinLesionId/products/:productId'),
+    __param(0, (0, common_1.Param)('skinLesionId')),
+    __param(1, (0, common_1.Param)('productId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], SkinLesionController.prototype, "addProductToSkinLesion", null);
+__decorate([
+    (0, common_1.Delete)(':skinLesionId/products/:productId'),
+    __param(0, (0, common_1.Param)('skinLesionId')),
+    __param(1, (0, common_1.Param)('productId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], SkinLesionController.prototype, "removeProductFromSkinLesion", null);
+__decorate([
+    (0, common_1.Get)('display/all'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], SkinLesionController.prototype, "findAllForDisplay", null);
+__decorate([
+    (0, common_1.Get)('admin/all'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], SkinLesionController.prototype, "findAllForAdmin", null);
 SkinLesionController = __decorate([
-    (0, common_1.Controller)('skin-lesion'),
+    (0, common_1.Controller)('skin-leision'),
     __metadata("design:paramtypes", [skin_leision_service_1.SkinLesionService])
 ], SkinLesionController);
 exports.SkinLesionController = SkinLesionController;

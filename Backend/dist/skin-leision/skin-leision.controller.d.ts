@@ -9,4 +9,8 @@ export declare class SkinLesionController {
     findOne(id: string): Promise<import("./entities/skin-leision.entity").SkinLesion>;
     update(id: string, updateSkinLesionDto: UpdateSkinLeisionDto): Promise<import("./entities/skin-leision.entity").SkinLesion>;
     remove(id: string): Promise<import("./entities/skin-leision.entity").SkinLesion>;
+    addProductToSkinLesion(skinLesionId: string, productId: string): Promise<import("./entities/skin-leision.entity").SkinLesion>;
+    removeProductFromSkinLesion(skinLesionId: string, productId: string): Promise<import("./entities/skin-leision.entity").SkinLesion>;
+    findAllForDisplay(): Promise<import("./entities/skin-leision.entity").SkinLesion[]>;
+    findAllForAdmin(): Promise<import("./entities/skin-leision.entity").SkinLesion[]>;
 }

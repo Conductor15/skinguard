@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const skin_leision_service_1 = require("./skin-leision.service");
 const skin_leision_controller_1 = require("./skin-leision.controller");
 const skin_leision_entity_1 = require("./entities/skin-leision.entity");
+const product_entity_1 = require("../product/entities/product.entity");
 let SkinLesionModule = class SkinLesionModule {
 };
 SkinLesionModule = __decorate([
@@ -19,6 +20,7 @@ SkinLesionModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: skin_leision_entity_1.SkinLesion.name, schema: skin_leision_entity_1.SkinLesionSchema },
+                { name: product_entity_1.Product.name, schema: product_entity_1.ProductSchema },
             ]),
         ],
         controllers: [skin_leision_controller_1.SkinLesionController],

@@ -35,8 +35,8 @@ __decorate([
     __metadata("design:type", Number)
 ], Doctor.prototype, "rating", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'ConsultList' }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
+    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: 'ConsultList' }]),
+    __metadata("design:type", Array)
 ], Doctor.prototype, "consult_list_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

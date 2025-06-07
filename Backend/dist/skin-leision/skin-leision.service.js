@@ -17,19 +17,21 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const skin_leision_entity_1 = require("./entities/skin-leision.entity");
+const product_entity_1 = require("../product/entities/product.entity");
 let SkinLesionService = class SkinLesionService {
-    constructor(skinLesionModel) {
+    constructor(skinLesionModel, productModel) {
         this.skinLesionModel = skinLesionModel;
+        this.productModel = productModel;
     }
     async create(createSkinLesionDto) {
         const createdSkinLesion = new this.skinLesionModel(createSkinLesionDto);
         return createdSkinLesion.save();
     }
     async findAll() {
-        return this.skinLesionModel.find().exec();
+        return this.skinLesionModel.find().populate('product_id_list').exec();
     }
     async findOne(id) {
-        return this.skinLesionModel.findById(id).exec();
+        return this.skinLesionModel.findById(id).populate('product_id_list').exec();
     }
     async update(id, updateSkinLesionDto) {
         return this.skinLesionModel
@@ -39,11 +41,49 @@ let SkinLesionService = class SkinLesionService {
     async remove(id) {
         return this.skinLesionModel.findByIdAndDelete(id).exec();
     }
+    async addProductToSkinLesion(skinLesionId, productId) {
+        const product = await this.productModel
+            .findOne({ product_id: productId })
+            .exec();
+        if (!product) {
+            throw new Error(`Product with product_id ${productId} not found`);
+        }
+        return this.skinLesionModel
+            .findByIdAndUpdate(skinLesionId, { $addToSet: { product_id_list: product._id } }, { new: true })
+            .populate('product_id_list')
+            .exec();
+    }
+    async removeProductFromSkinLesion(skinLesionId, productId) {
+        const product = await this.productModel
+            .findOne({ product_id: productId })
+            .exec();
+        if (!product) {
+            throw new Error(`Product with product_id ${productId} not found`);
+        }
+        return this.skinLesionModel
+            .findByIdAndUpdate(skinLesionId, { $pull: { product_id_list: product._id } }, { new: true })
+            .populate('product_id_list')
+            .exec();
+    }
+    async findAllForDisplay() {
+        return this.skinLesionModel
+            .find()
+            .populate('product_id_list', 'title price image availability')
+            .exec();
+    }
+    async findAllForAdmin() {
+        return this.skinLesionModel
+            .find()
+            .populate('product_id_list')
+            .exec();
+    }
 };
 SkinLesionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(skin_leision_entity_1.SkinLesion.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(product_entity_1.Product.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], SkinLesionService);
 exports.SkinLesionService = SkinLesionService;
 //# sourceMappingURL=skin-leision.service.js.map

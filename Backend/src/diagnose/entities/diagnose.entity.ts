@@ -4,11 +4,11 @@ import { Document, Types } from 'mongoose';
 export type DiagnoseListDocument = DiagnoseList & Document;
 
 @Schema({ timestamps: true })
-export class DiagnoseList {
-  @Prop({ required: true, unique: true })
+export class DiagnoseList {  @Prop({ required: true, unique: true })
   diagnose_list_id: string;
+  
   @Prop({ type: Types.ObjectId, ref: 'SkinLesion', required: true })
-  leison_type: Types.ObjectId;
+  lesion_type: Types.ObjectId;
 
   @Prop({ required: true })
   date: Date;

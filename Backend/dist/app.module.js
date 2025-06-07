@@ -13,12 +13,13 @@ const app_service_1 = require("./app.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const config_1 = require("@nestjs/config");
 const config_2 = require("@nestjs/config");
-const auth_module_1 = require("./auth/auth.module");
 const patient_module_1 = require("./patient/patient.module");
 const doctor_module_1 = require("./doctor/doctor.module");
 const diagnose_module_1 = require("./diagnose/diagnose.module");
+const order_module_1 = require("./order/order.module");
 const skin_leision_module_1 = require("./skin-leision/skin-leision.module");
 const consult_module_1 = require("./consult/consult.module");
+const product_module_1 = require("./product/product.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -34,10 +35,11 @@ AppModule = __decorate([
             config_2.ConfigModule.forRoot({
                 isGlobal: true,
             }),
-            auth_module_1.AuthModule,
             patient_module_1.PatientModule,
             doctor_module_1.DoctorModule,
             diagnose_module_1.DiagnoseModule,
+            order_module_1.OrderModule,
+            product_module_1.ProductModule,
             consult_module_1.ConsultModule,
             skin_leision_module_1.SkinLesionModule,
         ],

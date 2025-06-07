@@ -11,7 +11,7 @@ import { SkinLesionService } from './skin-leision.service';
 import { CreateSkinLesionDto } from './dto/create-skin-leision.dto';
 import { UpdateSkinLeisionDto } from './dto/update-skin-leision.dto';
 
-@Controller('skin-lesion')
+@Controller('skin-leision')
 export class SkinLesionController {
   constructor(private readonly skinLesionService: SkinLesionService) {}
 
@@ -41,5 +41,35 @@ export class SkinLesionController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.skinLesionService.remove(id);
+  }
+
+  // Endpoint để thêm product vào skin lesion
+  @Post(':skinLesionId/products/:productId')
+  addProductToSkinLesion(
+    @Param('skinLesionId') skinLesionId: string,
+    @Param('productId') productId: string,
+  ) {
+    return this.skinLesionService.addProductToSkinLesion(skinLesionId, productId);
+  }
+
+  // Endpoint để xóa product khỏi skin lesion
+  @Delete(':skinLesionId/products/:productId')
+  removeProductFromSkinLesion(
+    @Param('skinLesionId') skinLesionId: string,
+    @Param('productId') productId: string,
+  ) {
+    return this.skinLesionService.removeProductFromSkinLesion(skinLesionId, productId);
+  }
+
+  // Endpoint để lấy dữ liệu hiển thị
+  @Get('display/all')
+  findAllForDisplay() {
+    return this.skinLesionService.findAllForDisplay();
+  }
+
+  // Endpoint để lấy dữ liệu admin
+  @Get('admin/all')
+  findAllForAdmin() {
+    return this.skinLesionService.findAllForAdmin();
   }
 }

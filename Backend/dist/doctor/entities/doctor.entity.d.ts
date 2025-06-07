@@ -30,7 +30,7 @@ export declare class Doctor {
     fullName: string;
     discipline: string;
     rating: number;
-    consult_list_id: Types.ObjectId;
+    consult_list_id: Types.ObjectId[];
     avatar: string;
     permission: string;
     email: string;
