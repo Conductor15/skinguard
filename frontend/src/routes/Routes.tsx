@@ -17,10 +17,12 @@ import RoleAndPermission from "../pages/managers/roleAndPermission/RoleAndPermis
 import GeneralSetting from "../pages/managers/generalSettings/GeneralSetting";
 import ConfigurationAI from "../pages/managers/aiConfiguration/ConfigurationAI";
 import PaymentSettings from "../pages/managers/paymentSettings/PaymentSettings";
+import Register from "../pages/Register/Register";
 
 const Routes = () => {
     const elements = useRoutes(
         [
+            // Client Routes
             {
                 path:"/",
                 element: <LayoutClient/>,
@@ -40,9 +42,15 @@ const Routes = () => {
                   {
                       path:"/contact",
                       element: <Contact/>
-                  }
+                  },
                 ]
             },
+            // Public Routes
+            {
+                path:"/register-login",
+                element: <Register/>,
+            },
+            // Admin Routes
             {
                 path:"/",
                 element: <LayoutAdmin/>,

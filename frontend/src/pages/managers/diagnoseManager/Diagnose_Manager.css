@@ -20,14 +20,15 @@
 }
 
 .diagnose_manager_span {
-    width: 116px;
-    height: 18px;
+    /* width: 116px;
+    height: 18px; */
     margin-top: 10px;
     margin-left: 20px;
-    font-weight: 500;
-    font-size: 16px;
+    font-weight: bold;
+    font-size: 1.5rem;
     line-height: 100%;
-    color: #000000;
+    color: #1f2937;
+    margin-bottom: 1rem;
 }
 
 .diagnose_manager_filter {

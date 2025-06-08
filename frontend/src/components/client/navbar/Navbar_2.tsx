@@ -25,6 +25,12 @@ const Navbar_2 = () => {
             case 'contact':
                 navigateTo('/contact');
                 break;
+            case 'register':
+                navigateTo('/register-login?mode=register');
+                break;
+            case 'login':
+                navigateTo('/register-login?mode=login');
+                break;
             default:
                 break;
         }
@@ -39,8 +45,8 @@ const Navbar_2 = () => {
                 <span className={`left_Navbar_2_item ${activeItem === 'contact' ? 'now' : ''}`} onClick={() => handleItemClick('contact')}>Contact</span>
             </div>
             <div className='right_Navbar_2'>
-                <button className='sign_up'>sign up</button>
-                <button className='log_in'>log in</button>
+                <button className='sign_up' onClick={() => handleItemClick('register')}>Sign up</button>
+                <button className='log_in' onClick={() => handleItemClick('login')}>Log in</button>
             </div>
         </div>
     )
