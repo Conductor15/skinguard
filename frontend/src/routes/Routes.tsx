@@ -4,7 +4,7 @@ import LayoutClient from "../components/client/layout/Layout";
 import Home from "../pages/Home/tsx/Home";
 import Dashboard from "../pages/managers/Dashboard/Dashboard";
 import Diagnose_Manager from "../pages/managers/diagnoseManager/Diagnose_Manager";
-import Appointment from "../pages/managers/appointment/Appointment";
+import Appointment from "../pages/managers/Appointment/Appointment";
 import AboutUs from "../pages/AboutUs/tsx/AboutUs";
 import DoctorAI from "../pages/DoctorAI/tsx/DoctorAi";
 import Contact from "../pages/Home/tsx/contact";
@@ -17,7 +17,7 @@ import RoleAndPermission from "../pages/managers/roleAndPermission/RoleAndPermis
 import GeneralSetting from "../pages/managers/generalSettings/GeneralSetting";
 import ConfigurationAI from "../pages/managers/aiConfiguration/ConfigurationAI";
 import PaymentSettings from "../pages/managers/paymentSettings/PaymentSettings";
-import Register from "../pages/Register/Register";
+import Register from "../pages/Register_LogIn/RegisterLogIn";
 
 const Routes = () => {
     const elements = useRoutes(

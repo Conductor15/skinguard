@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import './Register.css';
+import './RegisterLogIn.css';
 
 const Register: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -10,11 +10,11 @@ const Register: React.FC = () => {
     const [isTransitioning, setIsTransitioning] = useState(false);
 
     useEffect(() => {
-        if (mode === 'login') {
-            setIsLoginView(true);
-        } else {
-            setIsLoginView(false);
-        }
+      if (mode === 'login') {
+          setIsLoginView(true);
+      } else {
+          setIsLoginView(false);
+      }
     }, [mode]);
   
     const handleToggle = () => {
@@ -30,34 +30,34 @@ const Register: React.FC = () => {
     };
   
     return (
-      <div className="register-container">
-        <div className="register-box">
+      <div className="register_container">
+        <div className="register_box">
           
           {/* Sliding overlay*/}
-          <div className={`sliding-overlay ${isLoginView ? 'login-view' : 'register-view'} ${isTransitioning ? 'transitioning' : ''}`}>
+          <div className={`sliding_overlay ${isLoginView ? 'login_view' : 'register_view'} ${isTransitioning ? 'transitioning' : ''}`}>
             
             {/* Welcome Register view */}
-            <div className={`welcome-content register-welcome ${!isLoginView && !isTransitioning ? 'active' : ''}`}>
-                <h2 className="welcome-title">Welcome!</h2>
-                <p className="welcome-text">
+            <div className={`welcome_content register_welcome ${!isLoginView && !isTransitioning ? 'active' : ''}`}>
+                <h2 className="welcome_title">Welcome!</h2>
+                <p className="welcome_text">
                 Already have an account?<br/>
                 Please login to continue
                 </p>
-                <button onClick={handleToggle} className="welcome-button">
+                <button onClick={handleToggle} className="welcome_button">
                     Log in
                 </button>
             </div>
   
             {/* Welcome Login view */}
-            <div className={`welcome-content login-welcome ${isLoginView && !isTransitioning ? 'active' : ''}`}>
-              <h2 className="welcome-title">Hello!</h2>
-              <p className="welcome-text">
+            <div className={`welcome_content login_welcome ${isLoginView && !isTransitioning ? 'active' : ''}`}>
+              <h2 className="welcome_title">Hello!</h2>
+              <p className="welcome_text">
                 Don't have an account?<br/>
                 Sign up to get started
               </p>
               <button
                 onClick={handleToggle}
-                className="welcome-button"
+                className="welcome_button"
               >
                 Register
               </button>
@@ -65,26 +65,26 @@ const Register: React.FC = () => {
           </div>
   
           {/* Left - Form Register */}
-          <div className="form-section left-section">
-            <div className={`form-content register-form ${!isLoginView && !isTransitioning ? 'active' : ''}`}>
-              <h2 className="form-title">Register</h2>
-              <div className="form-inputs">
+          <div className="form_section left_section">
+            <div className={`form_content register_form ${!isLoginView && !isTransitioning ? 'active' : ''}`}>
+              <h2 className="form_title">Register</h2>
+              <div className="form_inputs">
                 <input 
                   type="text" 
                   placeholder="User name"
-                  className="form-input"
+                  className="form_input"
                 />
                 <input 
                   type="email" 
                   placeholder="Email"
-                  className="form-input"
+                  className="form_input"
                 />
                 <input 
                   type="password" 
                   placeholder="Password"
-                  className="form-input"
+                  className="form_input"
                 />
-                <button className="form-button">
+                <button className="form_button">
                   Register
                 </button>
               </div>
@@ -92,26 +92,26 @@ const Register: React.FC = () => {
           </div>
   
           {/* Right - Form Log in */}
-          <div className="form-section right-section">
-            <div className={`form-content login-form ${isLoginView && !isTransitioning ? 'active' : ''}`}>
-              <h2 className="form-title">Log in</h2>
-              <div className="form-inputs">
+          <div className="form_section right_section">
+            <div className={`form_content login_form ${isLoginView && !isTransitioning ? 'active' : ''}`}>
+              <h2 className="form_title">Log in</h2>
+              <div className="form_inputs">
                 <input 
                   type="email" 
                   placeholder="Email"
-                  className="form-input"
+                  className="form_input"
                 />
                 <input 
                   type="password" 
                   placeholder="Password"
-                  className="form-input"
+                  className="form_input"
                 />
-                <button className="form-button">
+                <button className="form_button">
                   Log in
                 </button>
               </div>
-              <p className="forgot-password">
-                <a href="#" className="forgot-link">Forgot password ?</a>
+              <p className="forgot_password">
+                <a href="#" className="forgot_link">Forgot password ?</a>
               </p>
             </div>
           </div>

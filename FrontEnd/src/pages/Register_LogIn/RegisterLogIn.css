@@ -1,5 +1,5 @@
 /* Container */
-.register-container {
+.register_container {
     background-color: #bfd2f8;
     width: 100%;
     height: 100vh;
@@ -8,7 +8,7 @@
 }
   
 /* Box */
-.register-box {
+.register_box {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -23,7 +23,7 @@
 }
   
 /* Sliding overlay */
-.sliding-overlay {
+.sliding_overlay {
     position: absolute;
     top: 0;
     height: 100%;
@@ -37,28 +37,28 @@
 }
   
 /* State register view */
-.sliding-overlay.register-view {
+.sliding_overlay.register_view {
     left: 50%;
     width: 50%;
     border-radius: 100px 25px 25px 100px;
 }
   
 /* State login view */
-.sliding-overlay.login-view {
+.sliding_overlay.login_view {
     left: 0;
     width: 50%;
     border-radius: 25px 100px 100px 25px;
 }
   
 /* State transitioning */
-.sliding-overlay.transitioning {
+.sliding_overlay.transitioning {
     left: 0;
     width: 100%;
     border-radius: 25px;
 }
   
 /* Welcome content */
-.welcome-content {
+.welcome_content {
     text-align: center;
     color: white;
     position: absolute;
@@ -68,7 +68,7 @@
     pointer-events: none;
 }
   
-.welcome-content.active {
+.welcome_content.active {
     opacity: 1;
     transform: translateY(0) scale(1);
     transition-delay: 0.2s;
@@ -76,7 +76,7 @@
 }
   
 /* Welcome title */
-.welcome-title {
+.welcome_title {
     margin-bottom: 20px;
     font-size: 32px;
     font-weight: bold;
@@ -84,13 +84,13 @@
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
   
-.welcome-content.active .welcome-title {
+.welcome_content.active .welcome_title {
     transform: translateY(0);
     transition-delay: 0.3s;
 }
   
 /* Welcome text */
-.welcome-text {
+.welcome_text {
     margin-bottom: 30px;
     font-size: 16px;
     opacity: 0;
@@ -99,14 +99,14 @@
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
   
-.welcome-content.active .welcome-text {
+.welcome_content.active .welcome_text {
     opacity: 0.9;
     transform: translateY(0);
     transition-delay: 0.4s;
 }
   
 /* Welcome Button */
-.welcome-button {
+.welcome_button {
     padding: 12px 30px;
     background-color: transparent;
     color: white;
@@ -120,13 +120,13 @@
     opacity: 0;
 }
   
-.welcome-content.active .welcome-button {
+.welcome_content.active .welcome_button {
     transform: translateY(0) scale(1);
     opacity: 1;
     transition-delay: 0.5s;
 }
   
-.welcome-button:hover {
+.welcome_button:hover {
     background-color: white;
     color: #7494ec;
     transform: translateY(-2px) scale(1.05);
@@ -134,7 +134,7 @@
 }
   
 /* Sections form */
-.form-section {
+.form_section {
     width: 50%;
     height: 100%;
     display: flex;
@@ -146,7 +146,7 @@
 }
   
 /* Content form */
-.form-content {
+.form_content {
     text-align: center;
     color: #333;
     position: absolute;
@@ -155,7 +155,7 @@
     pointer-events: none;
 }
   
-.form-content.active {
+.form_content.active {
     opacity: 1;
     transform: translateX(0) scale(1);
     transition-delay: 0.1s;
@@ -163,25 +163,25 @@
 }
   
 /* Form register */
-.register-form {
+.register_form {
     transform: translateX(-50px) scale(0.95);
 }
   
-.register-form.active {
+.register_form.active {
     transform: translateX(0) scale(1);
 }
   
 /* Form login */
-.login-form {
+.login_form {
     transform: translateX(50px) scale(0.95);
 }
   
-.login-form.active {
+.login_form.active {
     transform: translateX(0) scale(1);
 }
   
 /* Title form */
-.form-title {
+.form_title {
     margin-bottom: 20px;
     color: #7494ec;
     font-size: 28px;
@@ -189,13 +189,13 @@
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
   
-.form-content.active .form-title {
+.form_content.active .form_title {
     transform: translateY(0);
     transition-delay: 0.2s;
 }
   
 /* Form inputs */
-.form-inputs {
+.form_inputs {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -204,13 +204,13 @@
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
   
-.form-content.active .form-inputs {
+.form_content.active .form_inputs {
     transform: translateY(0);
     transition-delay: 0.3s;
 }
   
 /* Input fields */
-.form-input {
+.form_input {
     padding: 12px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
@@ -219,14 +219,14 @@
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.form-input:focus {
+.form_input:focus {
     border-color: #7494ec;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(116, 148, 236, 0.2);
 }
 
 /* Form button */
-.form-button {
+.form_button {
     padding: 12px;
     background-color: #7494ec;
     color: white;
@@ -238,14 +238,14 @@
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
   
-.form-button:hover {
+.form_button:hover {
     background-color: #5a7bd8;
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(116, 148, 236, 0.4);
 }
   
 /* Forgot password */
-.forgot-password {
+.forgot_password {
     margin-top: 15px;
     font-size: 14px;
     color: #666;
@@ -254,55 +254,55 @@
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
   
-.form-content.active .forgot-password {
+.form_content.active .forgot_password {
     opacity: 1;
     transform: translateY(0);
     transition-delay: 0.4s;
 }
   
-.forgot-link {
+.forgot_link {
     color: #7494ec;
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
   
-.forgot-link:hover {
+.forgot_link:hover {
     text-decoration: underline;
     color: #5a7bd8;
 }
   
 /* Responsive design */
 @media (max-width: 850px) {
-    .register-box {
+    .register_box {
       width: 90%;
       max-width: 700px;
     }
 }
   
 @media (max-width: 600px) {
-    .register-box {
+    .register_box {
       flex-direction: column;
       height: auto;
       min-height: 600px;
     }
     
-    .form-section {
+    .form_section {
       width: 100%;
       height: 50%;
     }
     
-    .sliding-overlay {
+    .sliding_overlay {
       width: 100% !important;
       height: 50%;
       border-radius: 25px 25px 100px 100px !important;
     }
     
-    .sliding-overlay.login-view {
+    .sliding_overlay.login_view {
       top: 50%;
       border-radius: 100px 100px 25px 25px !important;
     }
     
-    .sliding-overlay.transitioning {
+    .sliding_overlay.transitioning {
       height: 100%;
       border-radius: 25px !important;
     }
