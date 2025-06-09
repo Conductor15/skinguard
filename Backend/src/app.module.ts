@@ -27,7 +27,8 @@ import { ProductModule } from './product/product.module';
       inject: [ConfigService],
     }),
     ConfigModule.forRoot({
-      isGlobal: true,    }),
+      isGlobal: true,
+    }),
     // UsersModule,    AuthModule,
     PatientModule,
     DoctorModule,
