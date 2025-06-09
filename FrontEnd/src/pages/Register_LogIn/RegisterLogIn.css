@@ -1,0 +1,309 @@
+/* Container */
+.register_container {
+    background-color: #bfd2f8;
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    font-family: Arial, sans-serif;
+}
+  
+/* Box */
+.register_box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    width: 800px;
+    height: 500px;
+    border-radius: 25px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+  
+/* Sliding overlay */
+.sliding_overlay {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(135deg, #7494ec 0%, #5a7bd8 100%);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    transform-origin: center;
+}
+  
+/* State register view */
+.sliding_overlay.register_view {
+    left: 50%;
+    width: 50%;
+    border-radius: 100px 25px 25px 100px;
+}
+  
+/* State login view */
+.sliding_overlay.login_view {
+    left: 0;
+    width: 50%;
+    border-radius: 25px 100px 100px 25px;
+}
+  
+/* State transitioning */
+.sliding_overlay.transitioning {
+    left: 0;
+    width: 100%;
+    border-radius: 25px;
+}
+  
+/* Welcome content */
+.welcome_content {
+    text-align: center;
+    color: white;
+    position: absolute;
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+}
+  
+.welcome_content.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.2s;
+    pointer-events: auto;
+}
+  
+/* Welcome title */
+.welcome_title {
+    margin-bottom: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    transform: translateY(-10px);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+  
+.welcome_content.active .welcome_title {
+    transform: translateY(0);
+    transition-delay: 0.3s;
+}
+  
+/* Welcome text */
+.welcome_text {
+    margin-bottom: 30px;
+    font-size: 16px;
+    opacity: 0;
+    line-height: 1.5;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+  
+.welcome_content.active .welcome_text {
+    opacity: 0.9;
+    transform: translateY(0);
+    transition-delay: 0.4s;
+}
+  
+/* Welcome Button */
+.welcome_button {
+    padding: 12px 30px;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateY(10px) scale(0.9);
+    opacity: 0;
+}
+  
+.welcome_content.active .welcome_button {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    transition-delay: 0.5s;
+}
+  
+.welcome_button:hover {
+    background-color: white;
+    color: #7494ec;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+  
+/* Sections form */
+.form_section {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: white;
+    z-index: 1;
+}
+  
+/* Content form */
+.form_content {
+    text-align: center;
+    color: #333;
+    position: absolute;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+}
+  
+.form_content.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    transition-delay: 0.1s;
+    pointer-events: auto;
+}
+  
+/* Form register */
+.register_form {
+    transform: translateX(-50px) scale(0.95);
+}
+  
+.register_form.active {
+    transform: translateX(0) scale(1);
+}
+  
+/* Form login */
+.login_form {
+    transform: translateX(50px) scale(0.95);
+}
+  
+.login_form.active {
+    transform: translateX(0) scale(1);
+}
+  
+/* Title form */
+.form_title {
+    margin-bottom: 20px;
+    color: #7494ec;
+    font-size: 28px;
+    transform: translateY(-20px);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+  
+.form_content.active .form_title {
+    transform: translateY(0);
+    transition-delay: 0.2s;
+}
+  
+/* Form inputs */
+.form_inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 280px;
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+  
+.form_content.active .form_inputs {
+    transform: translateY(0);
+    transition-delay: 0.3s;
+}
+  
+/* Input fields */
+.form_input {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.form_input:focus {
+    border-color: #7494ec;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(116, 148, 236, 0.2);
+}
+
+/* Form button */
+.form_button {
+    padding: 12px;
+    background-color: #7494ec;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+  
+.form_button:hover {
+    background-color: #5a7bd8;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(116, 148, 236, 0.4);
+}
+  
+/* Forgot password */
+.forgot_password {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+  
+.form_content.active .forgot_password {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.4s;
+}
+  
+.forgot_link {
+    color: #7494ec;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+  
+.forgot_link:hover {
+    text-decoration: underline;
+    color: #5a7bd8;
+}
+  
+/* Responsive design */
+@media (max-width: 850px) {
+    .register_box {
+      width: 90%;
+      max-width: 700px;
+    }
+}
+  
+@media (max-width: 600px) {
+    .register_box {
+      flex-direction: column;
+      height: auto;
+      min-height: 600px;
+    }
+    
+    .form_section {
+      width: 100%;
+      height: 50%;
+    }
+    
+    .sliding_overlay {
+      width: 100% !important;
+      height: 50%;
+      border-radius: 25px 25px 100px 100px !important;
+    }
+    
+    .sliding_overlay.login_view {
+      top: 50%;
+      border-radius: 100px 100px 25px 25px !important;
+    }
+    
+    .sliding_overlay.transitioning {
+      height: 100%;
+      border-radius: 25px !important;
+    }
+}

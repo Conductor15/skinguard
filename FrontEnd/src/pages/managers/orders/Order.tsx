@@ -1,86 +1,85 @@
-import './Appointment.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const Appointment = () => {
+const Order = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    const appointmentsData = [
+    const doctorsData = [
         {
             ID: "1",
-            Date: "2023-01-01",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Patient: "Nguyễn Văn A",
+            Total: "500$",
+            Date: "22/01/2025",
+            ListofMedicines: "4.8",
+            Phone: "0123456789"
         },
         {
             ID: "2", 
-            Date: "2123-02-15",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Pending"
+            Patient: "Trần Thị B",
+            Total: "500$",
+            Date: "22/01/2025",
+            ListofMedicines: "4.9",
+            Phone: "0987654321"
         },
         {
             ID: "3",
-            Date: "2023-03-10",
-            Time: "09:00AM", 
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Confirmed"
+            Patient: "Lê Minh C",
+            Total: "500$", 
+            Date: "22/01/2025",
+            ListofMedicines: "4.7",
+            Phone: "0555123456"
         },
         {
             ID: "4",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A", 
-            Patient: "Nguyễn Văn B",
-            Status: "Completed"
+            Patient: "Phạm Thị D",
+            Total: "500$",
+            Date: "22/01/2025", 
+            ListofMedicines: "4.9",
+            Phone: "0666789012"
         },
         {
             ID: "5",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Patient: "Hoàng Văn E",
+            Total: "500$",
+            Date: "22/01/2025",
+            ListofMedicines: "4.8",
+            Phone: "0777345678"
         },
         {
             ID: "6",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Patient: "Vũ Thị F",
+            Total: "500$",
+            Date: "22/01/2025",
+            ListofMedicines: "4.6",
+            Phone: "0888901234"
         },
         {
             ID: "7",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Patient: "Đặng Văn G",
+            Total: "500$",
+            Date: "22/01/2025",
+            ListofMedicines: "4.7",
+            Phone: "0999567890"
         },
         {
             ID: "8",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Patient: "Bùi Thị H",
+            Total: "500$",
+            Date: "22/01/2025",
+            ListofMedicines: "4.9",
+            Phone: "0111234567"
         }
     ];
 
     // Filter doctors based on search term
-    const filteredDoctors = appointmentsData.filter(doctor =>
+    const filteredDoctors = doctorsData.filter(doctor =>
         doctor.ID.includes(searchTerm) ||
-        doctor.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.Time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.Doctor.includes(searchTerm.toLowerCase()) ||
-        doctor.Patient.includes(searchTerm.toLowerCase()) ||
-        doctor.Status.includes(searchTerm.toLowerCase())
+        doctor.Patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doctor.Total.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doctor.Date.includes(searchTerm.toLowerCase()) ||
+        doctor.ListofMedicines.includes(searchTerm.toLowerCase()) ||
+        doctor.Phone.includes(searchTerm.toLowerCase())
     );
 
     // Pagination logic
@@ -128,7 +127,7 @@ const Appointment = () => {
         <div className="doctor_container">
             {/* Header */}
             <div className="doctor_header">
-                <div className="doctor_title"> List of Appointment</div>
+                <div className="doctor_title"> List of doctors </div>
                 
                 {/* Search and Add Button */}
                 <div className="doctor_controls">
@@ -138,7 +137,7 @@ const Appointment = () => {
                         </svg>
                         <input
                             type="text"
-                            placeholder="Find an appointment..."
+                            placeholder="Find a doctor..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="doctor_search_input"
@@ -149,7 +148,7 @@ const Appointment = () => {
                         onClick={handleAddDoctor}
                         className="doctor_add_button"
                     >
-                        Add new appointment
+                        Add new doctor
                     </button>
                 </div>
             </div>
@@ -160,11 +159,11 @@ const Appointment = () => {
                 <div className="doctor_table_header">
                     <div className="doctor_table_header_grid">
                         <div>ID</div>
-                        <div>Date</div>
-                        <div className="doctor_cell_Time">Time</div>
-                        <div className="doctor_cell_experience">Doctor</div>
-                        <div>Patient</div>
-                        <div className="doctor_cell_phone">Status</div>
+                        <div>Full name</div>
+                        <div className="doctor_cell_specialty">Total</div>
+                        <div className="doctor_cell_experience">Date</div>
+                        <div>List Of Medicines</div>
+                        <div className="doctor_cell_phone">Phone number</div>
                         <div>Operation</div>
                     </div>
                 </div>
@@ -179,19 +178,19 @@ const Appointment = () => {
                                         {doctor.ID}
                                     </div>
                                     <div className="doctor_cell_name">
-                                        {doctor.Date}
-                                    </div>
-                                    <div className="doctor_cell_text doctor_cell_Time">
-                                        {doctor.Time}
-                                    </div>
-                                    <div className="doctor_cell_text doctor_cell_experience">
-                                        {doctor.Doctor}
-                                    </div>
-                                    <div className="doctor_rating">
                                         {doctor.Patient}
                                     </div>
+                                    <div className="doctor_cell_text doctor_cell_specialty">
+                                        {doctor.Total}
+                                    </div>
+                                    <div className="doctor_cell_text doctor_cell_experience">
+                                        {doctor.Date}
+                                    </div>
+                                    <div className="doctor_rating">
+                                        {doctor.ListofMedicines}
+                                    </div>
                                     <div className="doctor_cell_text doctor_cell_phone">
-                                        {doctor.Status}
+                                        {doctor.Phone}
                                     </div>
                                     <div className="doctor_actions">
                                         <button
@@ -270,4 +269,4 @@ const Appointment = () => {
     );
 };
 
-export default Appointment;
+export default Order

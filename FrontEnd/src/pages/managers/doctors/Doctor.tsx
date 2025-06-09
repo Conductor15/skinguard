@@ -1,86 +1,86 @@
-import './Appointment.css';
 import { useState, useEffect } from 'react';
+import './Doctor.css';
 
-const Appointment = () => {
+const Doctor = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    const appointmentsData = [
+    const doctorsData = [
         {
             ID: "1",
-            Date: "2023-01-01",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Name: "Dr. Nguyễn Văn A",
+            Specialty: "Dermatology",
+            Experience: "10 years",
+            Rating: "4.8",
+            Phone: "0123456789"
         },
         {
             ID: "2", 
-            Date: "2123-02-15",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Pending"
+            Name: "Dr. Trần Thị B",
+            Specialty: "Cardiology",
+            Experience: "15 years",
+            Rating: "4.9",
+            Phone: "0987654321"
         },
         {
             ID: "3",
-            Date: "2023-03-10",
-            Time: "09:00AM", 
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Confirmed"
+            Name: "Dr. Lê Minh C",
+            Specialty: "Neurology", 
+            Experience: "8 years",
+            Rating: "4.7",
+            Phone: "0555123456"
         },
         {
             ID: "4",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A", 
-            Patient: "Nguyễn Văn B",
-            Status: "Completed"
+            Name: "Dr. Phạm Thị D",
+            Specialty: "Pediatrics",
+            Experience: "12 years", 
+            Rating: "4.9",
+            Phone: "0666789012"
         },
         {
             ID: "5",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Name: "Dr. Hoàng Văn E",
+            Specialty: "Orthopedics",
+            Experience: "20 years",
+            Rating: "4.8",
+            Phone: "0777345678"
         },
         {
             ID: "6",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Name: "Dr. Vũ Thị F",
+            Specialty: "Psychiatry",
+            Experience: "7 years",
+            Rating: "4.6",
+            Phone: "0888901234"
         },
         {
             ID: "7",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Name: "Dr. Đặng Văn G",
+            Specialty: "Radiology",
+            Experience: "14 years",
+            Rating: "4.7",
+            Phone: "0999567890"
         },
         {
             ID: "8",
-            Date: "2023-03-10",
-            Time: "09:00AM",
-            Doctor: "Nguyễn Văn A",
-            Patient: "Nguyễn Văn B",
-            Status: "Cancelled"
+            Name: "Dr. Bùi Thị H",
+            Specialty: "Oncology",
+            Experience: "18 years",
+            Rating: "4.9",
+            Phone: "0111234567"
         }
     ];
 
     // Filter doctors based on search term
-    const filteredDoctors = appointmentsData.filter(doctor =>
+    const filteredDoctors = doctorsData.filter(doctor =>
         doctor.ID.includes(searchTerm) ||
-        doctor.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.Time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.Doctor.includes(searchTerm.toLowerCase()) ||
-        doctor.Patient.includes(searchTerm.toLowerCase()) ||
-        doctor.Status.includes(searchTerm.toLowerCase())
+        doctor.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doctor.Specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doctor.Experience.includes(searchTerm.toLowerCase()) ||
+        doctor.Rating.includes(searchTerm.toLowerCase()) ||
+        doctor.Phone.includes(searchTerm.toLowerCase())
     );
 
     // Pagination logic
@@ -128,7 +128,7 @@ const Appointment = () => {
         <div className="doctor_container">
             {/* Header */}
             <div className="doctor_header">
-                <div className="doctor_title"> List of Appointment</div>
+                <div className="doctor_title"> List of doctors </div>
                 
                 {/* Search and Add Button */}
                 <div className="doctor_controls">
@@ -138,7 +138,7 @@ const Appointment = () => {
                         </svg>
                         <input
                             type="text"
-                            placeholder="Find an appointment..."
+                            placeholder="Find a doctor..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="doctor_search_input"
@@ -149,7 +149,7 @@ const Appointment = () => {
                         onClick={handleAddDoctor}
                         className="doctor_add_button"
                     >
-                        Add new appointment
+                        Add new doctor
                     </button>
                 </div>
             </div>
@@ -160,11 +160,11 @@ const Appointment = () => {
                 <div className="doctor_table_header">
                     <div className="doctor_table_header_grid">
                         <div>ID</div>
-                        <div>Date</div>
-                        <div className="doctor_cell_Time">Time</div>
-                        <div className="doctor_cell_experience">Doctor</div>
-                        <div>Patient</div>
-                        <div className="doctor_cell_phone">Status</div>
+                        <div>Full name</div>
+                        <div className="doctor_cell_specialty">Specialty</div>
+                        <div className="doctor_cell_experience">Experience</div>
+                        <div>Review</div>
+                        <div className="doctor_cell_phone">Phone number</div>
                         <div>Operation</div>
                     </div>
                 </div>
@@ -179,19 +179,20 @@ const Appointment = () => {
                                         {doctor.ID}
                                     </div>
                                     <div className="doctor_cell_name">
-                                        {doctor.Date}
+                                        {doctor.Name}
                                     </div>
-                                    <div className="doctor_cell_text doctor_cell_Time">
-                                        {doctor.Time}
+                                    <div className="doctor_cell_text doctor_cell_specialty">
+                                        {doctor.Specialty}
                                     </div>
                                     <div className="doctor_cell_text doctor_cell_experience">
-                                        {doctor.Doctor}
+                                        {doctor.Experience}
                                     </div>
                                     <div className="doctor_rating">
-                                        {doctor.Patient}
+                                        {doctor.Rating}
+                                        <span className="doctor_rating_star">⭐</span>
                                     </div>
                                     <div className="doctor_cell_text doctor_cell_phone">
-                                        {doctor.Status}
+                                        {doctor.Phone}
                                     </div>
                                     <div className="doctor_actions">
                                         <button
@@ -270,4 +271,4 @@ const Appointment = () => {
     );
 };
 
-export default Appointment;
+export default Doctor;
