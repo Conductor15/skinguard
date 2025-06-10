@@ -1,0 +1,13 @@
+{
+    "name": "main-project",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "concurrently \"npm run client\" \"npm run server\"",
+        "server": "cd Backend && npm run start",
+        "client": "cd Frontend && npm run dev"
+    },
+    "devDependencies": {
+        "concurrently": "^7.6.0"
+    }
+}
