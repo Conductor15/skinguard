@@ -13,6 +13,7 @@ async function bootstrap() {
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', 'view'));
     app.setViewEngine('ejs');
     app.useGlobalPipes(new common_1.ValidationPipe());
+    app.enableCors();
     await app.listen(configService.get('PORT') || 3000);
 }
 bootstrap();
