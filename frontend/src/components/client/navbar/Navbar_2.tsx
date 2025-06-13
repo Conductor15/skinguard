@@ -5,7 +5,7 @@ import avatarDefault from '../../../assets/pictures/avatar.jpg'
 
 const Navbar_2 = () => {
     const navigate = useNavigate();
-    const [activeItem, setActiveItem] = useState<string>('home'); 
+    const [activeItem, setActiveItem] = useState<string>('home');
     const [user, setUser] = useState<any>(null);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -66,31 +66,32 @@ const Navbar_2 = () => {
                         <button className='log_in' onClick={() => navigate('/register-login?mode=login')}>Log in</button>
                     </>
                 ) : (
-                    <div className="navbar_account_container" ref={menuRef}>
+                    <div className="Main_Dashboard_avatar_menu_wrap" ref={menuRef}>
                         <img
-                            src={user.avatarUrl || avatarDefault}
+                            src={user.avatarUrl || user.avatar || avatarDefault}
                             alt="avatar"
-                            className="navbar_account_avatar"
+                            className="dashboard_avatar"
                             onClick={() => setMenuOpen((v) => !v)}
-                            style={{ width: 36, height: 36, borderRadius: '50%', cursor: 'pointer', border: '2px solid #fff' }}
                         />
                         <span
-                            className="navbar_account_down"
+                            className="dashboard_greeting"
                             onClick={() => setMenuOpen((v) => !v)}
-                            style={{ cursor: 'pointer', marginLeft: 6, fontSize: 18 }}
-                        >▼</span>
+                        >
+                            Hi, {user?.fullName || user?.name || user?.username || user?.email || 'User'}
+                            <span className="dashboard_greeting_arrow">▼</span>
+                        </span>
                         {menuOpen && (
-                            <div className="navbar_account_dropdown">
-                                <div className="navbar_account_dropdown_item" onClick={() => handleMenuClick('profile')}>Hồ sơ</div>
-                                <div className="navbar_account_dropdown_item">Điểm</div>
-                                <div className="navbar_account_dropdown_item">Lịch</div>
-                                <div className="navbar_account_dropdown_item">Tập tin riêng tư</div>
-                                <div className="navbar_account_dropdown_item">Báo cáo</div>
-                                <div className="navbar_account_dropdown_separator"></div>
-                                <div className="navbar_account_dropdown_item">Tuỳ chọn</div>
-                                <div className="navbar_account_dropdown_item">Ngôn ngữ</div>
-                                <div className="navbar_account_dropdown_separator"></div>
-                                <div className="navbar_account_dropdown_item" onClick={handleLogout}>Thoát</div>
+                            <div className="Main_Dashboard_dropdown_menu">
+                                <div className="dropdown_item" onClick={() => handleMenuClick('profile')}>Hồ sơ</div>
+                                <div className="dropdown_item">Điểm</div>
+                                <div className="dropdown_item">Lịch</div>
+                                <div className="dropdown_item">Tập tin riêng tư</div>
+                                <div className="dropdown_item">Báo cáo</div>
+                                <div className="dropdown_separator"></div>
+                                <div className="dropdown_item">Tuỳ chọn</div>
+                                <div className="dropdown_item">Ngôn ngữ</div>
+                                <div className="dropdown_separator"></div>
+                                <div className="dropdown_item logout" onClick={handleLogout}>Thoát</div>
                             </div>
                         )}
                     </div>
@@ -100,4 +101,4 @@ const Navbar_2 = () => {
     )
 }
 
-export default Navbar_2
+export default Navbar_2;

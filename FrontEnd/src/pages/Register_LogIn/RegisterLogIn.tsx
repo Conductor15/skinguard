@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './RegisterLogIn.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const API_URL = 'http://localhost:8000';
 
@@ -25,6 +25,15 @@ const Register: React.FC = () => {
   const [loginMessage, setLoginMessage] = useState('');
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Tự động chuyển view theo query param
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const mode = params.get('mode');
+    if (mode === 'register') setIsLoginView(false);
+    if (mode === 'login') setIsLoginView(true);
+  }, [location.search]);
 
   const handleToggle = () => {
     setIsTransitioning(true);
