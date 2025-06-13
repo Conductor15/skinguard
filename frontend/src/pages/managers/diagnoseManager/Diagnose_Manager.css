@@ -1,169 +1,333 @@
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Public Sans'; /* giống trong ảnh mẫu */
+.diagnose_manager_container {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+    padding: 1.5rem 1rem;
 }
 
-.diagnose_manager {
+.diagnose_manager_header {
     display: flex;
     flex-direction: row;
-    background-color: #F5F7FD;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
 }
 
-.diagnose_manager_content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.diagnose_manager_span {
-    /* width: 116px;
-    height: 18px; */
-    margin-top: 10px;
-    margin-left: 20px;
-    font-weight: bold;
+.diagnose_manager_title {
     font-size: 1.5rem;
-    line-height: 100%;
+    font-weight: bold;
     color: #1f2937;
-    margin-bottom: 1rem;
 }
 
-.diagnose_manager_filter {
+.diagnose_manager_toolbar {
     display: flex;
-    flex-direction: row;
-    height: 40px;
-    margin-top: 10px;
-    margin-left: 20px;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    margin-top: 0.25rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
-
-.diagnose_manager_leision {
-    width: 140px;
-    height: 40px;
+.diagnose_manager_search_input {
+    width: 260px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background: white;
+    outline: none;
+    transition: border 0.17s;
+}
+.diagnose_manager_search_input:focus {
+    border-color: #3b82f6;
+}
+.diagnose_manager_toolbar_right {
     display: flex;
-    flex-direction: row;
-    margin-right: 50px;
-}
-
-.diagnose_manager_leision_box {
-    width: 100px;
-    height: 40px;
-    background-color: #FFFFFF;
-    font-weight: 100;
-    font-size: 13px;
-    line-height: 100%;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center
-}
-
-.diagnose_manager_leision_box_button {
-    width: 40px;
-    height: 40px;
-    background-color: #1A2035;
+    align-items: center;
+    gap: 1rem;
 }
 
 .diagnose_manager_export {
-    width: 68px;
-    height: 40px;
     background: #31CE36BF;
-    color: #FFFFFF;
+    color: white;
     font-weight: 700;
-    font-size: 13px;
-    line-height: 100%;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.97rem;
+    cursor: pointer;
+    box-shadow: 0 2px 4px #0001;
+    transition: background 0.2s;
+}
+.diagnose_manager_export:hover {
+    background: #249c27;
 }
 
-.diagnose_manager_input {
-    margin-left: auto;
-}
-
-.diagnose_manager_button {
-    background-color: #1A2035;
-    width: 80px;
-    margin-right: 20px;
+.diagnose_manager_add_button {
+    background-color: #2563eb;
+    color: white;
     font-weight: 500;
-    font-size: 14px;
-    line-height: 100%;
-    color: #FFFFFF;
+    padding: 0.65rem 1.1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+.diagnose_manager_add_button:hover {
+    background-color: #1d4ed8;
 }
 
-/* list */
-.diagnose_manager_list {
-    box-shadow: 2px 2px 3px 0px #00000040;
-    margin: 20px;
-    /* display: flex;
-    flex-direction: column; */
+.diagnose_manager_table {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px #0001;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
 }
 
-.diagnose_manager_list_header {
-    box-shadow: 0px 3px 4px 0px #00000040;
-    background: #FFFFFF;
-    display: flex;
-    flex-direction: row;
-    height: 52px;
-    text-align: center;
+.diagnose_manager_table_header,
+.diagnose_manager_table_row {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 1.2fr 1.2fr 1fr 1fr 1.5fr;
     align-items: center;
-    margin-bottom: 5px;
+    gap: 0.5rem;
 }
 
-.diagnose_manager_list_header_text {
-    width: 170px;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 100%;
-    margin: 0 10px;
+.diagnose_manager_table_header {
+    background: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.diagnose_manager_list_body {
-    box-shadow: 0px 3px 4px 0px #00000040;
-    background: #FFFFFF;
+.diagnose_manager_table_row {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    color: #222;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.14s;
+}
+.diagnose_manager_table_row:hover {
+    background: #f3f4f6;
+}
+
+.diagnose_manager_image {
+    width: 90px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafe;
+    box-shadow: 0 1px 4px #0001;
+}
+
+.diagnose_manager_rating {
     display: flex;
-    flex-direction: row;
-    height: 90px;
-    text-align: center;
     align-items: center;
+    gap: 0.15rem;
+    font-size: 1.06rem;
+    font-weight: 500;
+    color: #1f2b6c;
+}
+.diagnose_manager_rating_star {
+    color: #fbbf24;
+    font-size: 1.1em;
+    margin-left: 2px;
 }
 
-.diagnose_manager_list_header_text img {
-    width: 100px;
-    height: 64px;
+.diagnose_manager_actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.action_button {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    outline: none;
+}
+
+.action_icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.edit_button {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+.edit_button:hover {
+    background-color: #059669;
+    border-color: #059669;
+}
+.delete_button {
+    background-color: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+.delete_button:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.diagnose_manager_no_results {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: #6b7280;
+    background: #f9fafb;
+    font-size: 1.05rem;
+}
+
+.diagnose_manager_summary {
+    margin-left: 6px;
+    margin-top: 0.5rem;
+    color: #4b5563;
+    font-size: 0.93rem;
 }
 
 .diagnose_manager_pagination {
-    width: 357px;
-    height: 40px;
-    margin-left: 20px;
     display: flex;
-    flex-direction: row;
-    margin-left: 20px;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 1.2rem 0 0.5rem 0;
 }
 
-.diagnose_manager_pagination_button {
-    width: 80px;
-    height: 40px;
-    background-color: #FFFFFF;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin-right: 5px;
+.pagination_button {
+    padding: 0.52rem 1.1rem;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 0.36rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-size: 0.99rem;
+}
+.pagination_button:hover:not(:disabled) {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+.pagination_button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.pagination_button.active {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
 }
 
-.diagnose_manager_pagination_number {
-    width: 40px;
-    height: 40px;
-    background-color: #1A2035;
-    color: #FFFFFF;
+.pagination_info {
+    font-size: 0.97rem;
+    color: #6b7280;
+    margin-left: 0.5rem;
+}
+
+/* Add/Edit Modal */
+.diagnose_add_form_overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.35);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.diagnose_add_form {
+    background: #fff;
+    padding: 28px 24px 20px 24px;
+    border-radius: 12px;
+    min-width: 320px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    position: relative;
+    animation: popup-in 0.22s cubic-bezier(.4,2,.6,1) both;
+}
+@keyframes popup-in {
+    from { transform: scale(0.85) translateY(30px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+.diagnose_add_form h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #1a2473;
     text-align: center;
-    margin-right: 5px;
+    letter-spacing: 1px;
+}
+.diagnose_add_form input {
+    padding: 9px 12px;
+    border: 1px solid #c5c8d8;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f9fafe;
+    transition: border 0.2s;
+    outline: none;
+}
+.diagnose_add_form input:focus {
+    border-color: #1565c0;
+}
+.diagnose_add_form_buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+.diagnose_manager_cancel_button {
+    background: #eee;
+    color: #444;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.diagnose_manager_cancel_button:hover {
+    background: #d1d5db;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .diagnose_manager_table_header,
+    .diagnose_manager_table_row {
+        grid-template-columns: 1.2fr 2fr 1.5fr 1fr 1.3fr;
+    }
+    .diagnose_manager_table_header > :nth-child(5),
+    .diagnose_manager_table_header > :nth-child(6),
+    .diagnose_manager_table_row > :nth-child(5),
+    .diagnose_manager_table_row > :nth-child(6) {
+        display: none;
+    }
+}
+@media (max-width: 600px) {
+    .diagnose_manager_table_header,
+    .diagnose_manager_table_row {
+        grid-template-columns: 1.6fr 2fr 1.7fr 1.4fr;
+    }
+    .diagnose_manager_table_header > :nth-child(3),
+    .diagnose_manager_table_header > :nth-child(4),
+    .diagnose_manager_table_header > :nth-child(5),
+    .diagnose_manager_table_header > :nth-child(6),
+    .diagnose_manager_table_row > :nth-child(3),
+    .diagnose_manager_table_row > :nth-child(4),
+    .diagnose_manager_table_row > :nth-child(5),
+    .diagnose_manager_table_row > :nth-child(6) {
+        display: none;
+    }
 }
