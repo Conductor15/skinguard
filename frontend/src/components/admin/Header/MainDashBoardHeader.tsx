@@ -73,7 +73,7 @@ const MainDashBoardHeader = () => {
                         onClick={() => setMenuOpen((v) => !v)}
                     />
                     <span
-                        className="dashboard_greeting"
+                        className="dashboard_greeting_2"
                         onClick={() => setMenuOpen((v) => !v)}
                     >
                         Hi, {doctor ? (doctor.fullName || doctor.name || doctor.email) : 'Bro'}
