@@ -331,3 +331,28 @@
         display: none;
     }
 }
+
+.diagnose_manager_summary_pagination_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.7rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.diagnose_manager_summary {
+    color: #4b5563;
+    font-size: 0.93rem;
+    margin-left: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.diagnose_manager_pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+}

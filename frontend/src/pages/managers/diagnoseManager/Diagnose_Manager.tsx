@@ -292,33 +292,33 @@ const Diagnose_Manager = () => {
                 )}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="diagnose_manager_pagination">
-                    <button onClick={handlePrevious} disabled={currentPage === 1} className="pagination_button">
-                        Previous
-                    </button>
-                    {[...Array(totalPages)].map((_, idx) => (
-                        <button
-                            key={idx + 1}
-                            onClick={() => handlePageChange(idx + 1)}
-                            className={`pagination_button ${currentPage === idx + 1 ? 'active' : ''}`}
-                        >
-                            {idx + 1}
-                        </button>
-                    ))}
-                    <button onClick={handleNext} disabled={currentPage === totalPages} className="pagination_button">
-                        Next
-                    </button>
-                    <div className="pagination_info">
-                        Page {currentPage} / {totalPages}
-                    </div>
+            {/* Summary & Pagination in one row */}
+            <div className="diagnose_manager_summary_pagination_row">
+                <div className="diagnose_manager_summary">
+                    Showing {currentDiagnoses.length} / {filteredDiagnoses.length} diagnoses
                 </div>
-            )}
-
-            {/* Summary */}
-            <div className="diagnose_manager_summary">
-                Showing {currentDiagnoses.length} / {filteredDiagnoses.length} diagnoses
+                {totalPages > 1 && (
+                    <div className="diagnose_manager_pagination">
+                        <button onClick={handlePrevious} disabled={currentPage === 1} className="pagination_button">
+                            Previous
+                        </button>
+                        {[...Array(totalPages)].map((_, idx) => (
+                            <button
+                                key={idx + 1}
+                                onClick={() => handlePageChange(idx + 1)}
+                                className={`pagination_button ${currentPage === idx + 1 ? 'active' : ''}`}
+                            >
+                                {idx + 1}
+                            </button>
+                        ))}
+                        <button onClick={handleNext} disabled={currentPage === totalPages} className="pagination_button">
+                            Next
+                        </button>
+                        <div className="pagination_info">
+                            Page {currentPage} / {totalPages}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
