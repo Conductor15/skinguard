@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import torch
 import torchvision.transforms as transforms
@@ -8,6 +9,15 @@ import io
 from model import get_model
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ["http://localhost:3000"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 model = get_model()
 model.load_state_dict(torch.load("model.pth", map_location="cpu"))
 model.eval()
