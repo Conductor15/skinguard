@@ -1,0 +1,366 @@
+/* Background */
+.doctor_container {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+    padding: 1rem;
+}
+
+/* Header */
+.doctor_header {
+    margin-bottom: 2rem;
+}
+
+.doctor_title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+}
+
+/* Search and Add Button */
+.doctor_controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (min-width: 640px) {
+    .doctor_controls {
+        flex-direction: row;
+    }
+}
+
+/* Search */
+.doctor_search_container {
+    position: relative;
+    flex: 1;
+    max-width: 24rem;
+}
+
+.doctor_search_icon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    height: 1.25rem;
+    width: 1.25rem;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.doctor_search_input {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background-color: white;
+    font-size: 0.875rem;
+    color: #111827;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.doctor_search_input:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    border-color: #3b82f6;
+}
+
+.doctor_search_input::placeholder {
+    color: #6b7280;
+}
+
+/* Add Button */
+.doctor_add_button {
+    background-color: #2563eb;
+    color: white;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.doctor_add_button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Table */
+.doctor_table {
+    background-color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Table Header */
+.doctor_table_header {
+    background-color: #f9fafb;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.doctor_table_header_grid {
+    display: grid;
+    grid-template-columns: 0.7fr 1.2fr 1.2fr 1fr 1.7fr 1fr 1.2fr;
+    gap: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Table Body */
+.doctor_table_body {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Table Row */
+.doctor_table_row {
+    padding: 1rem 1.5rem;
+    transition: background-color 0.15s;
+}
+
+.doctor_table_row:hover {
+    background-color: #f9fafb;
+}
+
+/* Table Row Grid */
+.doctor_table_row_grid {
+    display: grid;
+    grid-template-columns: 0.7fr 1.2fr 1.2fr 1fr 1.7fr 1fr 1.2fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+.doctor_cell_id {
+    font-size: 0.875rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+.doctor_cell_name {
+    font-size: 0.875rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+.doctor_cell_text {
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.doctor_actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Action Button */
+.action_button {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.action_icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Edit Button */
+.doctor_edit_button, .edit_button {
+    background-color: #10b981;
+    color: white;
+    border: 1px solid #10b981;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border 0.15s;
+}
+.doctor_edit_button:hover, .edit_button:hover {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+/* Delete Button */
+.doctor_delete_button, .delete_button {
+    background-color: #ef4444;
+    color: white;
+    border: 1px solid #ef4444;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border 0.15s;
+}
+.doctor_delete_button:hover, .delete_button:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* No Results */
+.doctor_no_results {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* Summary */
+.doctor_summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.doctor_pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination_button {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    color: #374151;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+}
+
+.pagination_button:hover:not(:disabled) {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.pagination_button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination_button.active {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.pagination_info {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .doctor_table_header_grid,
+    .doctor_table_row_grid {
+        grid-template-columns: 1fr 1.5fr 1.5fr 1fr 1.5fr 1fr 1.2fr;
+        gap: 0.6rem;
+        font-size: 0.85rem;
+    }
+}
+@media (max-width: 768px) {
+    .doctor_table_header_grid,
+    .doctor_table_row_grid {
+        grid-template-columns: 0.8fr 2fr 1.2fr 1.9fr 1.5fr;
+        gap: 0.5rem;
+    }
+    .doctor_actions {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .action_button {
+        font-size: 0.7rem;
+        padding: 0.375rem 0.5rem;
+    }
+}
+
+/* Popup Add/Edit */
+.doctor_add_form_overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.doctor_add_form {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 12px;
+    min-width: 340px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    animation: popup-in 0.22s cubic-bezier(.4,2,.6,1) both;
+}
+
+@keyframes popup-in {
+    from { transform: scale(0.85) translateY(30px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.doctor_add_form h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.22rem;
+    font-weight: 700;
+    color: #1a2473;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.doctor_add_form input, .doctor_add_form select {
+    padding: 9px 12px;
+    border: 1px solid #c5c8d8;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f9fafe;
+    transition: border 0.2s;
+    outline: none;
+}
+.doctor_add_form input:focus, .doctor_add_form select:focus {
+    border-color: #1565c0;
+}
+
+.doctor_add_form_buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.doctor_cancel_button {
+    background: #eee;
+    color: #444;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.doctor_cancel_button:hover {
+    background: #d1d5db;
+}

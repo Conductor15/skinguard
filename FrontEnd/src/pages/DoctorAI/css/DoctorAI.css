@@ -1,0 +1,144 @@
+.doctorai-container {
+    max-width: 410px;
+    margin: 40px auto 40px auto;
+    padding: 32px 24px 28px 24px;
+    background: #f7fafc;
+    border-radius: 18px;
+    box-shadow: 0 6px 22px rgba(60, 120, 180, 0.07), 0 1.5px 6px rgba(60, 120, 180, 0.07);
+    border: 1px solid #e9eef5;
+    text-align: center;
+}
+  
+.doctorai-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: #1565c0;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+  
+.doctorai-emoji {
+    font-size: 1.7rem;
+}
+  
+.doctorai-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+  
+.doctorai-upload-label {
+    cursor: pointer;
+    display: block;
+    margin-bottom: 5px;
+}
+  
+.doctorai-file-input {
+    display: none;
+}
+
+.doctorai-upload-button {
+    background: #1565c0;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 26px;
+    border: none;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(21,101,192,0.10);
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+  
+.doctorai-upload-button:hover {
+    background: #2196f3;
+}
+  
+.doctorai-preview-img {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 0 auto;
+    border: 2px solid #c8e6fa;
+    background: #fff;
+}
+  
+.doctorai-submit-button {
+    background: #13b482;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: background 0.2s;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(19,180,130,0.10);
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+}
+  
+.doctorai-submit-button:disabled {
+    background: #b2dfdb;
+    cursor: not-allowed;
+    color: #e0f2f1;
+}
+  
+.doctorai-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #fff;
+    border-top: 3px solid #13b482;
+    border-radius: 50%;
+    animation: doctorai-spin 1s linear infinite;
+    display: inline-block;
+}
+  
+@keyframes doctorai-spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+}
+  
+.doctorai-error {
+    color: #c62828;
+    font-size: 1rem;
+    background: #ffeaea;
+    padding: 9px 18px;
+    border-radius: 7px;
+    margin-top: 18px;
+}
+  
+.doctorai-result-box {
+    margin-top: 28px;
+    padding: 20px 12px;
+    background: #e8f8f6;
+    border-radius: 9px;
+    border: 1.5px solid #bfe1d5;
+    box-shadow: 0 1px 4px #bfe1d540;
+    text-align: center;
+}
+  
+.doctorai-result {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #11695c;
+    margin: 10px 0 0 0;
+}
+  
+.doctorai-tip {
+    font-size: 0.98rem;
+    margin-top: 10px;
+    color: #4b6e5c;
+    opacity: 0.75;
+}
