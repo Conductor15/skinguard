@@ -318,7 +318,7 @@ export default function Appointment() {
             <h3>Điều chỉnh cuộc hẹn</h3>
             <input name="consult_id" placeholder="Consult ID" value={editForm.consult_id} onChange={handleEditFormChange} required />
             <input name="date" type="date" placeholder="Date" value={editForm.date} onChange={handleEditFormChange} required />
-            <select name="doctor_id" value={editForm.doctor_id} onChange={handleEditFormChange} disabled>
+            <select name="doctor_id" value={editForm.doctor_id} onChange={handleEditFormChange} required>
               <option value="">Chọn bác sĩ</option>
               {doctors.map(d => <option value={d._id} key={d._id}>{d.fullName}</option>)}
             </select>
