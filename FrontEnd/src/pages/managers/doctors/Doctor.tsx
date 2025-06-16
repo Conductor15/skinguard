@@ -334,7 +334,7 @@ const Doctor = () => {
                             <div key={doctor._id} className="doctor_table_row">
                                 <div className="doctor_table_row_grid">
                                     <div className="doctor_cell_id">
-                                        {doctor._id}
+                                        {doctor.doctor_id}
                                     </div>
                                     <div className="doctor_cell_name">
                                         {doctor.fullName}
