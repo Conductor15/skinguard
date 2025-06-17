@@ -9,12 +9,18 @@ const common_1 = require("@nestjs/common");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const configService = app.get(config_1.ConfigService);
+    app.enableCors({
+        origin: ['http://localhost:3000', 'http://localhost:5173'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+    });
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', 'view'));
     app.setViewEngine('ejs');
     app.useGlobalPipes(new common_1.ValidationPipe());
-    app.enableCors();
     await app.listen(configService.get('PORT') || 3000);
+    console.log(`🚀 Backend server running on port ${configService.get('PORT') || 3000}`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

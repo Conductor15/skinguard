@@ -21,8 +21,6 @@ const order_module_1 = require("./order/order.module");
 const skin_leision_module_1 = require("./skin-leision/skin-leision.module");
 const consult_module_1 = require("./consult/consult.module");
 const product_module_1 = require("./product/product.module");
-const core_1 = require("@nestjs/core");
-const jwt_auth_guard_1 = require("./auth/guards/jwt-auth.guard");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -46,14 +44,9 @@ AppModule = __decorate([
             product_module_1.ProductModule,
             consult_module_1.ConsultModule,
             skin_leision_module_1.SkinLesionModule,
-        ],
-        controllers: [app_controller_1.AppController],
+        ], controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
-            {
-                provide: core_1.APP_GUARD,
-                useClass: jwt_auth_guard_1.JwtAuthGuard,
-            },
         ],
     })
 ], AppModule);

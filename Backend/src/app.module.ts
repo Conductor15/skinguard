@@ -14,8 +14,6 @@ import { OrderModule } from './order/order.module';
 import { SkinLesionModule } from './skin-leision/skin-leision.module';
 import { ConsultModule } from './consult/consult.module';
 import { ProductModule } from './product/product.module';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 @Module({
   imports: [
     // MongooseModule.forRoot(
@@ -39,14 +37,9 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     ProductModule,
     ConsultModule,
     SkinLesionModule,
-  ],
-  controllers: [AppController],
+  ],  controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
   ],
 })
 export class AppModule {}

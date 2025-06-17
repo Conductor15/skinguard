@@ -130,7 +130,7 @@ export class AuthController {
     }
   }
   // Example: Protected route using JWT
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Request() req) {
     return {
