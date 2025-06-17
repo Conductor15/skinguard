@@ -17,12 +17,16 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const patient_entity_1 = require("./entities/patient.entity");
+const auth_service_1 = require("../auth/auth.service");
 let PatientService = class PatientService {
-    constructor(patientModel) {
+    constructor(patientModel, authService) {
         this.patientModel = patientModel;
+        this.authService = authService;
     }
     async create(createPatientDto) {
-        const createdPatient = new this.patientModel(createPatientDto);
+        const hashedPassword = await this.authService.hashPassword(createPatientDto.password);
+        const patientData = Object.assign(Object.assign({}, createPatientDto), { password: hashedPassword });
+        const createdPatient = new this.patientModel(patientData);
         return createdPatient.save();
     }
     async findAll() {
@@ -32,6 +36,9 @@ let PatientService = class PatientService {
         return this.patientModel.findById(id).exec();
     }
     async update(id, updatePatientDto) {
+        if (updatePatientDto.password) {
+            updatePatientDto.password = await this.authService.hashPassword(updatePatientDto.password);
+        }
         return this.patientModel
             .findByIdAndUpdate(id, updatePatientDto, { new: true })
             .exec();
@@ -39,11 +46,19 @@ let PatientService = class PatientService {
     async remove(id) {
         return this.patientModel.findByIdAndDelete(id).exec();
     }
+    async validatePatient(email, password) {
+        const patient = await this.patientModel.findOne({ email }).exec();
+        if (patient && await this.authService.comparePassword(password, patient.password)) {
+            return patient;
+        }
+        return null;
+    }
 };
 PatientService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(patient_entity_1.Patient.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        auth_service_1.AuthService])
 ], PatientService);
 exports.PatientService = PatientService;
 //# sourceMappingURL=patient.service.js.map

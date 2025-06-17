@@ -14,6 +14,8 @@ import { OrderModule } from './order/order.module';
 import { SkinLesionModule } from './skin-leision/skin-leision.module';
 import { ConsultModule } from './consult/consult.module';
 import { ProductModule } from './product/product.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 @Module({
   imports: [
     // MongooseModule.forRoot(
@@ -29,7 +31,7 @@ import { ProductModule } from './product/product.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // UsersModule,    AuthModule,
+    AuthModule,
     PatientModule,
     DoctorModule,
     DiagnoseModule,
@@ -39,6 +41,12 @@ import { ProductModule } from './product/product.module';
     SkinLesionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
