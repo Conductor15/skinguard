@@ -17,12 +17,16 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const doctor_entity_1 = require("./entities/doctor.entity");
+const auth_service_1 = require("../auth/auth.service");
 let DoctorService = class DoctorService {
-    constructor(doctorModel) {
+    constructor(doctorModel, authService) {
         this.doctorModel = doctorModel;
+        this.authService = authService;
     }
     async create(createDoctorDto) {
-        const createdDoctor = new this.doctorModel(createDoctorDto);
+        const hashedPassword = await this.authService.hashPassword(createDoctorDto.password);
+        const doctorData = Object.assign(Object.assign({}, createDoctorDto), { password: hashedPassword });
+        const createdDoctor = new this.doctorModel(doctorData);
         return createdDoctor.save();
     }
     async findAll() {
@@ -32,6 +36,9 @@ let DoctorService = class DoctorService {
         return this.doctorModel.findById(id).exec();
     }
     async update(id, updateDoctorDto) {
+        if (updateDoctorDto.password) {
+            updateDoctorDto.password = await this.authService.hashPassword(updateDoctorDto.password);
+        }
         return this.doctorModel
             .findByIdAndUpdate(id, updateDoctorDto, { new: true })
             .exec();
@@ -39,11 +46,20 @@ let DoctorService = class DoctorService {
     async remove(id) {
         return this.doctorModel.findByIdAndDelete(id).exec();
     }
+    async validateDoctor(email, password) {
+        const doctor = await this.doctorModel.findOne({ email }).exec();
+        if (doctor &&
+            (await this.authService.comparePassword(password, doctor.password))) {
+            return doctor;
+        }
+        return null;
+    }
 };
 DoctorService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(doctor_entity_1.Doctor.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        auth_service_1.AuthService])
 ], DoctorService);
 exports.DoctorService = DoctorService;
 //# sourceMappingURL=doctor.service.js.map
