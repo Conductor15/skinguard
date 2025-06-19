@@ -1,11 +1,18 @@
 import { BrowserRouter } from 'react-router-dom';
-import Routes from './routes/routes';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor } from './stores/Store';
+import Routes from './routes/Routes';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes />
-    </BrowserRouter>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <BrowserRouter>
+          <Routes />
+        </BrowserRouter>
+      </PersistGate>
+    </Provider>
   );
 }
 

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './RegisterLogIn.css';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setNavbarActiveItem } from '../../stores/UiStore';
 
 const API_URL = 'http://localhost:8000';
 
@@ -26,6 +28,7 @@ const Register: React.FC = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   // Tự động chuyển view theo query param
   useEffect(() => {
@@ -106,6 +109,7 @@ const Register: React.FC = () => {
         setLoginMessage('Đăng nhập thành công!');
         localStorage.setItem('user', JSON.stringify(foundPatient));
         setTimeout(() => {
+          dispatch(setNavbarActiveItem('home')); // <--- Thêm dòng này
           navigate('/');
         }, 500);
         return;
@@ -123,6 +127,7 @@ const Register: React.FC = () => {
         setLoginMessage('Đăng nhập thành công (Doctor)!');
         localStorage.setItem('user', JSON.stringify({ ...foundDoctor, role: 'doctor' }));
         setTimeout(() => {
+          dispatch(setNavbarActiveItem('home')); // <--- Thêm dòng này
           navigate('/dashboard');
         }, 500);
         return;
