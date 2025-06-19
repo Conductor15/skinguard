@@ -9,34 +9,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConsultListSchema = exports.ConsultList = void 0;
+exports.ConsultSchema = exports.Consult = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let ConsultList = class ConsultList {
+let Consult = class Consult {
 };
 __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
-], ConsultList.prototype, "consult_id", void 0);
+], Consult.prototype, "consult_id", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Date)
-], ConsultList.prototype, "date", void 0);
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Doctor', required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Consult.prototype, "doctorID", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Patient', required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], ConsultList.prototype, "patient_id", void 0);
+], Consult.prototype, "patientID", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Date)
+], Consult.prototype, "scheduledTime", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'scheduled' }),
+    __metadata("design:type", String)
+], Consult.prototype, "status", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], ConsultList.prototype, "patient_description", void 0);
+], Consult.prototype, "consultMethod", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], ConsultList.prototype, "result", void 0);
-ConsultList = __decorate([
+], Consult.prototype, "notes", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Consult.prototype, "meetingLink", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Consult.prototype, "feedback", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], Consult.prototype, "deleted", void 0);
+Consult = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], ConsultList);
-exports.ConsultList = ConsultList;
-exports.ConsultListSchema = mongoose_1.SchemaFactory.createForClass(ConsultList);
+], Consult);
+exports.Consult = Consult;
+exports.ConsultSchema = mongoose_1.SchemaFactory.createForClass(Consult);
 //# sourceMappingURL=consult.entity.js.map

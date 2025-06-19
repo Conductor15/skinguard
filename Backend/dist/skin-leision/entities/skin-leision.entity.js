@@ -17,15 +17,35 @@ let SkinLesion = class SkinLesion {
 __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
-], SkinLesion.prototype, "leision_type", void 0);
-__decorate([
-    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: 'Product' }]),
-    __metadata("design:type", Array)
-], SkinLesion.prototype, "product_id_list", void 0);
+], SkinLesion.prototype, "name", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], SkinLesion.prototype, "description", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], SkinLesion.prototype, "symptoms", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], SkinLesion.prototype, "recommendation", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], SkinLesion.prototype, "dangerLevel", void 0);
+__decorate([
+    (0, mongoose_1.Prop)([String]),
+    __metadata("design:type", Array)
+], SkinLesion.prototype, "imageExamples", void 0);
+__decorate([
+    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: 'Product' }]),
+    __metadata("design:type", Array)
+], SkinLesion.prototype, "relatedProducts", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], SkinLesion.prototype, "deleted", void 0);
 SkinLesion = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], SkinLesion);

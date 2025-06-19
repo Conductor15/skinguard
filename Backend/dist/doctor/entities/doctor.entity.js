@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DoctorSchema = exports.Doctor = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
 let Doctor = class Doctor {
 };
 __decorate([
@@ -29,31 +28,47 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], Doctor.prototype, "discipline", void 0);
+], Doctor.prototype, "specialty", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Number, min: 1, max: 5 }),
-    __metadata("design:type", Number)
-], Doctor.prototype, "rating", void 0);
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Doctor.prototype, "bio", void 0);
 __decorate([
-    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: 'ConsultList' }]),
-    __metadata("design:type", Array)
-], Doctor.prototype, "consult_list_id", void 0);
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Doctor.prototype, "phone", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Doctor.prototype, "avatar", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Doctor.prototype, "permission", void 0);
+    (0, mongoose_1.Prop)({ type: Number, min: 1, max: 5 }),
+    __metadata("design:type", Number)
+], Doctor.prototype, "rating", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], Doctor.prototype, "email", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Doctor.prototype, "phoneNumber", void 0);
+], Doctor.prototype, "token", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'active' }),
+    __metadata("design:type", String)
+], Doctor.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], Doctor.prototype, "deletedAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Doctor.prototype, "experienceYears", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], Doctor.prototype, "deleted", void 0);
 Doctor = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Doctor);

@@ -25,9 +25,14 @@
 import { Document, Types } from 'mongoose';
 export type SkinLesionDocument = SkinLesion & Document;
 export declare class SkinLesion {
-    leision_type: string;
-    product_id_list: Types.ObjectId[];
+    name: string;
     description: string;
+    symptoms: string;
+    recommendation: string;
+    dangerLevel: string;
+    imageExamples: string[];
+    relatedProducts: Types.ObjectId[];
+    deleted: boolean;
 }
 export declare const SkinLesionSchema: import("mongoose").Schema<SkinLesion, import("mongoose").Model<SkinLesion, any, any, any, Document<unknown, any, SkinLesion> & Omit<SkinLesion & {
     _id: Types.ObjectId;

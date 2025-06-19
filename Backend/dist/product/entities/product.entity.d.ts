@@ -32,6 +32,8 @@ export declare class Product {
     sold_count: number;
     availability: boolean;
     image: string;
+    deleted: boolean;
+    slug: string;
 }
 export declare const ProductSchema: import("mongoose").Schema<Product, import("mongoose").Model<Product, any, any, any, Document<unknown, any, Product> & Omit<Product & {
     _id: import("mongoose").Types.ObjectId;

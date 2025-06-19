@@ -42,7 +42,7 @@ let ConsultService = class ConsultService {
 };
 ConsultService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(consult_entity_1.ConsultList.name)),
+    __param(0, (0, mongoose_1.InjectModel)(consult_entity_1.Consult.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], ConsultService);
 exports.ConsultService = ConsultService;

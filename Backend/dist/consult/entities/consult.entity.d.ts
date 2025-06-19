@@ -23,16 +23,21 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Document, Types } from 'mongoose';
-export type ConsultListDocument = ConsultList & Document;
-export declare class ConsultList {
+export type ConsultDocument = Consult & Document;
+export declare class Consult {
     consult_id: string;
-    date: Date;
-    patient_id: Types.ObjectId;
-    patient_description: string;
-    result: string;
+    doctorID: Types.ObjectId;
+    patientID: Types.ObjectId;
+    scheduledTime: Date;
+    status: string;
+    consultMethod: string;
+    notes: string;
+    meetingLink: string;
+    feedback: string;
+    deleted: boolean;
 }
-export declare const ConsultListSchema: import("mongoose").Schema<ConsultList, import("mongoose").Model<ConsultList, any, any, any, Document<unknown, any, ConsultList> & Omit<ConsultList & {
+export declare const ConsultSchema: import("mongoose").Schema<Consult, import("mongoose").Model<Consult, any, any, any, Document<unknown, any, Consult> & Omit<Consult & {
     _id: Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, ConsultList, Document<unknown, {}, import("mongoose").FlatRecord<ConsultList>> & Omit<import("mongoose").FlatRecord<ConsultList> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Consult, Document<unknown, {}, import("mongoose").FlatRecord<Consult>> & Omit<import("mongoose").FlatRecord<Consult> & {
     _id: Types.ObjectId;
 }, never>>;

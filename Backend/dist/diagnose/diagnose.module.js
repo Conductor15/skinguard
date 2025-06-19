@@ -18,7 +18,7 @@ DiagnoseModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: diagnose_entity_1.DiagnoseList.name, schema: diagnose_entity_1.DiagnoseListSchema },
+                { name: diagnose_entity_1.Diagnose.name, schema: diagnose_entity_1.DiagnoseSchema },
             ]),
         ],
         controllers: [diagnose_controller_1.DiagnoseController],

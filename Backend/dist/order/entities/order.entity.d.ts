@@ -26,10 +26,15 @@ import { Document, Types } from 'mongoose';
 export type OrderDocument = Order & Document;
 export declare class Order {
     order_id: string;
-    date: Date;
-    product_id: Types.ObjectId;
-    quantity: number;
+    orderBy: Types.ObjectId;
+    orderDate: Date;
+    status: string;
+    totalPay: number;
+    shippingAddress: string;
     paymentMethod: string;
+    paymentStatus: string;
+    notes: string;
+    deleted: boolean;
 }
 export declare const OrderSchema: import("mongoose").Schema<Order, import("mongoose").Model<Order, any, any, any, Document<unknown, any, Order> & Omit<Order & {
     _id: Types.ObjectId;

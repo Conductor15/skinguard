@@ -17,9 +17,7 @@ let ConsultModule = class ConsultModule {
 ConsultModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([
-                { name: consult_entity_1.ConsultList.name, schema: consult_entity_1.ConsultListSchema },
-            ]),
+            mongoose_1.MongooseModule.forFeature([{ name: consult_entity_1.Consult.name, schema: consult_entity_1.ConsultSchema }]),
         ],
         controllers: [consult_controller_1.ConsultController],
         providers: [consult_service_1.ConsultService],

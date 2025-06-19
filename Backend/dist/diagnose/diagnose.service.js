@@ -42,7 +42,7 @@ let DiagnoseService = class DiagnoseService {
 };
 DiagnoseService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(diagnose_entity_1.DiagnoseList.name)),
+    __param(0, (0, mongoose_1.InjectModel)(diagnose_entity_1.Diagnose.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], DiagnoseService);
 exports.DiagnoseService = DiagnoseService;

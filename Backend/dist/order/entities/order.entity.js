@@ -19,21 +19,41 @@ __decorate([
     __metadata("design:type", String)
 ], Order.prototype, "order_id", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Patient', required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Order.prototype, "orderBy", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
-], Order.prototype, "date", void 0);
+], Order.prototype, "orderDate", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Product', required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Order.prototype, "product_id", void 0);
+    (0, mongoose_1.Prop)({ required: true, default: 'pending' }),
+    __metadata("design:type", String)
+], Order.prototype, "status", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
-], Order.prototype, "quantity", void 0);
+], Order.prototype, "totalPay", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Order.prototype, "shippingAddress", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Order.prototype, "paymentMethod", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true, default: 'pending' }),
+    __metadata("design:type", String)
+], Order.prototype, "paymentStatus", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Order.prototype, "notes", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Boolean)
+], Order.prototype, "deleted", void 0);
 Order = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Order);

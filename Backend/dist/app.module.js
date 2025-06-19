@@ -21,6 +21,7 @@ const order_module_1 = require("./order/order.module");
 const skin_leision_module_1 = require("./skin-leision/skin-leision.module");
 const consult_module_1 = require("./consult/consult.module");
 const product_module_1 = require("./product/product.module");
+const order_detail_module_1 = require("./order_detail/order_detail.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -35,8 +36,7 @@ AppModule = __decorate([
             }),
             config_2.ConfigModule.forRoot({
                 isGlobal: true,
-            }),
-            auth_module_1.AuthModule,
+            }), auth_module_1.AuthModule,
             patient_module_1.PatientModule,
             doctor_module_1.DoctorModule,
             diagnose_module_1.DiagnoseModule,
@@ -44,6 +44,7 @@ AppModule = __decorate([
             product_module_1.ProductModule,
             consult_module_1.ConsultModule,
             skin_leision_module_1.SkinLesionModule,
+            order_detail_module_1.OrderDetailModule,
         ], controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,

@@ -9,38 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DiagnoseListSchema = exports.DiagnoseList = void 0;
+exports.DiagnoseSchema = exports.Diagnose = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
-let DiagnoseList = class DiagnoseList {
+let Diagnose = class Diagnose {
 };
 __decorate([
     (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
-], DiagnoseList.prototype, "diagnose_list_id", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'SkinLesion', required: true }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], DiagnoseList.prototype, "lesion_type", void 0);
+], Diagnose.prototype, "diagnose_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", Date)
-], DiagnoseList.prototype, "date", void 0);
+    __metadata("design:type", String)
+], Diagnose.prototype, "prediction", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], DiagnoseList.prototype, "image", void 0);
+], Diagnose.prototype, "image", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Number, min: 0, max: 100 }),
-    __metadata("design:type", Number)
-], DiagnoseList.prototype, "accuracy", void 0);
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Diagnose.prototype, "description", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Number, min: 1, max: 5 }),
+    (0, mongoose_1.Prop)({ type: Number }),
     __metadata("design:type", Number)
-], DiagnoseList.prototype, "rating", void 0);
-DiagnoseList = __decorate([
+], Diagnose.prototype, "confidence", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], Diagnose.prototype, "deleted", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Diagnose.prototype, "createdBy", void 0);
+Diagnose = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], DiagnoseList);
-exports.DiagnoseList = DiagnoseList;
-exports.DiagnoseListSchema = mongoose_1.SchemaFactory.createForClass(DiagnoseList);
+], Diagnose);
+exports.Diagnose = Diagnose;
+exports.DiagnoseSchema = mongoose_1.SchemaFactory.createForClass(Diagnose);
 //# sourceMappingURL=diagnose.entity.js.map

@@ -28,13 +28,17 @@ export declare class Doctor {
     doctor_id: string;
     password: string;
     fullName: string;
-    discipline: string;
-    rating: number;
-    consult_list_id: Types.ObjectId[];
+    specialty: string;
+    bio: string;
+    phone: string;
     avatar: string;
-    permission: string;
+    rating: number;
     email: string;
-    phoneNumber: string;
+    token: string;
+    status: string;
+    deletedAt: Date;
+    experienceYears: number;
+    deleted: boolean;
 }
 export declare const DoctorSchema: import("mongoose").Schema<Doctor, import("mongoose").Model<Doctor, any, any, any, Document<unknown, any, Doctor> & Omit<Doctor & {
     _id: Types.ObjectId;

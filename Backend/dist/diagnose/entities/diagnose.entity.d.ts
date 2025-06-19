@@ -22,18 +22,19 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document, Types } from 'mongoose';
-export type DiagnoseListDocument = DiagnoseList & Document;
-export declare class DiagnoseList {
-    diagnose_list_id: string;
-    lesion_type: Types.ObjectId;
-    date: Date;
+import { Document } from 'mongoose';
+export type DiagnoseDocument = Diagnose & Document;
+export declare class Diagnose {
+    diagnose_id: string;
+    prediction: string;
     image: string;
-    accuracy: number;
-    rating: number;
+    description: string;
+    confidence: number;
+    deleted: boolean;
+    createdBy: string;
 }
-export declare const DiagnoseListSchema: import("mongoose").Schema<DiagnoseList, import("mongoose").Model<DiagnoseList, any, any, any, Document<unknown, any, DiagnoseList> & Omit<DiagnoseList & {
-    _id: Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, DiagnoseList, Document<unknown, {}, import("mongoose").FlatRecord<DiagnoseList>> & Omit<import("mongoose").FlatRecord<DiagnoseList> & {
-    _id: Types.ObjectId;
+export declare const DiagnoseSchema: import("mongoose").Schema<Diagnose, import("mongoose").Model<Diagnose, any, any, any, Document<unknown, any, Diagnose> & Omit<Diagnose & {
+    _id: import("mongoose").Types.ObjectId;
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Diagnose, Document<unknown, {}, import("mongoose").FlatRecord<Diagnose>> & Omit<import("mongoose").FlatRecord<Diagnose> & {
+    _id: import("mongoose").Types.ObjectId;
 }, never>>;

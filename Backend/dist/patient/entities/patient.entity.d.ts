@@ -22,21 +22,22 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 export type PatientDocument = Patient & Document;
 export declare class Patient {
     patient_id: string;
-    diagnose_id_list: Types.ObjectId[];
+    fullName: string;
     email: string;
     password: string;
-    created_time: Date;
-    fullName: string;
-    birthDay: Date;
+    token: string;
+    phone: string;
     avatar: string;
-    orderID: string;
+    status: string;
+    deleted: boolean;
+    deletedAt: Date;
 }
 export declare const PatientSchema: import("mongoose").Schema<Patient, import("mongoose").Model<Patient, any, any, any, Document<unknown, any, Patient> & Omit<Patient & {
-    _id: Types.ObjectId;
+    _id: import("mongoose").Types.ObjectId;
 }, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Patient, Document<unknown, {}, import("mongoose").FlatRecord<Patient>> & Omit<import("mongoose").FlatRecord<Patient> & {
-    _id: Types.ObjectId;
+    _id: import("mongoose").Types.ObjectId;
 }, never>>;
