@@ -87,9 +87,7 @@ const Navbar_2 = () => {
             {menuOpen && (
               <div className="Main_Dashboard_dropdown_menu">
                 <div className="dropdown_item" onClick={() => handleMenuClick('profile')}>Hồ sơ</div>
-                <div className="dropdown_item">Điểm</div>
                 <div className="dropdown_item">Lịch</div>
-                <div className="dropdown_item">Tập tin riêng tư</div>
                 <div className="dropdown_item">Báo cáo</div>
                 <div className="dropdown_separator"></div>
                 <div className="dropdown_item">Tuỳ chọn</div>
