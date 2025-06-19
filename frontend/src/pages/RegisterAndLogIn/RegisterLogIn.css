@@ -271,7 +271,10 @@
     color: #5a7bd8;
 }
 
+<<<<<<< HEAD:FrontEnd/src/pages/Register_LogIn/RegisterLogIn.css
 
+=======
+>>>>>>> 7cf7aad6547d33355cdcc2e8154504691b9162c6:frontend/src/pages/RegisterAndLogIn/RegisterLogIn.css
 /* Responsive design */
 @media (max-width: 850px) {
     .register_box {
