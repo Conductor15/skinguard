@@ -9,5 +9,8 @@
     },
     "devDependencies": {
         "concurrently": "^7.6.0"
+    },
+    "dependencies": {
+        "soft-delete-plugin-mongoose": "1.0.15"
     }
 }
