@@ -14,6 +14,7 @@ import { OrderModule } from './order/order.module';
 import { SkinLesionModule } from './skin-leision/skin-leision.module';
 import { ConsultModule } from './consult/consult.module';
 import { ProductModule } from './product/product.module';
+import { OrderDetailModule } from './order_detail/order_detail.module';
 @Module({
   imports: [
     // MongooseModule.forRoot(
@@ -28,8 +29,7 @@ import { ProductModule } from './product/product.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-    }),
-    AuthModule,
+    }),    AuthModule,
     PatientModule,
     DoctorModule,
     DiagnoseModule,
@@ -37,6 +37,7 @@ import { ProductModule } from './product/product.module';
     ProductModule,
     ConsultModule,
     SkinLesionModule,
+    OrderDetailModule,
   ],  controllers: [AppController],
   providers: [
     AppService,

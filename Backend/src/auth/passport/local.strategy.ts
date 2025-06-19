@@ -28,6 +28,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       console.log('Throwing UnauthorizedException');
       throw new UnauthorizedException();
     }
-    return user;
+    return user; // req.user
   }
 }

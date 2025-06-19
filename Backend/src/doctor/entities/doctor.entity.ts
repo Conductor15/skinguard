@@ -10,30 +10,41 @@ export class Doctor {
 
   @Prop({ required: true })
   password: string;
-
   @Prop({ required: true })
   fullName: string;
 
   @Prop({ required: true })
-  discipline: string;
+  specialty: string;
 
-  @Prop({ type: Number, min: 1, max: 5 })
-  rating: number;
+  @Prop()
+  bio: string;
 
-  @Prop([{ type: Types.ObjectId, ref: 'ConsultList' }])
-  consult_list_id: Types.ObjectId[];
+  @Prop({ required: true })
+  phone: string;
 
   @Prop()
   avatar: string;
 
-  @Prop({ required: true })
-  permission: string;
+  @Prop({ type: Number, min: 1, max: 5 })
+  rating: number;
 
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true })
-  phoneNumber: string;
+  @Prop()
+  token: string;
+
+  @Prop({ default: 'active' })
+  status: string;
+
+  @Prop()
+  deletedAt: Date;
+
+  @Prop()
+  experienceYears: number;
+
+  @Prop({ default: false })
+  deleted: boolean;
 }
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);

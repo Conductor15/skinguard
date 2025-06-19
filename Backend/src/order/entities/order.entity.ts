@@ -8,17 +8,31 @@ export class Order {
   @Prop({ required: true, unique: true })
   order_id: string;
 
-  @Prop({ required: true })
-  date: Date;
-
-  @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
-  product_id: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Patient', required: true })
+  orderBy: Types.ObjectId; // FK to Patient
 
   @Prop({ required: true })
-  quantity: number;
+  orderDate: Date; // Đổi từ 'date' thành 'orderDate'
+
+  @Prop({ required: true, default: 'pending' })
+  status: string; // pending, confirmed, shipped, delivered, cancelled
 
   @Prop({ required: true })
-  paymentMethod: string;
+  totalPay: number; // Tổng tiền
+
+  @Prop({ required: true })
+  shippingAddress: string; // Địa chỉ giao hàng
+
+  @Prop({ required: true })
+  paymentMethod: string; // COD, Card, Bank Transfer
+
+  @Prop({ required: true, default: 'pending' })
+  paymentStatus: string; // pending, paid, failed, refunded
+  @Prop()
+  notes: string; // Ghi chú
+
+  @Prop()
+  deleted: boolean; // Soft delete flag
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

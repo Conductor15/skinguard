@@ -79,7 +79,7 @@ export class AuthController {
       };
     }
   }
-
+  @UseGuards(JwtAuthGuard)
   @Post('register/patient')
   async registerPatient(@Body() registerDto: RegisterPatientDto) {
     try {

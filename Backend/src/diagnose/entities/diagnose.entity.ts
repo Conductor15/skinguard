@@ -1,26 +1,33 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
-export type DiagnoseListDocument = DiagnoseList & Document;
+export type DiagnoseDocument = Diagnose & Document;
 
 @Schema({ timestamps: true })
-export class DiagnoseList {  @Prop({ required: true, unique: true })
-  diagnose_list_id: string;
-  
-  @Prop({ type: Types.ObjectId, ref: 'SkinLesion', required: true })
-  lesion_type: Types.ObjectId;
+export class Diagnose {
+  @Prop({ required: true, unique: true })
+  diagnose_id: string;
 
   @Prop({ required: true })
-  date: Date;
+  prediction: string;
 
   @Prop()
   image: string;
 
-  @Prop({ type: Number, min: 0, max: 100 })
-  accuracy: number;
+  @Prop()
+  description: string;
 
-  @Prop({ type: Number, min: 1, max: 5 })
-  rating: number;
+  @Prop({ type: Number })
+  confidence: number;
+
+  @Prop({ default: false })
+  deleted: boolean;
+
+  // @Prop({ default: Date.now })
+  // createdAt: Date;
+
+  @Prop()
+  createdBy: string;
 }
 
-export const DiagnoseListSchema = SchemaFactory.createForClass(DiagnoseList);
+export const DiagnoseSchema = SchemaFactory.createForClass(Diagnose);

@@ -1,40 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ConsultList, ConsultListDocument } from './entities/consult.entity';
+import { Consult, ConsultDocument } from './entities/consult.entity';
 import { CreateConsultDto } from './dto/create-consult.dto';
 import { UpdateConsultDto } from './dto/update-consult.dto';
 
 @Injectable()
 export class ConsultService {
   constructor(
-    @InjectModel(ConsultList.name)
-    private consultModel: Model<ConsultListDocument>,
+    @InjectModel(Consult.name)
+    private consultModel: Model<ConsultDocument>,
   ) {}
 
-  async create(createConsultDto: CreateConsultDto): Promise<ConsultList> {
+  async create(createConsultDto: CreateConsultDto): Promise<Consult> {
     const createdConsult = new this.consultModel(createConsultDto);
     return createdConsult.save();
   }
 
-  async findAll(): Promise<ConsultList[]> {
+  async findAll(): Promise<Consult[]> {
     return this.consultModel.find().populate('patient_id').exec();
   }
-
-  async findOne(id: string): Promise<ConsultList> {
+  async findOne(id: string): Promise<Consult> {
     return this.consultModel.findById(id).populate('patient_id').exec();
   }
 
   async update(
     id: string,
     updateConsultDto: UpdateConsultDto,
-  ): Promise<ConsultList> {
+  ): Promise<Consult> {
     return this.consultModel
       .findByIdAndUpdate(id, updateConsultDto, { new: true })
       .exec();
   }
 
-  async remove(id: string): Promise<ConsultList> {
+  async remove(id: string): Promise<Consult> {
     return this.consultModel.findByIdAndDelete(id).exec();
   }
 }

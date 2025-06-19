@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DiagnoseService } from './diagnose.service';
 import { DiagnoseController } from './diagnose.controller';
-import { DiagnoseList, DiagnoseListSchema } from './entities/diagnose.entity';
+import { Diagnose, DiagnoseSchema } from './entities/diagnose.entity';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: DiagnoseList.name, schema: DiagnoseListSchema },
+      { name: Diagnose.name, schema: DiagnoseSchema },
     ]),
   ],
   controllers: [DiagnoseController],

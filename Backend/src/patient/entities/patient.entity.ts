@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 export type PatientDocument = Patient & Document;
 
@@ -8,8 +8,8 @@ export class Patient {
   @Prop({ required: true, unique: true })
   patient_id: string;
 
-  @Prop([{ type: Types.ObjectId, ref: 'DiagnoseList' }])
-  diagnose_id_list: Types.ObjectId[];
+  @Prop({ required: true })
+  fullName: string;
 
   @Prop({ required: true, unique: true })
   email: string;
@@ -17,20 +17,23 @@ export class Patient {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ default: Date.now })
-  created_time: Date;
-
-  @Prop({ required: true })
-  fullName: string;
-
-  @Prop({ required: true })
-  birthDay: Date;
+  @Prop()
+  token: string;
+  
+  @Prop()
+  phone: string;
 
   @Prop()
   avatar: string;
 
+  @Prop({ default: 'active' })
+  status: string;
+
+  @Prop({ default: false })
+  deleted: boolean;
+
   @Prop()
-  orderID: string;
+  deletedAt: Date;
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);
