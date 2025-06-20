@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../../api/Axios';
 import { ProductType } from '../../../types/Types';
-import { SearchIcon } from '../../../assets/SVG/Svg';
+import { SearchIcon, DeleteIcon, FixIcon } from '../../../assets/SVG/Svg';
 import '../doctors/Doctor.css';
 import './Product.css';
 
@@ -17,6 +17,24 @@ const sortableFields: { label: string, value: SortField }[] = [
   { label: "Sold Count", value: "sold_count" },
   { label: "Availability", value: "availability" }
 ];
+
+// generate next product id
+function getNextProductId(products: ProductType[]): string {
+    const prefix = "PROD";
+    const usedNumbers = products
+        .map(pro => pro.product_id)
+        .filter(id => id && id.startsWith(prefix))
+        .map(id => parseInt(id.replace(prefix, ""), 10))
+        .filter(n => !isNaN(n))
+        .sort((a, b) => a - b);
+
+    let nextNum = 1;
+    for (let num of usedNumbers) {
+        if (num === nextNum) nextNum++;
+        else break;
+    }
+    return prefix + nextNum.toString().padStart(3, "0");
+}
 
 const Product = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -108,6 +126,16 @@ const Product = () => {
 
     // Add Product
     const handleAddProduct = () => {
+        const newId = getNextProductId(productsData);
+        setAddForm({
+            product_id: newId,
+            title: '',
+            description: '',
+            price: 0,
+            sold_count: 0,
+            availability: true,
+            image: '',
+        });
         setShowAddForm(true);
     };
 
@@ -326,7 +354,13 @@ const Product = () => {
                 <div className="doctor_add_form_overlay">
                     <form className="doctor_add_form" onSubmit={handleAddFormSubmit}>
                         <h3>Thêm sản phẩm mới</h3>
-                        <input name="product_id" placeholder="Product ID" value={addForm.product_id} onChange={handleAddFormChange} required />
+                        <input
+                            name="product_id"
+                            placeholder="Product ID"
+                            value={addForm.product_id}
+                            readOnly
+                            required
+                        />
                         <input name="title" placeholder="Title" value={addForm.title} onChange={handleAddFormChange} required />
                         <input name="description" placeholder="Description" value={addForm.description} onChange={handleAddFormChange} required />
                         <input name="price" type="number" placeholder="Price" value={addForm.price} onChange={handleAddFormChange} required />
@@ -349,7 +383,7 @@ const Product = () => {
                 <div className='doctor_add_form_overlay'>
                     <form className='doctor_add_form' onSubmit={handleEditFormSubmit}>
                         <h3>Product updates</h3>
-                        <input name="product_id" placeholder="Product ID" value={editForm.product_id} onChange={handleEditFormChange} required />
+                        <input name="product_id" placeholder="Product ID" value={editForm.product_id} readOnly required />
                         <input name="title" placeholder="Title" value={editForm.title} onChange={handleEditFormChange} required />
                         <input name="description" placeholder="Description" value={editForm.description} onChange={handleEditFormChange} required />
                         <input name="price" type="number" placeholder="Price" value={editForm.price} onChange={handleEditFormChange} required />
@@ -426,9 +460,7 @@ const Product = () => {
                                             className="action_button edit_button"
                                             title="Edit Product"
                                         >
-                                            <svg className="action_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
+                                            <FixIcon className="action_icon" />
                                             Fix
                                         </button>
                                         <button
@@ -436,9 +468,7 @@ const Product = () => {
                                             className="action_button delete_button"
                                             title="Delete Product"
                                         >
-                                            <svg className="action_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
+                                            <DeleteIcon className="action_icon" />
                                             Delete
                                         </button>
                                     </div>
