@@ -7,11 +7,9 @@ package-lock.json
 *.tsbuildinfo
 
 # Environment files
-.env
-.env.local
-.env.development
-.env.production
-.env.test
+#! .env
+
+
 # Logs
 logs
 *.log
