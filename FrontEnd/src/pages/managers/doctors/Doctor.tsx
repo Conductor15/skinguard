@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react';
 import axiosInstance from '../../../api/Axios';
 import './Doctor.css';
 import { DoctorType } from '../../../types/Types';
-import { SearchIcon } from '../../../assets/SVG/Svg';
+import { SearchIcon, DeleteIcon, FixIcon } from '../../../assets/SVG/Svg';
 
 type SortField = keyof DoctorType | '';
 type SortOrder = 'increase' | 'decrease';
 
-// Chỉ các trường được yêu cầu
 const sortableFields: { label: string, value: SortField }[] = [
     { label: "ID", value: "doctor_id" },
     { label: "Full Name", value: "fullName" },
@@ -18,7 +17,7 @@ const sortableFields: { label: string, value: SortField }[] = [
     { label: "Experience Years", value: "experienceYears" }
 ];
 
-// Sinh doctor_id nhỏ nhất còn thiếu (DCT001, DCT002, ...)
+// Generate a unique ID for a new doctor 
 function getNextDoctorId(doctors: DoctorType[]): string {
     const prefix = "DCT";
     const usedNumbers = doctors
@@ -170,7 +169,6 @@ const Doctor = () => {
     const handleAddFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validate các trường bắt buộc
         if (
             !addForm.doctor_id ||
             !addForm.password ||
@@ -179,7 +177,7 @@ const Doctor = () => {
             !addForm.phone ||
             !addForm.email
         ) {
-            alert("Vui lòng nhập đầy đủ các trường bắt buộc.");
+            alert("Please fill in all required fields.");
             return;
         }
 
@@ -199,12 +197,12 @@ const Doctor = () => {
                 experienceYears: 0
             });
             fetchDoctors();
-            alert('Thêm bác sĩ thành công!');
+            alert('Add doctor successfully!');
         } catch (err: any) {
             if (err?.response?.data?.message?.includes('duplicate key')) {
-                alert('Doctor ID hoặc email đã tồn tại, vui lòng kiểm tra lại!');
+                alert('Doctor ID or email already exists, please check again!');
             } else {
-                alert('Thêm bác sĩ thất bại!');
+                alert('More failed doctors!');
             }
         }
     };
@@ -229,7 +227,7 @@ const Doctor = () => {
     const handleEditDoctor = (doctorId: string) => {
         const doc = doctorsData.find(d => d._id === doctorId);
         if (doc) {
-            setEditForm({ ...doc, password: '' }); // không show password thật
+            setEditForm({ ...doc, password: '' }); // No show password 
             setShowEditForm(true);
         }
     };
@@ -248,7 +246,6 @@ const Doctor = () => {
         e.preventDefault();
         if (!editForm || !editForm._id) return;
 
-        // Validate các trường bắt buộc khi sửa
         if (
             !editForm.doctor_id ||
             !editForm.fullName ||
@@ -256,7 +253,7 @@ const Doctor = () => {
             !editForm.phone ||
             !editForm.email
         ) {
-            alert("Vui lòng nhập đầy đủ các trường bắt buộc.");
+            alert("Please fill in all required fields.");
             return;
         }
 
@@ -278,12 +275,12 @@ const Doctor = () => {
             setShowEditForm(false);
             setEditForm(null);
             fetchDoctors();
-            alert('Cập nhật bác sĩ thành công!');
+            alert('Doctor update successful!');
         } catch (err: any) {
             if (err?.response?.data?.message?.includes('duplicate key')) {
-                alert('Doctor ID hoặc email đã tồn tại, vui lòng kiểm tra lại!');
+                alert('Doctor ID or email already exists, please check again!');
             } else {
-                alert('Cập nhật bác sĩ thất bại!');
+                alert('Doctor update failed!');
             }
         }
     };
@@ -295,13 +292,13 @@ const Doctor = () => {
 
     // -------- Delete Doctor --------
     const handleDeleteDoctor = async (doctorId: string) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa bác sĩ này?')) {
+        if (window.confirm('Are you sure you want to delete this doctor??')) {
             try {
                 await axiosInstance.delete(`/doctor/${doctorId}`);
                 setDoctorsData(prev => prev.filter(doc => doc._id !== doctorId));
-                alert('Đã xóa bác sĩ thành công!');
+                alert('Doctor deleted successfully!');
             } catch (err: any) {
-                alert('Xóa bác sĩ thất bại!');
+                alert('Delete failed doctor!');
             }
         }
     };
@@ -382,7 +379,7 @@ const Doctor = () => {
             {showAddForm && (
                 <div className="doctor_add_form_overlay">
                     <form className="doctor_add_form" onSubmit={handleAddFormSubmit}>
-                        <h3>Thêm bác sĩ mới</h3>
+                        <h3>Add new doctor</h3>
                         <input
                             name="doctor_id"
                             placeholder="Doctor ID"
@@ -539,7 +536,7 @@ const Doctor = () => {
                 {/* Table Body */}
                 <div className="doctor_table_body">
                     {loading ? (
-                        <div className="doctor_no_results">Đang tải...</div>
+                        <div className="doctor_no_results">Loading...</div>
                     ) : currentDoctors.length > 0 ? (
                         currentDoctors.map((doctor) => (
                             <div key={doctor._id} className="doctor_table_row">
@@ -560,9 +557,7 @@ const Doctor = () => {
                                             className="action_button edit_button"
                                             title="Edit Profile"
                                         >
-                                            <svg className="action_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
+                                            <FixIcon className="action_icon" />
                                             Fix
                                         </button>
                                         <button
@@ -570,9 +565,7 @@ const Doctor = () => {
                                             className="action_button delete_button"
                                             title="Delete doctor"
                                         >
-                                            <svg className="action_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
+                                            <DeleteIcon className="action_icon" />
                                             Delete
                                         </button>
                                     </div>
