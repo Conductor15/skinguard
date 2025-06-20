@@ -381,3 +381,22 @@
 .doctor_cancel_button:hover {
     background: #d1d5db;
 }
+
+/*  */
+.header_table_admin {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.init_sort_icon_admin {
+    color: #ccc;
+    margin-left: 4px;
+}
+
+.active_sort_icon_admin {
+    color: #1976d2;
+    margin-left: 4px;
+}
+
