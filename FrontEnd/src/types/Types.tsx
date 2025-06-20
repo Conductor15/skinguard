@@ -24,3 +24,16 @@ export type DoctorType = {
     status: string;
     experienceYears: number;
 }
+
+// Patient
+export type PatientType = {
+    _id?: string;
+    patient_id: string;
+    fullName: string;
+    email: string;
+    password: string;
+    phone: string;
+    avatar: string;
+    status: string;
+};
+  
