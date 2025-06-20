@@ -9,3 +9,18 @@ export type ProductType = {
     availability: boolean;
     image: string;
 }
+
+// Doctor
+export type DoctorType = {
+    _id?: string;
+    doctor_id: string;
+    fullName: string;
+    email: string;
+    password: string;
+    specialty: string;
+    phone: string;
+    avatar: string;
+    rating: number;
+    status: string;
+    experienceYears: number;
+}

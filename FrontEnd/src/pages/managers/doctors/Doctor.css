@@ -106,7 +106,7 @@
 
 .doctor_table_header_grid {
     display: grid;
-    grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
     gap: 1rem;
     font-size: 0.875rem;
     font-weight: 500;
@@ -131,7 +131,7 @@
 /* Table Row Grid */
 .doctor_table_row_grid {
     display: grid;
-    grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
     gap: 1rem;
     align-items: center;
 }

@@ -1,19 +1,40 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../../api/Axios';
 import './Doctor.css';
+import { DoctorType } from '../../../types/Types';
+import { SearchIcon } from '../../../assets/SVG/Svg';
 
-type DoctorType = {
-    _id?: string;
-    fullName: string;
-    discipline: string;
-    experience?: string;
-    rating: number | string;
-    phoneNumber: string;
-    email: string;
-    permission: string;
-    password?: string;
-    doctor_id: string;
-};
+type SortField = keyof DoctorType | '';
+type SortOrder = 'increase' | 'decrease';
+
+// Chỉ các trường được yêu cầu
+const sortableFields: { label: string, value: SortField }[] = [
+    { label: "ID", value: "doctor_id" },
+    { label: "Full Name", value: "fullName" },
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+    { label: "Rating", value: "rating" },
+    { label: "Status", value: "status" },
+    { label: "Experience Years", value: "experienceYears" }
+];
+
+// Sinh doctor_id nhỏ nhất còn thiếu (DCT001, DCT002, ...)
+function getNextDoctorId(doctors: DoctorType[]): string {
+    const prefix = "DCT";
+    const usedNumbers = doctors
+        .map(doc => doc.doctor_id)
+        .filter(id => id && id.startsWith(prefix))
+        .map(id => parseInt(id.replace(prefix, ""), 10))
+        .filter(n => !isNaN(n))
+        .sort((a, b) => a - b);
+
+    let nextNum = 1;
+    for (let num of usedNumbers) {
+        if (num === nextNum) nextNum++;
+        else break;
+    }
+    return prefix + nextNum.toString().padStart(3, "0");
+}
 
 const Doctor = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -23,18 +44,23 @@ const Doctor = () => {
     const [showEditForm, setShowEditForm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [addForm, setAddForm] = useState<DoctorType>({
-        fullName: '',
-        discipline: '',
-        experience: '',
-        rating: 1,
-        phoneNumber: '',
-        email: '',
-        permission: '',
-        password: '',
         doctor_id: '',
+        fullName: '',
+        email: '',
+        password: '',
+        specialty: '',
+        phone: '',
+        avatar: '',
+        rating: 1,
+        status: '',
+        experienceYears: 0
     });
     const [editForm, setEditForm] = useState<DoctorType | null>(null);
     const itemsPerPage = 5;
+
+    // Sort state
+    const [sortField, setSortField] = useState<SortField>('');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('increase');
 
     // Fetch doctors from backend
     const fetchDoctors = () => {
@@ -43,14 +69,16 @@ const Doctor = () => {
             .then(res => {
                 const filtered = res.data.map((doc: any) => ({
                     _id: doc._id,
-                    fullName: doc.fullName,
-                    discipline: doc.discipline,
-                    experience: doc.experience ? doc.experience : '',
-                    rating: doc.rating,
-                    phoneNumber: doc.phoneNumber,
-                    email: doc.email,
-                    permission: doc.permission,
                     doctor_id: doc.doctor_id,
+                    fullName: doc.fullName,
+                    email: doc.email,
+                    password: doc.password,
+                    specialty: doc.specialty,
+                    phone: doc.phone,
+                    avatar: doc.avatar,
+                    rating: doc.rating,
+                    status: doc.status,
+                    experienceYears: doc.experienceYears
                 }));
                 setDoctorsData(filtered);
                 setLoading(false);
@@ -67,70 +95,114 @@ const Doctor = () => {
 
     // Filter doctors based on search term
     const filteredDoctors = doctorsData.filter(doctor =>
-        (doctor._id?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
+        (doctor.doctor_id?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (doctor.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
-        (doctor.discipline?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
-        (doctor.experience?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
-        (doctor.rating?.toString().includes(searchTerm.toLowerCase()) || '') ||
-        (doctor.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (doctor.email?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
-        (doctor.permission?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
-        (doctor.doctor_id?.toLowerCase().includes(searchTerm.toLowerCase()) || '')
+        (doctor.phone?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
+        (doctor.status?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
+        (doctor.experienceYears?.toString()?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
+        (doctor.rating?.toString()?.toLowerCase().includes(searchTerm.toLowerCase()) || '')
     );
 
+    // Sort Logic
+    const sortedDoctors = [...filteredDoctors].sort((a, b) => {
+        if (!sortField) return 0;
+        const aVal = a[sortField];
+        const bVal = b[sortField];
+
+        // For string
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+            if (sortOrder === 'increase') {
+                return aVal.localeCompare(bVal);
+            } else {
+                return bVal.localeCompare(aVal);
+            }
+        }
+        // For number
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            if (sortOrder === 'increase') {
+                return aVal - bVal;
+            } else {
+                return bVal - aVal;
+            }
+        }
+        // For Boolean
+        if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+            if (sortOrder === 'increase') return (aVal === bVal ? 0 : aVal ? 1 : -1);
+            else return (aVal === bVal ? 0 : aVal ? -1 : 1);
+        }
+        return 0;
+    });
+
     // Pagination logic
-    const totalPages = Math.ceil(filteredDoctors.length / itemsPerPage);
+    const totalPages = Math.ceil(sortedDoctors.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentDoctors = filteredDoctors.slice(startIndex, endIndex);
+    const currentDoctors = sortedDoctors.slice(startIndex, endIndex);
 
     // -------- Add Doctor --------
     const handleAddDoctor = () => {
+        const newId = getNextDoctorId(doctorsData);
+        setAddForm({
+            doctor_id: newId,
+            fullName: '',
+            email: '',
+            password: '',
+            specialty: '',
+            phone: '',
+            avatar: '',
+            rating: 1,
+            status: '',
+            experienceYears: 0
+        });
         setShowAddForm(true);
     };
 
     const handleAddFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAddForm(prev => ({
             ...prev,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.type === "number"
+                ? Number(e.target.value)
+                : e.target.value
         }));
     };
 
     const handleAddFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (+addForm.rating < 1) {
-            alert('Rating phải >= 1');
+
+        // Validate các trường bắt buộc
+        if (
+            !addForm.doctor_id ||
+            !addForm.password ||
+            !addForm.fullName ||
+            !addForm.specialty ||
+            !addForm.phone ||
+            !addForm.email
+        ) {
+            alert("Vui lòng nhập đầy đủ các trường bắt buộc.");
             return;
         }
+
         try {
-            await axiosInstance.post('/doctor', {
-                fullName: addForm.fullName,
-                discipline: addForm.discipline,
-                experience: addForm.experience,
-                rating: Number(addForm.rating),
-                phoneNumber: addForm.phoneNumber,
-                email: addForm.email,
-                permission: addForm.permission,
-                password: addForm.password,
-                doctor_id: addForm.doctor_id,
-            });
+            await axiosInstance.post('/doctor', addForm);
             setShowAddForm(false);
             setAddForm({
-                fullName: '',
-                discipline: '',
-                experience: '',
-                rating: 1,
-                phoneNumber: '',
-                email: '',
-                permission: '',
-                password: '',
                 doctor_id: '',
+                fullName: '',
+                email: '',
+                password: '',
+                specialty: '',
+                phone: '',
+                avatar: '',
+                rating: 1,
+                status: '',
+                experienceYears: 0
             });
             fetchDoctors();
             alert('Thêm bác sĩ thành công!');
         } catch (err: any) {
             if (err?.response?.data?.message?.includes('duplicate key')) {
-                alert('Doctor ID đã tồn tại, vui lòng nhập mã khác!');
+                alert('Doctor ID hoặc email đã tồn tại, vui lòng kiểm tra lại!');
             } else {
                 alert('Thêm bác sĩ thất bại!');
             }
@@ -140,15 +212,16 @@ const Doctor = () => {
     const handleCancelAdd = () => {
         setShowAddForm(false);
         setAddForm({
-            fullName: '',
-            discipline: '',
-            experience: '',
-            rating: 1,
-            phoneNumber: '',
-            email: '',
-            permission: '',
-            password: '',
             doctor_id: '',
+            fullName: '',
+            email: '',
+            password: '',
+            specialty: '',
+            phone: '',
+            avatar: '',
+            rating: 1,
+            status: '',
+            experienceYears: 0
         });
     };
 
@@ -165,28 +238,38 @@ const Doctor = () => {
         if (!editForm) return;
         setEditForm({
             ...editForm,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.type === "number"
+                ? Number(e.target.value)
+                : e.target.value
         });
     };
 
     const handleEditFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editForm || !editForm._id) return;
-        if (+editForm.rating < 1) {
-            alert('Rating phải >= 1');
+
+        // Validate các trường bắt buộc khi sửa
+        if (
+            !editForm.doctor_id ||
+            !editForm.fullName ||
+            !editForm.specialty ||
+            !editForm.phone ||
+            !editForm.email
+        ) {
+            alert("Vui lòng nhập đầy đủ các trường bắt buộc.");
             return;
         }
+
         try {
-            // Chỉ gửi các trường cho phép sửa (không nên gửi password nếu không nhập mới)
             const dataToSend: any = {
-                fullName: editForm.fullName,
-                discipline: editForm.discipline,
-                experience: editForm.experience,
-                rating: Number(editForm.rating),
-                phoneNumber: editForm.phoneNumber,
-                email: editForm.email,
-                permission: editForm.permission,
                 doctor_id: editForm.doctor_id,
+                fullName: editForm.fullName,
+                email: editForm.email,
+                specialty: editForm.specialty,
+                phone: editForm.phone,
+                rating: editForm.rating,
+                status: editForm.status,
+                experienceYears: editForm.experienceYears
             };
             if (editForm.password) {
                 dataToSend.password = editForm.password;
@@ -197,7 +280,11 @@ const Doctor = () => {
             fetchDoctors();
             alert('Cập nhật bác sĩ thành công!');
         } catch (err: any) {
-            alert('Cập nhật bác sĩ thất bại!');
+            if (err?.response?.data?.message?.includes('duplicate key')) {
+                alert('Doctor ID hoặc email đã tồn tại, vui lòng kiểm tra lại!');
+            } else {
+                alert('Cập nhật bác sĩ thất bại!');
+            }
         }
     };
 
@@ -219,6 +306,7 @@ const Doctor = () => {
         }
     };
 
+    // Pagination
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
     };
@@ -237,7 +325,33 @@ const Doctor = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm]);
+    }, [searchTerm, sortField, sortOrder]);
+
+    // Sort control
+    const renderSortIcon = (field: SortField) => {
+        if (sortField !== field) {
+            return (
+                <span className='init_sort_icon_admin'>▲</span>
+            );
+        }
+        if (sortOrder === "increase") {
+            return (
+                <span className='active_sort_icon_admin'>▼</span>
+            );
+        }
+        return (
+            <span className='active_sort_icon_admin'>▲</span>
+        );
+    };
+
+    const handleHeaderClick = (field: SortField) => {
+        if (sortField === field) {
+            setSortOrder(prev => prev === "increase" ? "decrease" : "increase");
+        } else {
+            setSortField(field);
+            setSortOrder("increase");
+        }
+    };
 
     return (
         <div className="doctor_container">
@@ -246,9 +360,7 @@ const Doctor = () => {
                 <div className="doctor_title"> List of doctors </div>
                 <div className="doctor_controls">
                     <div className="doctor_search_container">
-                        <svg className="doctor_search_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                        <SearchIcon className="doctor_search_icon" />
                         <input
                             type="text"
                             placeholder="Find a doctor..."
@@ -271,15 +383,53 @@ const Doctor = () => {
                 <div className="doctor_add_form_overlay">
                     <form className="doctor_add_form" onSubmit={handleAddFormSubmit}>
                         <h3>Thêm bác sĩ mới</h3>
-                        <input name="fullName" placeholder="Full name" value={addForm.fullName} onChange={handleAddFormChange} required />
-                        <input name="doctor_id" placeholder="Doctor ID" value={addForm.doctor_id} onChange={handleAddFormChange} required />
-                        <input name="discipline" placeholder="Specialty" value={addForm.discipline} onChange={handleAddFormChange} required />
-                        <input name="experience" placeholder="Experience (tùy chọn)" value={addForm.experience} onChange={handleAddFormChange} />
-                        <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="Rating" value={addForm.rating} onChange={handleAddFormChange} required />
-                        <input name="phoneNumber" placeholder="Phone number" value={addForm.phoneNumber} onChange={handleAddFormChange} required />
-                        <input name="email" type="email" placeholder="Email" value={addForm.email} onChange={handleAddFormChange} required />
-                        <input name="permission" placeholder="Permission" value={addForm.permission} onChange={handleAddFormChange} required />
-                        <input name="password" type="password" placeholder="Password" value={addForm.password} onChange={handleAddFormChange} required />
+                        <input
+                            name="doctor_id"
+                            placeholder="Doctor ID"
+                            value={addForm.doctor_id}
+                            readOnly
+                            required
+                        />
+                        <input
+                            name="fullName"
+                            placeholder="Full name"
+                            value={addForm.fullName}
+                            onChange={handleAddFormChange}
+                            required
+                        />
+                        <input
+                            name="email"
+                            placeholder="Email"
+                            value={addForm.email}
+                            onChange={handleAddFormChange}
+                            required
+                        />
+                        <input
+                            name="password"
+                            type="password"
+                            placeholder="Password"
+                            value={addForm.password}
+                            onChange={handleAddFormChange}
+                            required
+                        />
+                        <input
+                            name="specialty"
+                            placeholder="Specialty"
+                            value={addForm.specialty}
+                            onChange={handleAddFormChange}
+                            required
+                        />
+                        <input
+                            name="phone"
+                            placeholder="Phone number"
+                            value={addForm.phone}
+                            onChange={handleAddFormChange}
+                            required
+                        />
+                        <input name="avatar" placeholder="Avatar URL" value={addForm.avatar} onChange={handleAddFormChange} />
+                        <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="Rating" value={addForm.rating} onChange={handleAddFormChange} />
+                        <input name="status" placeholder="Status" value={addForm.status} onChange={handleAddFormChange} />
+                        <input name="experienceYears" type="number" placeholder="Experience years" value={addForm.experienceYears} onChange={handleAddFormChange} />
                         <div className="doctor_add_form_buttons">
                             <button type="submit" className="doctor_add_button">Lưu</button>
                             <button type="button" className="doctor_cancel_button" onClick={handleCancelAdd}>Hủy</button>
@@ -293,15 +443,72 @@ const Doctor = () => {
                 <div className="doctor_add_form_overlay">
                     <form className="doctor_add_form" onSubmit={handleEditFormSubmit}>
                         <h3>Cập nhật bác sĩ</h3>
-                        <input name="fullName" placeholder="Full name" value={editForm.fullName} onChange={handleEditFormChange} required />
-                        <input name="doctor_id" placeholder="Doctor ID" value={editForm.doctor_id} onChange={handleEditFormChange} required />
-                        <input name="discipline" placeholder="Specialty" value={editForm.discipline} onChange={handleEditFormChange} required />
-                        <input name="experience" placeholder="Experience (tùy chọn)" value={editForm.experience} onChange={handleEditFormChange} />
-                        <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="Rating" value={editForm.rating} onChange={handleEditFormChange} required />
-                        <input name="phoneNumber" placeholder="Phone number" value={editForm.phoneNumber} onChange={handleEditFormChange} required />
-                        <input name="email" type="email" placeholder="Email" value={editForm.email} onChange={handleEditFormChange} required />
-                        <input name="permission" placeholder="Permission" value={editForm.permission} onChange={handleEditFormChange} required />
-                        <input name="password" type="password" placeholder="Password (bỏ trống nếu không đổi)" value={editForm.password || ''} onChange={handleEditFormChange} />
+                        <input
+                            name="doctor_id"
+                            placeholder="Doctor ID"
+                            value={editForm.doctor_id}
+                            readOnly
+                            required
+                        />
+                        <input
+                            name="fullName"
+                            placeholder="Full name"
+                            value={editForm.fullName}
+                            onChange={handleEditFormChange}
+                            required
+                        />
+                        <input
+                            name="email"
+                            placeholder="Email"
+                            value={editForm.email}
+                            onChange={handleEditFormChange}
+                            required
+                        />
+                        <input
+                            name="password"
+                            type="password"
+                            placeholder="Password (bỏ trống nếu không đổi)"
+                            value={editForm.password || ''}
+                            onChange={handleEditFormChange}
+                        />
+                        <input
+                            name="specialty"
+                            placeholder="Specialty"
+                            value={editForm.specialty}
+                            onChange={handleEditFormChange}
+                            required
+                        />
+                        <input
+                            name="phone"
+                            placeholder="Phone number"
+                            value={editForm.phone}
+                            onChange={handleEditFormChange}
+                            required
+                        />
+                        <input
+                            name="rating"
+                            type="number"
+                            min={1}
+                            max={5}
+                            step={0.1}
+                            placeholder="Rating"
+                            value={editForm.rating}
+                            onChange={handleEditFormChange}
+                        />
+                        <input
+                            name="status"
+                            placeholder="Status"
+                            value={editForm.status}
+                            onChange={handleEditFormChange}
+                        />
+                        <input
+                            name="experienceYears"
+                            type="number"
+                            placeholder="Experience years"
+                            value={editForm.experienceYears}
+                            onChange={handleEditFormChange}
+                        />
+                        <input name="avatar" placeholder="Avatar URL" value={addForm.avatar || ''} onChange={handleEditFormChange} />
                         <div className="doctor_add_form_buttons">
                             <button type="submit" className="doctor_add_button">Lưu</button>
                             <button type="button" className="doctor_cancel_button" onClick={handleCancelEdit}>Hủy</button>
@@ -315,12 +522,16 @@ const Doctor = () => {
                 {/* Table Header */}
                 <div className="doctor_table_header">
                     <div className="doctor_table_header_grid">
-                        <div>ID</div>
-                        <div>Full name</div>
-                        <div className="doctor_cell_specialty">Specialty</div>
-                        <div className="doctor_cell_experience">Experience</div>
-                        <div>Review</div>
-                        <div className="doctor_cell_phone">Phone number</div>
+                        {sortableFields.map(field => (
+                            <div
+                                key={field.value}
+                                className='header_table_admin'
+                                onClick={() => handleHeaderClick(field.value)}
+                            >
+                                {field.label}
+                                {renderSortIcon(field.value)}
+                            </div>
+                        ))}
                         <div>Operation</div>
                     </div>
                 </div>
@@ -333,25 +544,16 @@ const Doctor = () => {
                         currentDoctors.map((doctor) => (
                             <div key={doctor._id} className="doctor_table_row">
                                 <div className="doctor_table_row_grid">
-                                    <div className="doctor_cell_id">
-                                        {doctor.doctor_id}
-                                    </div>
-                                    <div className="doctor_cell_name">
-                                        {doctor.fullName}
-                                    </div>
-                                    <div className="doctor_cell_text doctor_cell_specialty">
-                                        {doctor.discipline}
-                                    </div>
-                                    <div className="doctor_cell_text doctor_cell_experience">
-                                        {doctor.experience}
-                                    </div>
-                                    <div className="doctor_rating">
+                                    <div>{doctor.doctor_id}</div>
+                                    <div>{doctor.fullName}</div>
+                                    <div>{doctor.email}</div>
+                                    <div>{doctor.phone}</div>
+                                    <div>
                                         {doctor.rating}
                                         <span className="doctor_rating_star">⭐</span>
                                     </div>
-                                    <div className="doctor_cell_text doctor_cell_phone">
-                                        {doctor.phoneNumber}
-                                    </div>
+                                    <div>{doctor.status}</div>
+                                    <div>{doctor.experienceYears}</div>
                                     <div className="doctor_actions">
                                         <button
                                             onClick={() => handleEditDoctor(doctor._id!)}
@@ -388,7 +590,7 @@ const Doctor = () => {
             {/* Summary and Pagination */}
             <div className="doctor_summary">
                 <div>
-                    Show {currentDoctors.length} / {filteredDoctors.length} doctors
+                    Show {currentDoctors.length} / {sortedDoctors.length} doctors
                 </div>
                 
                 {totalPages > 1 && (

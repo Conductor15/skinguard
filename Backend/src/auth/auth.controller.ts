@@ -19,14 +19,24 @@ export class LoginDto {
   password: string;
 }
 
+// export class RegisterDoctorDto {
+//   doctor_id: string;
+//   email: string;
+//   password: string;
+//   fullName: string;
+//   discipline: string;
+//   permission: string;
+//   phoneNumber: string;
+//   rating?: number;
+//   avatar?: string;
+// }
 export class RegisterDoctorDto {
   doctor_id: string;
   email: string;
   password: string;
   fullName: string;
-  discipline: string;
-  permission: string;
-  phoneNumber: string;
+  specialty: string;
+  phone: string;
   rating?: number;
   avatar?: string;
 }
