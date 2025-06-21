@@ -1,8 +1,40 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../../api/Axios';
 import { ProductType } from '../../../types/Types';
+import { SearchIcon, DeleteIcon, FixIcon } from '../../../assets/SVG/Svg';
 import '../doctors/Doctor.css';
 import './Product.css';
+
+type SortField = keyof ProductType | '';
+type SortOrder = 'increase' | 'decrease';
+
+const sortableFields: { label: string, value: SortField }[] = [
+  { label: "ID", value: "product_id" },
+  { label: "Title", value: "title" },
+  { label: "Description", value: "description" },
+  { label: "Image", value: "image" },
+  { label: "Price", value: "price" },
+  { label: "Sold Count", value: "sold_count" },
+  { label: "Availability", value: "availability" }
+];
+
+// generate next product id
+function getNextProductId(products: ProductType[]): string {
+    const prefix = "PROD";
+    const usedNumbers = products
+        .map(pro => pro.product_id)
+        .filter(id => id && id.startsWith(prefix))
+        .map(id => parseInt(id.replace(prefix, ""), 10))
+        .filter(n => !isNaN(n))
+        .sort((a, b) => a - b);
+
+    let nextNum = 1;
+    for (let num of usedNumbers) {
+        if (num === nextNum) nextNum++;
+        else break;
+    }
+    return prefix + nextNum.toString().padStart(3, "0");
+}
 
 const Product = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -22,6 +54,10 @@ const Product = () => {
     });
     const [editForm, setEditForm] = useState<ProductType | null>(null);
     const itemsPerPage = 5;
+
+    // Sort state
+    const [sortField, setSortField] = useState<SortField>('');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('increase');
 
     const fetchProducts = () => {
         setLoading(true);
@@ -50,22 +86,56 @@ const Product = () => {
         fetchProducts();
     }, []);
 
-    const filteredProducts = productsData.filter(product => 
+    const filteredProducts = productsData.filter(product =>
         (product.product_id?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (product.title?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (product.description?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (product.price?.toString().includes(searchTerm.toLowerCase()) || '') ||
         (product.sold_count?.toString().includes(searchTerm.toLowerCase()) || '') ||
-        (product.availability?.toString().includes(searchTerm.toLowerCase()) || '') 
+        (product.availability?.toString().includes(searchTerm.toLowerCase()) || '')
     );
 
-    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    // Sort Logic
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        if (!sortField) return 0;
+        const aVal = a[sortField];
+        const bVal = b[sortField];
+
+        // For string
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+            if (sortOrder === 'increase') return aVal.localeCompare(bVal);
+            else return bVal.localeCompare(aVal);
+        }
+        // For number
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            if (sortOrder === 'increase') return aVal - bVal;
+            else return bVal - aVal;
+        }
+        // For boolean
+        if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+            if (sortOrder === 'increase') return (aVal === bVal ? 0 : aVal ? 1 : -1);
+            else return (aVal === bVal ? 0 : aVal ? -1 : 1);
+        }
+        return 0;
+    });
+
+    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentProducts = filteredProducts.slice(startIndex, endIndex);
+    const currentProducts = sortedProducts.slice(startIndex, endIndex);
 
     // Add Product
     const handleAddProduct = () => {
+        const newId = getNextProductId(productsData);
+        setAddForm({
+            product_id: newId,
+            title: '',
+            description: '',
+            price: 0,
+            sold_count: 0,
+            availability: true,
+            image: '',
+        });
         setShowAddForm(true);
     };
 
@@ -99,13 +169,13 @@ const Product = () => {
                 image: '',
             });
             fetchProducts();
-            alert('Thêm sản phẩm thành công!');
+            alert('Product added successfully!');
         } catch (err: any) {
             if (err?.response?.data?.message) {
                 alert(err.response.data.message);
             }
             else {
-                alert('Thêm sản phẩm thất bại!');
+                alert('Add failed product!');
             }
         }
     };
@@ -174,13 +244,13 @@ const Product = () => {
             setShowEditForm(false);
             setEditForm(null);
             fetchProducts();
-            alert('Cập nhật sản phẩm thành công!');
+            alert('Product update successful!');
         } catch (err: any) {
             if (err?.response?.data?.message) {
                 alert(err.response.data.message);
             }
             else {
-                alert('Cập nhật sản phẩm thất bại!');
+                alert('Product update failed!');
             }
         }
     };
@@ -192,13 +262,13 @@ const Product = () => {
 
     // Delete product
     const handleDeleteProduct = async (productID: string) => {
-        if (window.confirm('Bạn có chắc chắn muốn xoá sản phẩm này?')) {
+        if (window.confirm('Are you sure you want to delete this product??')) {
             try {
                 await axiosInstance.delete(`/product/${productID}`);
                 setProductsData(prev => prev.filter(pro => pro._id !== productID));
-                alert('Xoá sản phẩm thành công!');
+                alert('Product deleted successfully!');
             } catch (err: any) {
-                alert('Xoá sản phẩm thất bại!');
+                alert('Delete product failed!');
             }
         }
     };
@@ -222,7 +292,35 @@ const Product = () => {
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [searchTerm]);
+    }, [searchTerm, sortField, sortOrder]);
+
+    // Sort control
+    const renderSortIcon = (field: SortField) => {
+        if (sortField !== field) {
+            return (
+                <span className='init_sort_icon_admin'>▲</span>
+            );
+        }
+        if (sortOrder === "increase") {
+            // Increase sort now
+            return (
+                <span className='active_sort_icon_admin'>▼</span>
+            );
+        }
+        // Decrease sort now
+        return (
+            <span className='active_sort_icon_admin'>▲</span>
+        );
+    };
+
+    const handleHeaderClick = (field: SortField) => {
+        if (sortField === field) {
+            setSortOrder(prev => prev === "increase" ? "decrease" : "increase");
+        } else {
+            setSortField(field);
+            setSortOrder("increase");
+        }
+    };
 
     return (
         <div className='doctor_container'>
@@ -232,9 +330,7 @@ const Product = () => {
                 <div className='doctor_controls'>
                     {/* Search */}
                     <div className="doctor_search_container">
-                        <svg className="doctor_search_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                        <SearchIcon className="doctor_search_icon" />
                         <input
                             type="text"
                             placeholder="Find a product..."
@@ -258,7 +354,13 @@ const Product = () => {
                 <div className="doctor_add_form_overlay">
                     <form className="doctor_add_form" onSubmit={handleAddFormSubmit}>
                         <h3>Thêm sản phẩm mới</h3>
-                        <input name="product_id" placeholder="Product ID" value={addForm.product_id} onChange={handleAddFormChange} required />
+                        <input
+                            name="product_id"
+                            placeholder="Product ID"
+                            value={addForm.product_id}
+                            readOnly
+                            required
+                        />
                         <input name="title" placeholder="Title" value={addForm.title} onChange={handleAddFormChange} required />
                         <input name="description" placeholder="Description" value={addForm.description} onChange={handleAddFormChange} required />
                         <input name="price" type="number" placeholder="Price" value={addForm.price} onChange={handleAddFormChange} required />
@@ -280,8 +382,8 @@ const Product = () => {
             {showEditForm && editForm && (
                 <div className='doctor_add_form_overlay'>
                     <form className='doctor_add_form' onSubmit={handleEditFormSubmit}>
-                        <h3>Cập nhật sản phẩm</h3>
-                        <input name="product_id" placeholder="Product ID" value={editForm.product_id} onChange={handleEditFormChange} required />
+                        <h3>Product updates</h3>
+                        <input name="product_id" placeholder="Product ID" value={editForm.product_id} readOnly required />
                         <input name="title" placeholder="Title" value={editForm.title} onChange={handleEditFormChange} required />
                         <input name="description" placeholder="Description" value={editForm.description} onChange={handleEditFormChange} required />
                         <input name="price" type="number" placeholder="Price" value={editForm.price} onChange={handleEditFormChange} required />
@@ -304,20 +406,23 @@ const Product = () => {
                 {/* Table Header */}
                 <div className='doctor_table_header'>
                     <div className='product_table_header_grid'>
-                        <div className='doctor_table_header_item'>ID</div>
-                        <div className='doctor_table_header_item'>Title</div>
-                        <div className='doctor_table_header_item'>Description</div>
-                        <div className='doctor_table_header_item'>Image</div>
-                        <div className='doctor_table_header_item'>Price</div>
-                        <div className='doctor_table_header_item'>Sold Count</div>
-                        <div className='doctor_table_header_item'>Availability</div>
+                        {sortableFields.map(field => (
+                            <div
+                                key={field.value}
+                                className='header_table_admin'
+                                onClick={() => handleHeaderClick(field.value)}
+                            >
+                                {field.label}
+                                {renderSortIcon(field.value)}
+                            </div>
+                        ))}
                         <div>Operation</div>
                     </div>
                 </div>
                 {/* Table Body */}
                 <div className="doctor_table_body">
                     {loading ? (
-                        <div className="doctor_no_results">Đang tải...</div>
+                        <div className="doctor_no_results">Loading...</div>
                     ) : currentProducts.length > 0 ? (
                         currentProducts.map((product) => (
                             <div key={product._id} className="doctor_table_row">
@@ -355,9 +460,7 @@ const Product = () => {
                                             className="action_button edit_button"
                                             title="Edit Product"
                                         >
-                                            <svg className="action_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
+                                            <FixIcon className="action_icon" />
                                             Fix
                                         </button>
                                         <button
@@ -365,9 +468,7 @@ const Product = () => {
                                             className="action_button delete_button"
                                             title="Delete Product"
                                         >
-                                            <svg className="action_icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
+                                            <DeleteIcon className="action_icon" />
                                             Delete
                                         </button>
                                     </div>
@@ -385,7 +486,7 @@ const Product = () => {
             {/* Summary and Pagination */}
             <div className='doctor_summary'>
                 <div>
-                    Show {currentProducts.length} / {filteredProducts.length} products
+                    Show {currentProducts.length} / {sortedProducts.length} products
                 </div>
 
                 {totalPages > 1 && (
