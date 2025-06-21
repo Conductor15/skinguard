@@ -17,14 +17,20 @@ export class Patient {
   @Prop({ required: true })
   password: string;
 
-  @Prop()
-  token: string;
-  
+  @Prop({ required: true })
+  birthDay: Date;
+
   @Prop()
   phone: string;
 
   @Prop()
   avatar: string;
+
+  @Prop()
+  orderID: string;
+
+  @Prop()
+  token: string;
 
   @Prop({ default: 'active' })
   status: string;

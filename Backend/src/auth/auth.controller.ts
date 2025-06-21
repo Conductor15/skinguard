@@ -3,13 +3,15 @@ import {
   Post,
   Body,
   UseGuards,
-  Request,
   Headers,
   Get,
   Param,
+  Res,
+  Request,
+  Req,
 } from '@nestjs/common';
+import { Response, Request as ExpressRequest } from 'express';
 import { AuthService } from './auth.service';
-import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../patient/patient.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -19,24 +21,13 @@ export class LoginDto {
   password: string;
 }
 
-export class RegisterDoctorDto {
-  doctor_id: string;
-  email: string;
-  password: string;
-  fullName: string;
-  discipline: string;
-  permission: string;
-  phoneNumber: string;
-  rating?: number;
-  avatar?: string;
-}
-
 export class RegisterPatientDto {
   patient_id: string;
   email: string;
   password: string;
   fullName: string;
   birthDay: Date;
+  phone?: string;
   avatar?: string;
   orderID?: string;
 }
@@ -45,41 +36,37 @@ export class RegisterPatientDto {
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private doctorService: DoctorService,
     private patientService: PatientService,
   ) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req, @Body() loginDto: LoginDto) {
+  async handlelogin(
+    @Request() req,
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     // LocalStrategy đã validate user và gắn vào req.user
-    console.log(' AuthController.login - user validated:', req.user.email);
+    // Kiểm tra xem user có phải là patient không
+    if (req.user.userType !== 'patient') {
+      return {
+        message: 'Access denied. Only patients can login through this system.',
+        error: 'PATIENT_ONLY_ACCESS',
+      };
+    }
+    console.log(' AuthController.login - patient validated:', req.user.email);
 
     // Generate JWT token
-    const tokenData = await this.authService.generateJwtToken(req.user);
+    const tokenData = await this.authService.generateJwtToken(
+      req.user,
+      response,
+    );
 
     return {
       message: 'Login successful',
       ...tokenData,
     };
   }
-  @Post('register/doctor')
-  async registerDoctor(@Body() registerDto: RegisterDoctorDto) {
-    try {
-      const doctor = await this.doctorService.create(registerDto);
-      return {
-        message: 'Doctor registered successfully',
-        doctor: doctor,
-        originalPassword: registerDto.password, // Password gốc
-        hashedPassword: doctor.password, // Password đã hash
-      };
-    } catch (error) {
-      return {
-        message: 'Registration failed',
-        error: error.message,
-      };
-    }
-  }
-  @UseGuards(JwtAuthGuard)
+
   @Post('register/patient')
   async registerPatient(@Body() registerDto: RegisterPatientDto) {
     try {
@@ -97,46 +84,77 @@ export class AuthController {
       };
     }
   }
+
+  @UseGuards(JwtAuthGuard)
   @Post('logout')
-  async logout(@Headers('authorization') authHeader: string) {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return {
-        message: 'No token provided',
-        success: false,
-      };
-    }
-
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-
+  async handlelogout(
+    @Request() req,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     try {
-      // Nếu có JWT Manager service, sử dụng nó
-      // const result = await this.authService.logout(token);
-      console.log(
-        ' Logging out user with token:',
-        token.substring(0, 20) + '...',
-      );
+      // Clear the refresh token cookie
+      response.clearCookie('refresh_token');
+
+      // Optionally clear the refresh token from database
+      if (req.user && req.user.id) {
+        await this.patientService.updatePatientToken('', req.user.id);
+      }
 
       return {
+        statuscode: 201,
         message: 'Logout successful',
         success: true,
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
       return {
+        statuscode: 400,
         message: 'Logout failed',
         error: error.message,
         success: false,
       };
     }
   }
-  // Example: Protected route using JWT
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
+  @Get('account')
   async getProfile(@Request() req) {
+    // Kiểm tra xem user có phải là patient không
+    if (req.user.userType !== 'patient') {
+      return {
+        message: 'Access denied. Only patients can access account.',
+        error: 'PATIENT_ONLY_ACCESS',
+      };
+    }
+
     return {
-      message: 'Profile accessed successfully',
+      message: 'account accessed successfully',
       user: req.user,
       timestamp: new Date().toISOString(),
     };
+  }
+
+  @Get('refresh')
+  async handleRefreshToken(
+    @Req() request: ExpressRequest,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const token = request.cookies['refresh_token'];
+    if (!token) {
+      return {
+        message: 'No refresh token provided',
+        success: false,
+      };
+    }
+
+    try {
+      // Process the refresh token to get new access token
+      return await this.authService.processNewToken(token, response);
+    } catch (error) {
+      return {
+        message: 'Invalid refresh token',
+        error: error.message,
+        success: false,
+      };
+    }
   }
 }

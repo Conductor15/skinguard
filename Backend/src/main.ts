@@ -5,10 +5,12 @@ import { join } from 'path';
 import 'dotenv/config';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
+  app.use(cookieParser());
 
   // Enable CORS for frontend
   app.enableCors({
@@ -24,6 +26,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(configService.get('PORT') || 3000);
-  console.log(`🚀 Backend server running on port ${configService.get('PORT') || 3000}`);
+  console.log(
+    `🚀 Backend server running on port ${configService.get('PORT') || 3000}`,
+  );
 }
 bootstrap();

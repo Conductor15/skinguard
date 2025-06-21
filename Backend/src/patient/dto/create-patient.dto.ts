@@ -4,6 +4,7 @@ export class CreatePatientDto {
   password: string;
   fullName: string;
   birthDay: Date;
+  phone?: string;
   avatar?: string;
   orderID?: string;
 }

@@ -1,18 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  forwardRef,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
-import { Doctor, DoctorDocument } from '../doctor/entities/doctor.entity';
 import { Patient, PatientDocument } from '../patient/entities/patient.entity';
+import { PatientService } from '../patient/patient.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import ms from 'ms';
 
 @Injectable()
 export class AuthService {
   private readonly saltRounds = 12;
   constructor(
-    @InjectModel(Doctor.name) private doctorModel: Model<DoctorDocument>,
     @InjectModel(Patient.name) private patientModel: Model<PatientDocument>,
+    @Inject(forwardRef(() => PatientService))
+    private patientService: PatientService,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
@@ -34,21 +41,10 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword);
   }
   /**
-   * Validate user credentials - checks both doctor and patient
+   * Validate user credentials - only allows patient login
    */
   async validateUser(email: string, password: string): Promise<any> {
-    // Tìm trong doctor trước
-    try {
-      const doctor = await this.doctorModel.findOne({ email }).exec();
-      if (doctor && (await this.comparePassword(password, doctor.password))) {
-        const { password: _, ...result } = doctor.toObject(); //delete password from result
-        return { ...result, userType: 'doctor' }; // Add userType to distinguish between doctor and patient
-      }
-    } catch (error) {
-      // Ignore error, continue to check patient
-    }
-
-    // Nếu không tìm thấy doctor, tìm trong patient
+    // Chỉ kiểm tra patient, không cho phép doctor đăng nhập
     try {
       const patient = await this.patientModel.findOne({ email }).exec();
       if (patient && (await this.comparePassword(password, patient.password))) {
@@ -62,55 +58,145 @@ export class AuthService {
     return null;
   }
   /**
+   * create refresh token
+   */
+  createRefreshToken = (payload) => {
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
+    });
+    return refreshToken;
+  };
+  /**
    * Generate JWT token for authenticated user
-   */ async generateJwtToken(user: any) {
+   */
+  async generateJwtToken(user: any, response: any) {
     const payload = {
       sub: user._id, // User ID
       email: user.email, // User email
-      userType: user.userType, // doctor/patient
-      iat: Math.floor(Date.now() / 1000), // Issued at
-    };    // Lấy thời gian expiration thật từ config
-    const expirationTime = this.configService.get<string>(
-      'JWT_ACCESS_EXPIRATION',
-      '3600s',
+      userType: user.userType,
+    }; // const expirationTime = ms(
+    //   this.configService.get<string>('JWT_ACCESS_EXPIRATION', '3600s'),
+    // );
+    const refreshToken = this.createRefreshToken(payload);
+
+    //update patient with refresh token
+    await this.patientService.updatePatientToken(refreshToken, user._id); //set refresh token as cookie
+    const refreshExpiration = this.configService.get<string>(
+      'JWT_REFRESH_EXPIRATION',
     );
+    response.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      maxAge: ms(refreshExpiration), //milisecond
+    });
 
     return {
+      statusCode: 201,
       access_token: this.jwtService.sign(payload),
       token_type: 'Bearer',
-      expires_in: expirationTime, // ← THỜI GIAN THẬT từ config
+      // refresh_token: refreshToken,
+      // expires_in: expirationTime, //dùng jwt nên không cần tính toán thời gian hết hạn
       user: {
         id: user._id,
         email: user.email,
         fullName: user.fullName,
-        userType: user.userType,
       },
     };
   }
-
   /**
-   * Validate JWT payload
+   * Validate JWT payload - only validates patient tokens
    */
   async validateJwtPayload(payload: any): Promise<any> {
-    // Tìm user dựa trên payload
-    let user = null;
-
-    if (payload.userType === 'doctor') {
-      user = await this.doctorModel.findById(payload.sub).exec();
-    } else if (payload.userType === 'patient') {
-      user = await this.patientModel.findById(payload.sub).exec();
+    if (payload.userType !== 'patient') {
+      return null;
     }
+
+    const user = await this.patientModel.findById(payload.sub).exec();
 
     if (!user) {
       return null;
     }
 
     const { password: _, ...result } = user.toObject();
-    return { ...result, userType: payload.userType };
+    return { ...result, userType: 'patient' };
   }
 
-  // Legacy method - keep for compatibility
-  async login(user: any) {
-    return this.generateJwtToken(user);
+  /**
+   * Verify refresh token and generate new access token
+   */
+  async processNewToken(refreshtoken: string, response: any) {
+    try {
+      // Verify refresh token
+      this.jwtService.verify(refreshtoken, {
+        secret: this.configService.get<string>(
+          'JWT_REFRESH_TOKEN_SECRET',
+          'default_refresh_secret',
+        ),
+      });
+
+      // Find patient by refresh token
+      const patient = await this.patientService.findpatientByToken(
+        refreshtoken,
+      );
+
+      if (!patient) {
+        throw new BadRequestException('Invalid refresh token, please login');
+      }
+
+      // Create new payload for new tokens
+      const newPayload = {
+        sub: patient._id,
+        email: patient.email,
+        userType: 'patient',
+      };
+
+      // Generate new refresh token
+      const newRefreshToken = this.createRefreshToken(newPayload);
+
+      // Update patient with new refresh token
+      await this.patientService.updatePatientToken(
+        newRefreshToken,
+        patient._id,
+      );
+
+      // Set new refresh token as cookie
+      const refreshExpiration = this.configService.get<string>(
+        'JWT_REFRESH_EXPIRATION',
+        '7d',
+      );
+      response.clearCookie('refresh_token'); // Clear old cookie
+      response.cookie('refresh_token', newRefreshToken, {
+        httpOnly: true,
+        maxAge: ms(refreshExpiration),
+      });
+
+      // Return new access token and user info
+      return {
+        statusCode: 201,
+        access_token: this.jwtService.sign(newPayload),
+        token_type: 'Bearer',
+        user: {
+          id: patient._id,
+          email: patient.email,
+          fullName: patient.fullName,
+        },
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        'Invalid refresh token, please login again',
+      );
+    }
   }
+
+  /**
+   * Logout user by clearing refresh token
+   */
+  logout = async (response: any, user: any) => {
+    await this.patientService.updatePatientToken('', user._id);
+    response.clearCookie('refresh_token'); // Clear refresh token cookie
+    return {
+      statusCode: 200,
+      message: 'Logout successful',
+    };
+  };
 }

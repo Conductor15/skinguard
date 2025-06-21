@@ -9,6 +9,7 @@ import { Doctor, DoctorSchema } from '../doctor/entities/doctor.entity';
 import { Patient, PatientSchema } from '../patient/entities/patient.entity';
 import { DoctorModule } from '../doctor/doctor.module';
 import { PatientModule } from '../patient/patient.module';
+import { PatientService } from '../patient/patient.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import ms from 'ms';
@@ -20,11 +21,13 @@ import ms from 'ms';
       { name: Patient.name, schema: PatientSchema },
     ]),
     forwardRef(() => DoctorModule),
-    forwardRef(() => PatientModule),
-    JwtModule.registerAsync({
+    forwardRef(() => PatientModule),    JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secretOrPrivateKey: configService.get<string>('JWT_ACCESS_TOKEN'),        signOptions: {
+        secret: configService.get<string>(
+          'JWT_ACCESS_TOKEN_SECRET',
+        ),
+        signOptions: {
           expiresIn: configService.get<string>('JWT_ACCESS_EXPIRATION'),
         },
       }),
