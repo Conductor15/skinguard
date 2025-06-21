@@ -36,6 +36,7 @@ export type PatientType = {
     phone?: string;
     avatar?: string;
     status?: string;
+    consult_list_id?: string[];
 };
 
 // Consult

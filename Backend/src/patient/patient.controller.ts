@@ -39,4 +39,16 @@ export class PatientController {
   remove(@Param('id') id: string) {
     return this.patientService.remove(id);
   }
+
+  // Thêm diagnose cho patient //
+  @Patch(':id/add-diagnose')
+  addDiagnose(@Param('id') id: string, @Body('diagnoseId') diagnoseId: string) {
+    return this.patientService.addDiagnoseToPatient(id, diagnoseId);
+  }
+
+  // Xoá diagnose khỏi patient //
+  @Patch(':id/remove-diagnose')
+  removeDiagnose(@Param('id') id: string, @Body('diagnoseId') diagnoseId: string) {
+    return this.patientService.removeDiagnoseFromPatient(id, diagnoseId);
+  }
 }

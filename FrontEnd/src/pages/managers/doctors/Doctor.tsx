@@ -73,7 +73,7 @@ const Doctor = () => {
                     email: doc.email,
                     password: doc.password,
                     discipline: doc.discipline,
-                    PhoneNumber: doc.PhoneNumber,
+                    phoneNumber: doc.phoneNumber,
                     avatar: doc.avatar,
                     rating: doc.rating,
                     status: doc.status,

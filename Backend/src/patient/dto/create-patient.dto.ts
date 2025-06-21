@@ -27,4 +27,5 @@ export class CreatePatientDto {
   @IsOptional()
   @IsString()
   orderID?: string;
+  diagnose_id_list?: string[]; //
 }
