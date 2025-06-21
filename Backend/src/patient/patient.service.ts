@@ -83,4 +83,19 @@ export class PatientService {
   findpatientByToken = async (refreshToken: string) => {
     return await this.patientModel.findOne({ refreshToken });
   };
+
+  // 
+  async addDiagnoseToPatient(patientId: string, diagnoseId: string) {
+    return this.patientModel.updateOne(
+      { patient_id: patientId },
+      { $addToSet: { diagnose_id_list: diagnoseId } }
+    );
+  }
+
+  async removeDiagnoseFromPatient(patientId: string, diagnoseId: string) {
+    return this.patientModel.updateOne(
+      { patient_id: patientId },
+      { $pull: { diagnose_id_list: diagnoseId } }
+    );
+  }
 }

@@ -40,6 +40,9 @@ export class Patient {
 
   @Prop()
   deletedAt: Date;
+
+  @Prop({ type: [String], default: [] })//
+  diagnose_id_list: string[];//
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

@@ -7,4 +7,5 @@ export class CreatePatientDto {
   phone?: string;
   avatar?: string;
   orderID?: string;
+  diagnose_id_list?: string[]; //
 }
