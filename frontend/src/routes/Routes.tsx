@@ -6,6 +6,7 @@ import Dashboard from "../pages/managers/Dashboard/Dashboard";
 import Diagnose_Manager from "../pages/managers/DiagnoseManager/Diagnose_Manager";
 import Appointment from "../pages/managers/Appointment/Appointment";
 import AboutUs from "../pages/AboutUs/tsx/AboutUs";
+import Profile from "../pages/Profile";
 import DoctorAI from "../pages/DoctorAI/tsx/DoctorAi";
 import Contact from "../pages/Home/tsx/contact";
 import Doctor from "../pages/managers/Doctors/Doctor";
@@ -42,6 +43,10 @@ const Routes = () => {
                   {
                       path:"/contact",
                       element: <Contact/>
+                  },
+                  {
+                      path:"/profile/:id",
+                      element: <Profile/>
                   },
                 ]
             },

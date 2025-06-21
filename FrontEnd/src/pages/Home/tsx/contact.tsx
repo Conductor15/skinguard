@@ -39,7 +39,6 @@ const Contact = () => {
 
     return (
         <div className='contact'>
-            <span className='contact_first'>Get in touch</span>
             <span className='contact_second'>Contact</span>
             <div className='contact_list'>
                 {contact_list.map((contact, idx) => (

@@ -49,7 +49,7 @@ const Navbar_2 = () => {
     dispatch(setNavbarMenuOpen(false));
     switch (item) {
       case 'profile':
-        navigate(`/patient/${user.id || user.patient_id}`);
+        navigate(`/profile/${user.id || user.patient_id}`);
         break;
       default: break;
     }
@@ -87,11 +87,10 @@ const Navbar_2 = () => {
             {menuOpen && (
               <div className="Main_Dashboard_dropdown_menu">
                 <div className="dropdown_item" onClick={() => handleMenuClick('profile')}>Hồ sơ</div>
-                <div className="dropdown_item">Lịch</div>
-                <div className="dropdown_item">Báo cáo</div>
+                <div className="dropdown_item">Lịch hẹn</div>
+                <div className="dropdown_item">Lịch sử chẩn đoán</div>
                 <div className="dropdown_separator"></div>
-                <div className="dropdown_item">Tuỳ chọn</div>
-                <div className="dropdown_item">Ngôn ngữ</div>
+                <div className="dropdown_item">Cài đặt</div>
                 <div className="dropdown_separator"></div>
                 <div className="dropdown_item logout" onClick={handleLogout}>Thoát</div>
               </div>

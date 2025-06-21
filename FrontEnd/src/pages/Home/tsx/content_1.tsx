@@ -1,4 +1,5 @@
 import '../css/content_1.css'
+import { NavLink } from 'react-router-dom'
 
 const Content_1 = () => {
     return (
@@ -10,7 +11,8 @@ const Content_1 = () => {
                 <span className='content_1_third_span'>provides insights to help you take better care of it. Stay informed, stay healthy, and</span>
                 <span className='content_1_third_span'>take control of your skin's well-being</span> 
                 <span className='content_1_third_span'>Early Detection, Better Protection.</span>
-                <span className='content_1_fourth_span'>Learn more </span>
+                <NavLink to="/about-us" className='content_1_fourth_span'>Learn more</NavLink>
+
             </div>
             <img src="/src/assets/pictures/content_background_1.png" alt="" className='content_1_img'/>
             <span className='content_1_fifth_span'>Care you can believe in</span>
