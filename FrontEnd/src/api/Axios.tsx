@@ -1,28 +1,57 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000', // Sửa lại baseURL nếu backend đổi port hoặc domain
-  timeout: 10000, // 10s, có thể bỏ nếu không cần
+  baseURL: 'http://localhost:8000', // Đúng với backend port
+  timeout: 10000,
+  withCredentials: true, // Để gửi cookies
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Có thể thêm interceptor để tự động gắn token hoặc xử lý lỗi
+// Request interceptor: tự động gắn token
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Ví dụ: gắn token nếu có
-    // const token = localStorage.getItem('token');
-    // if (token) config.headers.Authorization = `Bearer ${token}`;
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+// Response interceptor: xử lý lỗi và refresh token
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // Xử lý lỗi tập trung ở đây nếu cần
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Nếu token expired (401) và chưa retry
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // Thử refresh token
+        const refreshResponse = await axios.get('/auth/refresh', {
+          withCredentials: true,
+          baseURL: 'http://localhost:8000'
+        });
+
+        if (refreshResponse.data.access_token) {
+          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.access_token}`;
+          return axiosInstance(originalRequest);
+        }
+      } catch (refreshError) {
+        // Refresh failed, redirect to login
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+        window.location.href = '/register-login?mode=login';
+        return Promise.reject(refreshError);
+      }
+    }
+
     return Promise.reject(error);
   }
 );

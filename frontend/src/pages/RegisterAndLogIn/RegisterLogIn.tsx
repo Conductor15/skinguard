@@ -65,7 +65,6 @@ const Register: React.FC = () => {
   const getDefaultBirthDay = () => {
     return '2000-01-01';
   };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setRegisterLoading(true);
@@ -78,7 +77,9 @@ const Register: React.FC = () => {
         birthDay: getDefaultBirthDay(),
         patient_id: generatePatientId()
       };
-      await axios.post(`${API_URL}/patient`, patientData);
+      
+      // Sử ddụng đúng auth endpoint
+      await axios.post(`${API_URL}/auth/register/patient`, patientData);
       setRegisterMessage('Đăng ký thành công! Vui lòng đăng nhập.');
       setRegisterForm({ name: '', email: '', password: '' });
       setTimeout(() => handleToggle(), 1200);
@@ -90,52 +91,44 @@ const Register: React.FC = () => {
       setRegisterLoading(false);
     }
   };
-
-  // Login submit: kiểm tra cả patient và doctor
+  // Login submit: sử dụng đúng auth endpoint
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
     setLoginMessage('');
     try {
-      // 1. Kiểm tra Patient
-      const patientRes = await axios.get(`${API_URL}/patient`);
-      const patients = patientRes.data;
-      const foundPatient = patients.find(
-        (p: any) =>
-          p.email === loginForm.email &&
-          p.password === loginForm.password
-      );
-      if (foundPatient) {
+      // Sử dụng auth endpoint với credentials
+      const response = await axios.post(`${API_URL}/auth/login`, {
+        email: loginForm.email,
+        password: loginForm.password
+      }, {
+        withCredentials: true, // Để nhận cookies
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.data.access_token) {
         setLoginMessage('Đăng nhập thành công!');
-        localStorage.setItem('user', JSON.stringify(foundPatient));
+        
+        // Lưu token và user info
+        localStorage.setItem('access_token', response.data.access_token);
+        localStorage.setItem('token_type', response.data.token_type);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
         setTimeout(() => {
-          dispatch(setNavbarActiveItem('home')); // <--- Thêm dòng này
-          navigate('/');
+          dispatch(setNavbarActiveItem('home'));
+          // Redirect based on user type
+          if (response.data.user.userType === 'doctor') {
+            navigate('/dashboard');
+          } else {
+            navigate('/');
+          }
         }, 500);
-        return;
       }
-
-      // 2. Kiểm tra Doctor (giả sử API là /doctor, trả về danh sách doctor)
-      const doctorRes = await axios.get(`${API_URL}/doctor`);
-      const doctors = doctorRes.data;
-      const foundDoctor = doctors.find(
-        (d: any) =>
-          d.email === loginForm.email &&
-          d.password === loginForm.password
-      );
-      if (foundDoctor) {
-        setLoginMessage('Đăng nhập thành công (Doctor)!');
-        localStorage.setItem('user', JSON.stringify({ ...foundDoctor, role: 'doctor' }));
-        setTimeout(() => {
-          dispatch(setNavbarActiveItem('home')); // <--- Thêm dòng này
-          navigate('/dashboard');
-        }, 500);
-        return;
-      }
-
-      setLoginMessage('Sai tài khoản hoặc mật khẩu!');
     } catch (err: any) {
-      setLoginMessage('Lỗi khi kết nối tới server.');
+      const errorMessage = err?.response?.data?.message || 'Sai tài khoản hoặc mật khẩu!';
+      setLoginMessage(errorMessage);
     } finally {
       setLoginLoading(false);
     }
