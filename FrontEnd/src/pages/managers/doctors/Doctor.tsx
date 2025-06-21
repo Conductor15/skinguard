@@ -396,6 +396,7 @@ const Doctor = () => {
                         />
                         <input
                             name="email"
+                            type='email'
                             placeholder="Email"
                             value={addForm.email}
                             onChange={handleAddFormChange}
@@ -456,6 +457,7 @@ const Doctor = () => {
                         />
                         <input
                             name="email"
+                            type='email'
                             placeholder="Email"
                             value={editForm.email}
                             onChange={handleEditFormChange}
