@@ -11,7 +11,7 @@ const sortableFields: { label: string, value: SortField }[] = [
     { label: "ID", value: "doctor_id" },
     { label: "Full Name", value: "fullName" },
     { label: "Email", value: "email" },
-    { label: "Phone", value: "phone" },
+    { label: "PhoneNumber", value: "phoneNumber" },
     { label: "Rating", value: "rating" },
     { label: "Status", value: "status" },
     { label: "Experience Years", value: "experienceYears" }
@@ -47,8 +47,8 @@ const Doctor = () => {
         fullName: '',
         email: '',
         password: '',
-        specialty: '',
-        phone: '',
+        discipline: '',
+        phoneNumber: '',
         avatar: '',
         rating: 1,
         status: '',
@@ -72,8 +72,8 @@ const Doctor = () => {
                     fullName: doc.fullName,
                     email: doc.email,
                     password: doc.password,
-                    specialty: doc.specialty,
-                    phone: doc.phone,
+                    discipline: doc.discipline,
+                    PhoneNumber: doc.PhoneNumber,
                     avatar: doc.avatar,
                     rating: doc.rating,
                     status: doc.status,
@@ -97,7 +97,7 @@ const Doctor = () => {
         (doctor.doctor_id?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (doctor.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (doctor.email?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
-        (doctor.phone?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
+        (doctor.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (doctor.status?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (doctor.experienceYears?.toString()?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (doctor.rating?.toString()?.toLowerCase().includes(searchTerm.toLowerCase()) || '')
@@ -147,8 +147,8 @@ const Doctor = () => {
             fullName: '',
             email: '',
             password: '',
-            specialty: '',
-            phone: '',
+            discipline: '',
+            phoneNumber: '',
             avatar: '',
             rating: 1,
             status: '',
@@ -173,8 +173,8 @@ const Doctor = () => {
             !addForm.doctor_id ||
             !addForm.password ||
             !addForm.fullName ||
-            !addForm.specialty ||
-            !addForm.phone ||
+            !addForm.discipline ||
+            !addForm.phoneNumber ||
             !addForm.email
         ) {
             alert("Please fill in all required fields.");
@@ -189,8 +189,8 @@ const Doctor = () => {
                 fullName: '',
                 email: '',
                 password: '',
-                specialty: '',
-                phone: '',
+                discipline: '',
+                phoneNumber: '',
                 avatar: '',
                 rating: 1,
                 status: '',
@@ -214,8 +214,8 @@ const Doctor = () => {
             fullName: '',
             email: '',
             password: '',
-            specialty: '',
-            phone: '',
+            discipline: '',
+            phoneNumber: '',
             avatar: '',
             rating: 1,
             status: '',
@@ -249,8 +249,8 @@ const Doctor = () => {
         if (
             !editForm.doctor_id ||
             !editForm.fullName ||
-            !editForm.specialty ||
-            !editForm.phone ||
+            !editForm.discipline ||
+            !editForm.phoneNumber ||
             !editForm.email
         ) {
             alert("Please fill in all required fields.");
@@ -262,8 +262,8 @@ const Doctor = () => {
                 doctor_id: editForm.doctor_id,
                 fullName: editForm.fullName,
                 email: editForm.email,
-                specialty: editForm.specialty,
-                phone: editForm.phone,
+                discipline: editForm.discipline,
+                phoneNumber: editForm.phoneNumber,
                 rating: editForm.rating,
                 status: editForm.status,
                 experienceYears: editForm.experienceYears
@@ -410,16 +410,16 @@ const Doctor = () => {
                             required
                         />
                         <input
-                            name="specialty"
-                            placeholder="Specialty"
-                            value={addForm.specialty}
+                            name="discipline"
+                            placeholder="Discipline"
+                            value={addForm.discipline}
                             onChange={handleAddFormChange}
                             required
                         />
                         <input
-                            name="phone"
-                            placeholder="Phone number"
-                            value={addForm.phone}
+                            name="phoneNumber"
+                            placeholder="Phone Number"
+                            value={addForm.phoneNumber}
                             onChange={handleAddFormChange}
                             required
                         />
@@ -469,16 +469,16 @@ const Doctor = () => {
                             onChange={handleEditFormChange}
                         />
                         <input
-                            name="specialty"
-                            placeholder="Specialty"
-                            value={editForm.specialty}
+                            name="discipline"
+                            placeholder="Discipline"
+                            value={editForm.discipline}
                             onChange={handleEditFormChange}
                             required
                         />
                         <input
-                            name="phone"
+                            name="phoneNumber"
                             placeholder="Phone number"
-                            value={editForm.phone}
+                            value={editForm.phoneNumber}
                             onChange={handleEditFormChange}
                             required
                         />
@@ -544,7 +544,7 @@ const Doctor = () => {
                                     <div>{doctor.doctor_id}</div>
                                     <div>{doctor.fullName}</div>
                                     <div>{doctor.email}</div>
-                                    <div>{doctor.phone}</div>
+                                    <div>{doctor.phoneNumber}</div>
                                     <div>
                                         {doctor.rating}
                                         <span className="doctor_rating_star">⭐</span>
