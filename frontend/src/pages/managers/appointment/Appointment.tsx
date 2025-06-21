@@ -1,37 +1,38 @@
 import '../doctors/Doctor.css';
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../../api/Axios';
-
+import { DoctorType, PatientType, ConsultType, AppointmentType } from '../../../types/Types';
 import { DeleteIcon, FixIcon, LockUpIcon } from '../../../assets/SVG/Svg';
 
-type DoctorType = {
-  _id: string;
-  fullName: string;
-  consult_list_id: string[];
-};
-type ConsultType = {
-  _id: string;
-  consult_id: string;
-  date: string;
-  patient_id: string | { _id: string };
-  patient_description: string;
-  result: string;
-};
-type PatientType = {
-  _id: string;
-  fullName: string;
-};
-type AppointmentType = {
-  consult_id: string;
-  consult_db_id: string;
-  date: string;
-  doctor_id: string;
-  doctor_name: string;
-  patient_id: string;
-  patient_name: string;
-  patient_description: string;
-  result: string;
-};
+type SortField = keyof AppointmentType | '';
+type SortOrder = 'increase' | 'decrease';
+
+const sortableFields: { label: string, value: SortField }[] = [
+  { label: "Consult ID", value: "consult_id" },
+  { label: "Date", value: "date" },
+  { label: "Doctor", value: "doctor_name" },
+  { label: "Patient", value: "patient_name" },
+  { label: "Description", value: "patient_description" },
+  { label: "Result", value: "result" }
+];
+
+// Generate a unique consult_id for a new appointment
+function getNextConsultId(appointments: AppointmentType[]): string {
+  const prefix = "CST";
+  const usedNumbers = appointments
+    .map(app => app.consult_id)
+    .filter(id => id && id.startsWith(prefix))
+    .map(id => parseInt(id.replace(prefix, ""), 10))
+    .filter(n => !isNaN(n))
+    .sort((a, b) => a - b);
+
+  let nextNum = 1;
+  for (let num of usedNumbers) {
+    if (num === nextNum) nextNum++;
+    else break;
+  }
+  return prefix + nextNum.toString().padStart(3, "0");
+}
 
 export default function Appointment() {
   const [appointments, setAppointments] = useState<AppointmentType[]>([]);
@@ -39,6 +40,10 @@ export default function Appointment() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [loading, setLoading] = useState(false);
+
+  // Sort state
+  const [sortField, setSortField] = useState<SortField>('');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('increase');
 
   // Add form state
   const [showAddForm, setShowAddForm] = useState(false);
@@ -87,8 +92,8 @@ export default function Appointment() {
   const fetchAllAppointments = async () => {
     setLoading(true);
     try {
-      const doctorRes = await axiosInstance.get('/doctor');
-      const doctors: DoctorType[] = doctorRes.data;
+      const docRes = await axiosInstance.get('/doctor');
+      const doctors: DoctorType[] = docRes.data;
       const tempAppointments: AppointmentType[] = [];
 
       await Promise.all(doctors.map(async (doctor) => {
@@ -96,6 +101,11 @@ export default function Appointment() {
           try {
             const consultRes = await axiosInstance.get(`/consult/${consultId}`);
             const consult: ConsultType = consultRes.data;
+
+            let doctorId = consult.doctor_id;
+            if (typeof doctorId === 'object' && doctorId !== null && '_id' in doctorId) {
+              doctorId = (doctorId as any)._id;
+            }
 
             let patientId = consult.patient_id;
             if (typeof patientId === 'object' && patientId !== null && '_id' in patientId) {
@@ -108,9 +118,9 @@ export default function Appointment() {
               consult_id: consult.consult_id || consult._id,
               consult_db_id: consult._id,
               date: consult.date ? new Date(consult.date).toLocaleDateString('en-CA') : '',
-              doctor_id: doctor._id,
+              doctor_id: doctorId as string,
               doctor_name: doctor.fullName,
-              patient_id: patient._id,
+              patient_id: patient._id ?? '',
               patient_name: patient.fullName,
               patient_description: consult.patient_description,
               result: consult.result,
@@ -119,7 +129,6 @@ export default function Appointment() {
         }));
       }));
 
-      tempAppointments.sort((a, b) => b.date.localeCompare(a.date));
       setAppointments(tempAppointments);
     } catch (err) {
       setAppointments([]);
@@ -141,14 +150,63 @@ export default function Appointment() {
     (item.patient_description && item.patient_description.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (item.result && item.result.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-  const totalPages = Math.ceil(filteredAppointments.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentAppointments = filteredAppointments.slice(startIndex, startIndex + itemsPerPage);
 
-  useEffect(() => { setCurrentPage(1); }, [searchTerm]);
+  // Sort Logic
+  const sortedAppointments = [...filteredAppointments].sort((a, b) => {
+    if (!sortField) return 0;
+    const aVal = a[sortField];
+    const bVal = b[sortField];
+    // String
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+      if (sortOrder === 'increase') {
+        return aVal.localeCompare(bVal);
+      } else {
+        return bVal.localeCompare(aVal);
+      }
+    }
+    return 0;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(sortedAppointments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentAppointments = sortedAppointments.slice(startIndex, startIndex + itemsPerPage);
+
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, sortField, sortOrder]);
+
+  // Sort control render
+  const renderSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return <span className='init_sort_icon_admin'>▲</span>;
+    }
+    if (sortOrder === "increase") {
+      return <span className='active_sort_icon_admin'>▼</span>;
+    }
+    return <span className='active_sort_icon_admin'>▲</span>;
+  };
+
+  const handleHeaderClick = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(prev => prev === "increase" ? "decrease" : "increase");
+    } else {
+      setSortField(field);
+      setSortOrder("increase");
+    }
+  };
 
   // Add
-  const handleAddAppointment = () => setShowAddForm(true);
+  const handleAddAppointment = () => {
+    const newId = getNextConsultId(appointments);
+    setAddForm({
+      consult_id: newId,
+      date: '',
+      doctor_id: '',
+      patient_id: '',
+      patient_description: '',
+      result: '',
+    });
+    setShowAddForm(true);
+  };
 
   const handleAddFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setAddForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -158,16 +216,13 @@ export default function Appointment() {
     e.preventDefault();
     setAddLoading(true);
     try {
-      const res = await axiosInstance.post('/consult', {
+      await axiosInstance.post('/consult', {
         consult_id: addForm.consult_id,
         date: addForm.date,
+        doctor_id: addForm.doctor_id,
         patient_id: addForm.patient_id,
         patient_description: addForm.patient_description,
         result: addForm.result,
-      });
-      const newConsultId = res.data._id ?? res.data.consult_id;
-      await axiosInstance.patch(`/doctor/${addForm.doctor_id}`, {
-        $push: { consult_list_id: newConsultId }
       });
       setShowAddForm(false);
       setAddForm({
@@ -180,7 +235,7 @@ export default function Appointment() {
       });
       await fetchAllAppointments();
     } catch {
-      alert('Thêm cuộc hẹn thất bại!');
+      alert('Add appointment failure!');
     }
     setAddLoading(false);
   };
@@ -222,6 +277,7 @@ export default function Appointment() {
       await axiosInstance.patch(`/consult/${editForm.consult_db_id}`, {
         consult_id: editForm.consult_id,
         date: editForm.date,
+        doctor_id: editForm.doctor_id,
         patient_id: editForm.patient_id,
         patient_description: editForm.patient_description,
         result: editForm.result,
@@ -229,7 +285,7 @@ export default function Appointment() {
       setShowEditForm(false);
       await fetchAllAppointments();
     } catch {
-      alert('Điều chỉnh thất bại!');
+      alert('Adjust failure!');
     }
     setEditLoading(false);
   };
@@ -238,16 +294,13 @@ export default function Appointment() {
 
   // Delete
   const handleDeleteAppointment = async (item: AppointmentType) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa cuộc hẹn này?')) return;
+    if (!window.confirm('Are you sure you want to delete this appointment?')) return;
     setLoading(true);
     try {
       await axiosInstance.delete(`/consult/${item.consult_db_id}`);
-      await axiosInstance.patch(`/doctor/${item.doctor_id}`, {
-        $pull: { consult_list_id: item.consult_db_id }
-      });
       await fetchAllAppointments();
     } catch {
-      alert('Xóa thất bại!');
+      alert('Delete failure!');
     }
     setLoading(false);
   };
@@ -286,25 +339,25 @@ export default function Appointment() {
       {showAddForm && (
         <div className="doctor_add_form_overlay">
           <form className="doctor_add_form" onSubmit={handleAddFormSubmit}>
-            <h3>Thêm cuộc hẹn mới</h3>
-            <input name="consult_id" placeholder="Consult ID" value={addForm.consult_id} onChange={handleAddFormChange} required />
+            <h3>Add a new appointment</h3>
+            <input name="consult_id" placeholder="Consult ID" value={addForm.consult_id} readOnly required />
             <input name="date" type="date" placeholder="Date" value={addForm.date} onChange={handleAddFormChange} required />
             <select name="doctor_id" value={addForm.doctor_id} onChange={handleAddFormChange} required>
-              <option value="">Chọn bác sĩ</option>
+              <option value="">Choose a doctor</option>
               {doctors.map(d => <option value={d._id} key={d._id}>{d.fullName}</option>)}
             </select>
             <select name="patient_id" value={addForm.patient_id} onChange={handleAddFormChange} required>
-              <option value="">Chọn bệnh nhân</option>
+              <option value="">Choose a patient</option>
               {patients.map(p => <option value={p._id} key={p._id}>{p.fullName}</option>)}
             </select>
-            <input name="patient_description" placeholder="Mô tả bệnh nhân" value={addForm.patient_description} onChange={handleAddFormChange} required />
-            <input name="result" placeholder="Kết quả" value={addForm.result} onChange={handleAddFormChange} required />
+            <input name="patient_description" placeholder="Patient description" value={addForm.patient_description} onChange={handleAddFormChange} required />
+            <input name="result" placeholder="Result" value={addForm.result} onChange={handleAddFormChange} required />
             <div className="doctor_add_form_buttons">
               <button type="submit" className="doctor_add_button" disabled={addLoading}>
-                {addLoading ? "Đang lưu..." : "Lưu"}
+                {addLoading ? "Saving..." : "Saved"}
               </button>
               <button type="button" className="doctor_cancel_button" onClick={handleCancelAdd} disabled={addLoading}>
-                Hủy
+                Cancel
               </button>
             </div>
           </form>
@@ -315,25 +368,25 @@ export default function Appointment() {
       {showEditForm && (
         <div className="doctor_add_form_overlay">
           <form className="doctor_add_form" onSubmit={handleEditFormSubmit}>
-            <h3>Điều chỉnh cuộc hẹn</h3>
+            <h3>Adjust the appointment</h3>
             <input name="consult_id" placeholder="Consult ID" value={editForm.consult_id} onChange={handleEditFormChange} required />
             <input name="date" type="date" placeholder="Date" value={editForm.date} onChange={handleEditFormChange} required />
             <select name="doctor_id" value={editForm.doctor_id} onChange={handleEditFormChange} required>
-              <option value="">Chọn bác sĩ</option>
+              <option value="">Choose a doctor</option>
               {doctors.map(d => <option value={d._id} key={d._id}>{d.fullName}</option>)}
             </select>
             <select name="patient_id" value={editForm.patient_id} onChange={handleEditFormChange} required>
-              <option value="">Chọn bệnh nhân</option>
+              <option value="">Choose patient</option>
               {patients.map(p => <option value={p._id} key={p._id}>{p.fullName}</option>)}
             </select>
-            <input name="patient_description" placeholder="Mô tả bệnh nhân" value={editForm.patient_description} onChange={handleEditFormChange} required />
-            <input name="result" placeholder="Kết quả" value={editForm.result} onChange={handleEditFormChange} required />
+            <input name="patient_description" placeholder="Patient Description" value={editForm.patient_description} onChange={handleEditFormChange} required />
+            <input name="result" placeholder="Result" value={editForm.result} onChange={handleEditFormChange} required />
             <div className="doctor_add_form_buttons">
               <button type="submit" className="doctor_add_button" disabled={editLoading}>
-                {editLoading ? "Đang lưu..." : "Lưu"}
+                {editLoading ? "Saving..." : "Saved"}
               </button>
               <button type="button" className="doctor_cancel_button" onClick={handleCancelEdit} disabled={editLoading}>
-                Hủy
+                Cancel
               </button>
             </div>
           </form>
@@ -345,19 +398,23 @@ export default function Appointment() {
         {/* Table Header */}
         <div className="doctor_table_header">
           <div className="doctor_table_header_grid">
-            <div>ID</div>
-            <div>Date</div>
-            <div>Doctor</div>
-            <div>Patient</div>
-            <div>Description</div>
-            <div>Result</div>
+            {sortableFields.map(field => (
+              <div
+                key={field.value}
+                className='header_table_admin'
+                onClick={() => handleHeaderClick(field.value)}
+              >
+                {field.label}
+                {renderSortIcon(field.value)}
+              </div>
+            ))}
             <div>Operation</div>
           </div>
         </div>
         {/* Table Body */}
         <div className="doctor_table_body">
           {loading ? (
-            <div className="doctor_no_results">Đang tải...</div>
+            <div className="doctor_no_results">Loading...</div>
           ) : currentAppointments.length ? (
             currentAppointments.map(item => (
               <div key={item.consult_id} className="doctor_table_row">
@@ -400,7 +457,7 @@ export default function Appointment() {
       {/* Summary and Pagination */}
       <div className="doctor_summary">
         <div>
-          Show {currentAppointments.length} / {filteredAppointments.length} appointments
+          Show {currentAppointments.length} / {sortedAppointments.length} appointments
         </div>
         {totalPages > 1 && (
           <div className="doctor_pagination">
