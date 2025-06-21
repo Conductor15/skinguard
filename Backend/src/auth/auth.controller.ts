@@ -35,8 +35,8 @@ export class RegisterDoctorDto {
   email: string;
   password: string;
   fullName: string;
-  specialty: string;
-  phone: string;
+  discipline: string;
+  phoneNumber: string;
   rating?: number;
   avatar?: string;
 }

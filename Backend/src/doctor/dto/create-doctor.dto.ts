@@ -13,12 +13,11 @@ export class CreateDoctorDto {
   doctor_id: string;
   password: string;
   fullName: string;
-  specialty: string;          
-  bio?: string;
+  discipline: string;      
   rating?: number;
   avatar?: string;
   email: string;
-  phone: string;            
+  phoneNumber: string;     
   status?: string;
   experienceYears?: number;
 }

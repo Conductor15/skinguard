@@ -65,7 +65,7 @@ export class Doctor {
   fullName: string;
 
   @Prop({ required: true })
-  discipline: string;
+  discipline: string;                
 
   @Prop({ type: Number, min: 1, max: 5 })
   rating: number;
@@ -83,7 +83,13 @@ export class Doctor {
   email: string;
 
   @Prop({ required: true })
-  phoneNumber: string;
+  phoneNumber: string;              
+
+  @Prop()
+  status: string;
+
+  @Prop()
+  experienceYears: number;
 }
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);
