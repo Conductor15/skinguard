@@ -49,6 +49,7 @@
 
 // export const DoctorSchema = SchemaFactory.createForClass(Doctor);
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { IsEmail } from 'class-validator';
 import { Document, Types } from 'mongoose';
 
 export type DoctorDocument = Doctor & Document;
@@ -65,7 +66,7 @@ export class Doctor {
   fullName: string;
 
   @Prop({ required: true })
-  discipline: string;                
+  discipline: string;
 
   @Prop({ type: Number, min: 1, max: 5 })
   rating: number;
@@ -79,11 +80,12 @@ export class Doctor {
   @Prop()
   permission: string;
 
+  @IsEmail()
   @Prop({ required: true, unique: true })
   email: string;
 
   @Prop({ required: true })
-  phoneNumber: string;              
+  phoneNumber: string;
 
   @Prop()
   status: string;
