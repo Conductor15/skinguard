@@ -7,8 +7,8 @@ import Diagnose_Manager from "../pages/managers/DiagnoseManager/Diagnose_Manager
 import Appointment from "../pages/managers/Appointment/Appointment";
 import AboutUs from "../pages/AboutUs/tsx/AboutUs";
 import Profile from "../pages/Profile";
+import ClientProduct from "../pages/ClientProduct";
 import DoctorAI from "../pages/DoctorAI/tsx/DoctorAi";
-import Contact from "../pages/Home/tsx/contact";
 import Doctor from "../pages/managers/Doctors/Doctor";
 import Patient from "../pages/managers/Patients/Patient";
 import Product from "../pages/managers/Products/Product";
@@ -19,7 +19,7 @@ import GeneralSetting from "../pages/managers/GeneralSettings/GeneralSetting";
 import ConfigurationAI from "../pages/managers/AiConfiguration/ConfigurationAI";
 import PaymentSettings from "../pages/managers/PaymentSettings/PaymentSettings";
 import Register from "../pages/RegisterAndLogIn/RegisterLogIn";
-
+import RequireAuth from "../components/client/auth/RequireAuth";
 const Routes = () => {
     const elements = useRoutes(
         [
@@ -41,8 +41,8 @@ const Routes = () => {
                       element: <DoctorAI/>
                   },
                   {
-                      path:"/contact",
-                      element: <Contact/>
+                      path:"/products",
+                      element: <ClientProduct/>
                   },
                   {
                       path:"/profile/:id",
@@ -57,55 +57,55 @@ const Routes = () => {
             },
             // Admin Routes
             {
-                path:"/",
+                path:"/admin",
                 element: <LayoutAdmin/>,
                 children:[
                     {
-                        path:"/dashboard",
+                        path:"dashboard",
                         element: <Dashboard/>
                     },
                     {
-                        path:"/dashboard/diagnose_manager",
+                        path:"diagnose_manager",
                         element: <Diagnose_Manager/>
                     },
                     {
-                        path:"/dashboard/appointments",
+                        path:"appointments",
                         element: <Appointment/>
                     },
                     {
-                        path:"/dashboard/doctors",
+                        path:"doctors",
                         element: <Doctor/>
                     },
                     {
-                        path:"/dashboard/patients",
+                        path:"patients",
                         element: <Patient/>
                     },
                     {
-                        path:"/dashboard/products",
+                        path:"products",
                         element: <Product/>
                     },
                     {
-                        path:"/dashboard/orders",
+                        path:"orders",
                         element: <Order/>
                     },
                     {
-                        path:"/dashboard/users",
+                        path:"users",
                         element: <User/>
                     },
                     {
-                        path:"/dashboard/roles-permissions",
+                        path:"roles-permissions",
                         element: <RoleAndPermission/>
                     },
                     {
-                        path:"/dashboard/general-settings",
+                        path:"general-settings",
                         element: <GeneralSetting/>
                     },
                     {
-                        path:"/dashboard/ai-configuration",
+                        path:"ai-configuration",
                         element: <ConfigurationAI/>
                     },
                     {
-                        path:"/dashboard/payment-settings",
+                        path:"payment-settings",
                         element: <PaymentSettings/>
                     }
                 ]

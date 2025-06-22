@@ -1,0 +1,35 @@
+.cart__item {
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+
+  min-height: 300px; 
+
+  img {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  h2 {
+    font-size: 18px;
+    margin: 12px 0 6px;
+    font-weight: bold;
+  }
+
+  .cart__item__price {
+    font-weight: bold;
+    color: green;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #666;
+  }
+}

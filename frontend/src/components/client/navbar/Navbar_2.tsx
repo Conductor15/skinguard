@@ -59,9 +59,9 @@ const Navbar_2 = () => {
     <div className='navbar_2'>
       <div className='left_Navbar_2'>
         <span className={`left_Navbar_2_item ${activeItem === 'home' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('home')); navigate('/'); }}>Home</span>
-        <span className={`left_Navbar_2_item ${activeItem === 'about-us' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('about-us')); navigate('/about-us'); }}>About us</span>
         <span className={`left_Navbar_2_item ${activeItem === 'doctors-ai' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('doctors-ai')); navigate('/doctors-ai'); }}>Doctors AI</span>
-        <span className={`left_Navbar_2_item ${activeItem === 'contact' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('contact')); navigate('/contact'); }}>Contact</span>
+        <span className={`left_Navbar_2_item ${activeItem === 'products' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('products')); navigate('/products'); }}>Products</span>
+        <span className={`left_Navbar_2_item ${activeItem === 'about-us' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('about-us')); navigate('/about-us'); }}>About us</span>
       </div>
       <div className='right_Navbar_2'>
         {!user ? (

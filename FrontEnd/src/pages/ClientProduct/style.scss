@@ -1,0 +1,125 @@
+.product_container{
+    padding:50px 200px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    h2{
+        font-size: 40px;
+        margin-bottom: 40px;
+    }
+}
+
+.controls{
+    display: flex;
+    gap: 30px;
+    height: 40px;
+    &__search{
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 150px;
+        border-radius: 0.5rem;
+        border: 0.5px solid #e5e7eb;
+        padding: 8px 12px;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+        i{
+            margin-right: 0.5rem;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            width: 100%;
+            outline: none;
+            font-size: 15px;
+        }
+
+        &:focus-within {
+            border-color: #09090B; 
+        }
+    }
+
+    &__filter{
+        position: relative;
+        width: 160px;
+        &__selected{
+            height: 100%;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        ul{
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            padding: 4px 6px;
+            li {
+                border-radius: 0.3rem;
+                padding: 8px 12px;
+                display: flex;
+                gap: 10px;
+                cursor: pointer;
+                div {
+                    width: 16px;
+                }
+                &:hover{
+                    background-color: #fafafa;
+                }
+            }
+        }
+    }
+
+    &__sort{
+        position: relative;
+        width: 160px;
+        &__selected{
+            height: 100%;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        ul{
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            padding: 4px 6px;
+            li {
+                border-radius: 0.3rem;
+                padding: 8px 12px;
+                display: flex;
+                gap: 10px;
+                cursor: pointer;
+                div {
+                    width: 16px;
+                }
+                &:hover{
+                    background-color: #fafafa;
+                }
+            }
+        }
+    }
+}
+
+
+.product__list{
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 24px;
+}
