@@ -12,9 +12,10 @@ const Register: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const [registerForm, setRegisterForm] = useState({
-    name: '',
+    fullName: '',
     email: '',
-    password: ''
+    password: '',
+    birthDay: '2000-01-01',
   });
   const [loginForm, setLoginForm] = useState({
     email: '',
@@ -62,26 +63,27 @@ const Register: React.FC = () => {
     return 'PAT' + Math.floor(100000 + Math.random() * 900000);
   };
 
-  const getDefaultBirthDay = () => {
-    return '2000-01-01';
-  };
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setRegisterLoading(true);
     setRegisterMessage('');
     try {
       const patientData = {
-        fullName: registerForm.name,
+        fullName: registerForm.fullName,
         email: registerForm.email,
         password: registerForm.password,
-        birthDay: getDefaultBirthDay(),
+        birthDay: new Date(registerForm.birthDay).toISOString(),
         patient_id: generatePatientId()
       };
-      
-      // Sử ddụng đúng auth endpoint
+      console.log('PATIENT DATA:', patientData);
       await axios.post(`${API_URL}/auth/register/patient`, patientData);
       setRegisterMessage('Đăng ký thành công! Vui lòng đăng nhập.');
-      setRegisterForm({ name: '', email: '', password: '' });
+      setRegisterForm({
+        fullName: '',
+        email: '',
+        password: '',
+        birthDay: '2000-01-01'
+      });
       setTimeout(() => handleToggle(), 1200);
     } catch (err: any) {
       setRegisterMessage(
@@ -91,18 +93,17 @@ const Register: React.FC = () => {
       setRegisterLoading(false);
     }
   };
-  // Login submit: sử dụng đúng auth endpoint
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
     setLoginMessage('');
     try {
-      // Sử dụng auth endpoint với credentials
       const response = await axios.post(`${API_URL}/auth/login`, {
         email: loginForm.email,
         password: loginForm.password
       }, {
-        withCredentials: true, // Để nhận cookies
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
         }
@@ -110,15 +111,11 @@ const Register: React.FC = () => {
 
       if (response.data.access_token) {
         setLoginMessage('Đăng nhập thành công!');
-        
-        // Lưu token và user info
         localStorage.setItem('access_token', response.data.access_token);
         localStorage.setItem('token_type', response.data.token_type);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        
         setTimeout(() => {
           dispatch(setNavbarActiveItem('home'));
-          // Redirect based on user type
           if (response.data.user.userType === 'doctor') {
             navigate('/dashboard');
           } else {
@@ -172,10 +169,10 @@ const Register: React.FC = () => {
             <div className="form_inputs">
               <input
                 type="text"
-                name="name"
-                placeholder="User name"
+                name="fullName"
+                placeholder="Full name"
                 className="form_input"
-                value={registerForm.name}
+                value={registerForm.fullName}
                 onChange={handleRegisterInput}
                 required
               />
@@ -194,6 +191,15 @@ const Register: React.FC = () => {
                 placeholder="Password"
                 className="form_input"
                 value={registerForm.password}
+                onChange={handleRegisterInput}
+                required
+              />
+              <input
+                type="date"
+                name="birthDay"
+                placeholder="Birthday"
+                className="form_input"
+                value={registerForm.birthDay}
                 onChange={handleRegisterInput}
                 required
               />
