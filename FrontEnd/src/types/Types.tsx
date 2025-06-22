@@ -37,6 +37,7 @@ export type PatientType = {
     avatar?: string;
     status?: string;
     consult_list_id?: string[];
+    birthDay?: string;
 };
 
 // Consult

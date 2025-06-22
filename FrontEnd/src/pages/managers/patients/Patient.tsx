@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../../api/Axios';
 import '../doctors/Doctor.css';
-import {PatientType} from '../../../types/Types';
+import { PatientType } from '../../../types/Types';
 import { SearchIcon, DeleteIcon, FixIcon } from '../../../assets/SVG/Svg';
 
 type SortField = keyof PatientType | '';
@@ -12,7 +12,7 @@ function getNextPatientId(patients: PatientType[]): string {
   const prefix = 'PAT';
   const usedNumbers = patients
     .map(p => p.patient_id)
-    .filter(id => id && id.startsWith(prefix))
+    .filter((id): id is string => !!id && id.startsWith(prefix)) 
     .map(id => parseInt(id.replace(prefix, ''), 10))
     .filter(n => !isNaN(n))
     .sort((a, b) => a - b);
@@ -31,21 +31,23 @@ const sortableFields: { label: string, value: SortField }[] = [
   { label: "Email", value: "email" },
   { label: "Phone", value: "phone" },
   { label: "Avatar", value: "avatar" },
-  { label: "Status", value: "status" }
+  { label: "Status", value: "status" },
+  { label: "Birth Day", value: "birthDay" }
 ];
 
-const defaultPatient: PatientType = {
+const defaultPatient: PatientType & { birthDay: string } = {
   patient_id: '',
   fullName: '',
   email: '',
   password: '',
+  birthDay: '',
   phone: '',
   avatar: '',
   status: ''
 };
 
 export default function Patient() {
-  const [patients, setPatients] = useState<PatientType[]>([]);
+  const [patients, setPatients] = useState<(PatientType & { birthDay: string; _id?: string })[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,10 +56,14 @@ export default function Patient() {
   // Add/Edit/Delete Form State
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [addForm, setAddForm] = useState<PatientType>(defaultPatient);
-  const [editForm, setEditForm] = useState<PatientType>({...defaultPatient, _id: ''});
+  const [addForm, setAddForm] = useState<PatientType & { birthDay: string }>(defaultPatient);
+  const [editForm, setEditForm] = useState<(PatientType & { birthDay: string; _id?: string })>({ ...defaultPatient, _id: '' });
   const [addLoading, setAddLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+
+  // Image upload
+  const [addImageUploading, setAddImageUploading] = useState(false);
+  const [editImageUploading, setEditImageUploading] = useState(false);
 
   // Sort state
   const [sortField, setSortField] = useState<SortField>('');
@@ -86,7 +92,8 @@ export default function Patient() {
     (patient.email?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
     (patient.phone?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
     (patient.avatar?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
-    (patient.status?.toLowerCase().includes(searchTerm.toLowerCase()) || '')
+    (patient.status?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
+    (patient.birthDay?.toLowerCase().includes(searchTerm.toLowerCase()) || '')
   );
 
   const sortedPatients = [...filteredPatients].sort((a, b) => {
@@ -95,12 +102,14 @@ export default function Patient() {
     const bVal = b[sortField];
 
     if (typeof aVal === 'string' && typeof bVal === 'string') {
-      if (sortOrder === 'increase') return aVal.localeCompare(bVal);
-      else return bVal.localeCompare(aVal);
+      return sortOrder === 'increase'
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
     }
     if (typeof aVal === 'number' && typeof bVal === 'number') {
-      if (sortOrder === 'increase') return aVal - bVal;
-      else return bVal - aVal;
+      return sortOrder === 'increase'
+        ? aVal - bVal
+        : bVal - aVal;
     }
     return 0;
   });
@@ -123,7 +132,7 @@ export default function Patient() {
     setShowAddForm(true);
   };
 
-  const handleEditPatient = (patient: PatientType) => {
+  const handleEditPatient = (patient: PatientType & { birthDay: string; _id?: string }) => {
     setEditForm({
       _id: patient._id,
       patient_id: patient.patient_id,
@@ -132,12 +141,13 @@ export default function Patient() {
       password: '',
       phone: patient.phone,
       avatar: patient.avatar,
-      status: patient.status
+      status: patient.status,
+      birthDay: patient.birthDay || ''
     });
     setShowEditForm(true);
   };
 
-  const handleDeletePatient = async (patient: PatientType) => {
+  const handleDeletePatient = async (patient: PatientType & { birthDay: string; _id?: string }) => {
     if (!window.confirm('Are you sure you want to delete this patient?')) return;
     setLoading(true);
     try {
@@ -162,12 +172,24 @@ export default function Patient() {
   const handleAddFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAddLoading(true);
+
+    // Validate required fields
+    if (!addForm.fullName || !addForm.email || !addForm.password || !addForm.phone || !addForm.birthDay) {
+      alert('Please fill all required fields!');
+      setAddLoading(false);
+      return;
+    }
+
     try {
       await axiosInstance.post('/patient', addForm);
       setShowAddForm(false);
       await fetchPatients();
-    } catch {
-      alert("More patients failed!");
+    } catch (e: any) {
+      if (e?.response?.data?.message) {
+        alert(e.response.data.message);
+      } else {
+        alert("Add patient failed!");
+      }
     }
     setAddLoading(false);
   };
@@ -177,12 +199,18 @@ export default function Patient() {
     setEditLoading(true);
     try {
       if (editForm._id) {
-        await axiosInstance.patch(`/patient/${editForm._id}`, editForm);
+        const dataToSend = { ...editForm };
+        if (!dataToSend.password) delete dataToSend.password;
+        await axiosInstance.patch(`/patient/${editForm._id}`, dataToSend);
       }
       setShowEditForm(false);
       await fetchPatients();
-    } catch {
-      alert("Update failed!");
+    } catch (e: any) {
+      if (e?.response?.data?.message) {
+        alert(e.response.data.message);
+      } else {
+        alert("Update failed!");
+      }
     }
     setEditLoading(false);
   };
@@ -190,21 +218,49 @@ export default function Patient() {
   const handleCancelAdd = () => setShowAddForm(false);
   const handleCancelEdit = () => setShowEditForm(false);
 
+  // Upload image for add form
+  const handleAddImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAddImageUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await axiosInstance.post('/upload/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setAddForm(prev => ({ ...prev, avatar: res.data.url }));
+    } catch (err) {
+      alert('Upload image failed!');
+    }
+    setAddImageUploading(false);
+  };
+
+  // Upload image for edit form
+  const handleEditImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!editForm) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setEditImageUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await axiosInstance.post('/upload/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setEditForm(prev => prev ? ({ ...prev, avatar: res.data.url }) : prev);
+    } catch (err) {
+      alert('Upload image failed!');
+    }
+    setEditImageUploading(false);
+  };
+
   // Sort icon
   const renderSortIcon = (field: SortField) => {
-    if (sortField !== field) {
-      return (
-        <span className='init_sort_icon_admin'>▲</span>
-      );
-    }
-    if (sortOrder === "increase") {
-      return (
-        <span className='active_sort_icon_admin'>▼</span>
-      );
-    }
-    return (
-      <span className='active_sort_icon_admin'>▲</span>
-    );
+    if (sortField !== field) return (<span className='init_sort_icon_admin'>▲</span>);
+    return sortOrder === "increase" 
+      ? (<span className='active_sort_icon_admin'>▼</span>)
+      : (<span className='active_sort_icon_admin'>▲</span>);
   };
 
   const handleHeaderClick = (field: SortField) => {
@@ -225,16 +281,13 @@ export default function Patient() {
             <SearchIcon className="doctor_search_icon" />
             <input
               type="text"
-              placeholder="Find by id, name, email, phone, avatar, status..."
+              placeholder="Find by id, name, email, phone, avatar, status, birthDay..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               className="doctor_search_input"
             />
           </div>
-          <button
-            onClick={handleAddPatient}
-            className="doctor_add_button"
-          >
+          <button onClick={handleAddPatient} className="doctor_add_button">
             Add new patient
           </button>
         </div>
@@ -250,11 +303,22 @@ export default function Patient() {
             <input name="email" type="email" placeholder="Email" value={addForm.email} onChange={handleAddFormChange} required />
             <input name="password" type="password" placeholder="Password" value={addForm.password} onChange={handleAddFormChange} required />
             <input name="phone" placeholder="Phone number" value={addForm.phone} onChange={handleAddFormChange} required />
-            <input name="avatar" placeholder="Avatar URL" value={addForm.avatar} onChange={handleAddFormChange} />
+            <input name="birthDay" type="date" placeholder="Birth Day" value={addForm.birthDay} onChange={handleAddFormChange} required />
+            {/* Image */}
+            <div style={{ marginBottom: 8 }}>
+              <input
+                type="file"
+                accept='image/*'
+                onChange={handleAddImageFileChange}
+                disabled={addImageUploading}
+              />
+              {addImageUploading && <span>Uploading...</span>}
+            </div>
+            {addForm.avatar && <img src={addForm.avatar} alt="avatar" style={{ width: 80, height: 80, objectFit: 'cover', border: '1px solid #eee', borderRadius: 4 }}/>}
             <input name="status" placeholder="Status" value={addForm.status} onChange={handleAddFormChange} />
             <div className="doctor_add_form_buttons">
               <button type="submit" className="doctor_add_button" disabled={addLoading}>
-                {addLoading ? "Saving..." : "saved"}
+                {addLoading ? "Saving..." : "Save"}
               </button>
               <button type="button" className="doctor_cancel_button" onClick={handleCancelAdd} disabled={addLoading}>
                 Cancel
@@ -274,11 +338,21 @@ export default function Patient() {
             <input name="email" type="email" placeholder="Email" value={editForm.email} onChange={handleEditFormChange} required />
             <input name="password" type="password" placeholder="Password (bỏ trống nếu không đổi)" value={editForm.password || ""} onChange={handleEditFormChange} />
             <input name="phone" placeholder="Phone number" value={editForm.phone} onChange={handleEditFormChange} required />
-            <input name="avatar" placeholder="Avatar URL" value={editForm.avatar} onChange={handleEditFormChange} />
+            <input name="birthDay" type="date" placeholder="Birth Day" value={editForm.birthDay} onChange={handleEditFormChange} required />
+            <div style={{ marginBottom: 8 }}>
+              <input
+                type="file"
+                accept='image/*'
+                onChange={handleEditImageFileChange}
+                disabled={editImageUploading}
+              />
+              {editImageUploading && <span>Uploading...</span>}
+            </div>
+            {editForm.avatar && <img src={editForm.avatar} alt="avatar" style={{ width: 80, height: 80, objectFit: 'cover', border: '1px solid #eee', borderRadius: 4 }}/>}
             <input name="status" placeholder="Status" value={editForm.status} onChange={handleEditFormChange} />
             <div className="doctor_add_form_buttons">
               <button type="submit" className="doctor_add_button" disabled={editLoading}>
-                {editLoading ? "Saving..." : "Saved"}
+                {editLoading ? "Saving..." : "Save"}
               </button>
               <button type="button" className="doctor_cancel_button" onClick={handleCancelEdit} disabled={editLoading}>
                 Cancel
@@ -323,6 +397,7 @@ export default function Patient() {
                     }
                   </div>
                   <div>{patient.status}</div>
+                  <div>{patient.birthDay}</div>
                   <div className="doctor_actions">
                     <button
                       onClick={() => handleEditPatient(patient)}

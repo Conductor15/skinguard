@@ -55,7 +55,7 @@ const Product = () => {
     const [editForm, setEditForm] = useState<ProductType | null>(null);
     const itemsPerPage = 5;
 
-    // image upload
+    // Image upload
     const [addImageUploading, setAddImageUploading] = useState(false);
     const [editImageUploading, setEditImageUploading] = useState(false);
 
