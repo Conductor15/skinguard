@@ -45,6 +45,43 @@ const DoctorAI: React.FC = () => {
       const data = await res.json();
       if (data.prediction) {
         setResult(data.prediction);
+
+        const storedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('access_token');
+        if (!storedUser || !token) {
+          console.warn('Không có thông tin người dùng hoặc token');
+          return;
+        }
+
+
+        const user = JSON.parse(storedUser);
+        const userId = user.id || user.patient_id;
+
+        const diagnoseData = {
+          diagnose_id: "DGN" + Math.floor(100000 + Math.random() * 900000), // random ID tạm thời
+          prediction: data.prediction,
+          image: "https://hoseiki.vn/wp-content/uploads/2025/03/meo-cute-8.jpg", // bạn có thể dùng URL ảnh preview hiện tại, hoặc ảnh upload URL từ server AI
+          description: "Normal", // có thể thay bằng phân tích thật
+          confidence: data.confidence || 70.0,
+          createdBy: userId,
+        };
+
+        try {
+          const res = await fetch('http://localhost:8000/diagnose', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(diagnoseData),
+          });
+
+          if (!res.ok) {
+            console.error('Lưu kết quả chẩn đoán thất bại');
+          }
+        } catch (e) {
+          console.error('Lỗi khi gửi chẩn đoán đến server:', e);
+        }
       } else {
         setError("Không nhận được kết quả hợp lệ từ AI.");
       }

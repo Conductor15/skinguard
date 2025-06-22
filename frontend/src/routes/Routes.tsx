@@ -20,6 +20,7 @@ import ConfigurationAI from "../pages/managers/AiConfiguration/ConfigurationAI";
 import PaymentSettings from "../pages/managers/PaymentSettings/PaymentSettings";
 import Register from "../pages/RegisterAndLogIn/RegisterLogIn";
 import NotFound from "../pages/NotFound";
+import PrivateRoute from "../components/client/auth/PrivateRoute";
 
 const Routes = () => {
     const elements = useRoutes(
@@ -43,11 +44,17 @@ const Routes = () => {
                   },
                   {
                       path:"/doctors-ai",
-                      element: <DoctorAI/>
+                      element: 
+                        <PrivateRoute>
+                            <DoctorAI />
+                        </PrivateRoute>
                   },
                   {
                       path:"/products",
-                      element: <ClientProduct/>
+                      element: 
+                        <PrivateRoute>
+                            <ClientProduct/>
+                        </PrivateRoute>
                   },
                   {
                       path:"/profile/:id",

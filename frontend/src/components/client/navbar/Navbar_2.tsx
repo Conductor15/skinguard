@@ -36,14 +36,20 @@ const Navbar_2 = () => {
   }, [menuOpen, dispatch]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    dispatch(setNavbarMenuOpen(false));
-    dispatch(setNavbarActiveItem('home'));
-    // Nếu muốn reset toàn bộ UI persist state (optional):
-    // dispatch(resetUI());
-    navigate('/');
-  };
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('token_type');
+  localStorage.removeItem('user');
+
+  setUser(null);
+  dispatch(setNavbarMenuOpen(false));
+  dispatch(setNavbarActiveItem('home'));
+
+  // (Tuỳ chọn) Reset UI store nếu có persist
+  // dispatch(resetUI());
+
+  navigate('/register-login');
+};
+
 
   const handleMenuClick = (item: string) => {
     dispatch(setNavbarMenuOpen(false));

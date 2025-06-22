@@ -29,13 +29,13 @@ const Slidebar = () => {
   const handleDashboardItemClick = (item: string) => {
     handleSetActive(item);
     switch(item) {
-      case 'dashboard': navigate('/dashboard'); break;
-      case 'diagnosis': navigate('/dashboard/diagnose_manager'); break;
-      case 'appointments': navigate('/dashboard/appointments'); break;
-      case 'doctors': navigate('/dashboard/doctors'); break;
-      case 'patients': navigate('/dashboard/patients'); break;
-      case 'products': navigate('/dashboard/products'); break;
-      case 'orders': navigate('/dashboard/orders'); break;
+      case 'dashboard': navigate('dashboard'); break;
+      case 'diagnosis': navigate('diagnose_manager'); break;
+      case 'appointments': navigate('appointments'); break;
+      case 'doctors': navigate('doctors'); break;
+      case 'patients': navigate('patients'); break;
+      case 'products': navigate('products'); break;
+      case 'orders': navigate('orders'); break;
       default: break;
     }
   };
@@ -43,8 +43,8 @@ const Slidebar = () => {
   const handleUsersRolesItemClick = (item: string) => {
     handleSetActive(item);
     switch(item) {
-      case 'users': navigate('/dashboard/users'); break;
-      case 'roles': navigate('/dashboard/roles-permissions'); break;
+      case 'users': navigate('/users'); break;
+      case 'roles': navigate('/roles-permissions'); break;
       default: break;
     }
   };
