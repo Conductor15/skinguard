@@ -57,6 +57,10 @@ const Doctor = () => {
     const [editForm, setEditForm] = useState<DoctorType | null>(null);
     const itemsPerPage = 5;
 
+    // Image upload state
+    const [addImageUploading, setAddImageUploading] = useState(false);
+    const [editImageUploading, setEditImageUploading] = useState(false);
+
     // Sort state
     const [sortField, setSortField] = useState<SortField>('');
     const [sortOrder, setSortOrder] = useState<SortOrder>('increase');
@@ -71,7 +75,7 @@ const Doctor = () => {
                     doctor_id: doc.doctor_id,
                     fullName: doc.fullName,
                     email: doc.email,
-                    password: doc.password,
+                    password: '', // Không trả về password
                     discipline: doc.discipline,
                     phoneNumber: doc.phoneNumber,
                     avatar: doc.avatar,
@@ -109,26 +113,20 @@ const Doctor = () => {
         const aVal = a[sortField];
         const bVal = b[sortField];
 
-        // For string
         if (typeof aVal === 'string' && typeof bVal === 'string') {
-            if (sortOrder === 'increase') {
-                return aVal.localeCompare(bVal);
-            } else {
-                return bVal.localeCompare(aVal);
-            }
+            return sortOrder === 'increase'
+                ? aVal.localeCompare(bVal)
+                : bVal.localeCompare(aVal);
         }
-        // For number
         if (typeof aVal === 'number' && typeof bVal === 'number') {
-            if (sortOrder === 'increase') {
-                return aVal - bVal;
-            } else {
-                return bVal - aVal;
-            }
+            return sortOrder === 'increase'
+                ? aVal - bVal
+                : bVal - aVal;
         }
-        // For Boolean
         if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
-            if (sortOrder === 'increase') return (aVal === bVal ? 0 : aVal ? 1 : -1);
-            else return (aVal === bVal ? 0 : aVal ? -1 : 1);
+            return sortOrder === 'increase'
+                ? (aVal === bVal ? 0 : aVal ? 1 : -1)
+                : (aVal === bVal ? 0 : aVal ? -1 : 1);
         }
         return 0;
     });
@@ -164,6 +162,24 @@ const Doctor = () => {
                 ? Number(e.target.value)
                 : e.target.value
         }));
+    };
+
+    // Upload image for add form
+    const handleAddImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setAddImageUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await axiosInstance.post('/upload/image', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setAddForm(prev => ({ ...prev, avatar: res.data.url }));
+        } catch (err) {
+            alert('Upload image failed!');
+        }
+        setAddImageUploading(false);
     };
 
     const handleAddFormSubmit = async (e: React.FormEvent) => {
@@ -202,7 +218,7 @@ const Doctor = () => {
             if (err?.response?.data?.message?.includes('duplicate key')) {
                 alert('Doctor ID or email already exists, please check again!');
             } else {
-                alert('More failed doctors!');
+                alert('Add doctor failed!');
             }
         }
     };
@@ -227,7 +243,7 @@ const Doctor = () => {
     const handleEditDoctor = (doctorId: string) => {
         const doc = doctorsData.find(d => d._id === doctorId);
         if (doc) {
-            setEditForm({ ...doc, password: '' }); // No show password 
+            setEditForm({ ...doc, password: '' }); // Không show password
             setShowEditForm(true);
         }
     };
@@ -240,6 +256,25 @@ const Doctor = () => {
                 ? Number(e.target.value)
                 : e.target.value
         });
+    };
+
+    // Upload image for edit form
+    const handleEditImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!editForm) return;
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setEditImageUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await axiosInstance.post('/upload/image', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setEditForm(prev => prev ? ({ ...prev, avatar: res.data.url }) : null);
+        } catch (err) {
+            alert('Upload image failed!');
+        }
+        setEditImageUploading(false);
     };
 
     const handleEditFormSubmit = async (e: React.FormEvent) => {
@@ -264,6 +299,7 @@ const Doctor = () => {
                 email: editForm.email,
                 discipline: editForm.discipline,
                 phoneNumber: editForm.phoneNumber,
+                avatar: editForm.avatar,
                 rating: editForm.rating,
                 status: editForm.status,
                 experienceYears: editForm.experienceYears
@@ -298,7 +334,7 @@ const Doctor = () => {
                 setDoctorsData(prev => prev.filter(doc => doc._id !== doctorId));
                 alert('Doctor deleted successfully!');
             } catch (err: any) {
-                alert('Delete failed doctor!');
+                alert('Delete doctor failed!');
             }
         }
     };
@@ -354,7 +390,7 @@ const Doctor = () => {
         <div className="doctor_container">
             {/* Header */}
             <div className="doctor_header">
-                <div className="doctor_title"> List of doctors </div>
+                <div className="doctor_title">List of doctors</div>
                 <div className="doctor_controls">
                     <div className="doctor_search_container">
                         <SearchIcon className="doctor_search_icon" />
@@ -424,7 +460,20 @@ const Doctor = () => {
                             onChange={handleAddFormChange}
                             required
                         />
-                        <input name="avatar" placeholder="Avatar URL" value={addForm.avatar} onChange={handleAddFormChange} />
+                        {/* Image */}
+                        <div style={{ marginBottom: 8 }}>
+                            <input 
+                                type="file" 
+                                accept='image/*'
+                                onChange={handleAddImageFileChange}
+                                disabled={addImageUploading}
+                            />
+                            {addImageUploading && <span>Uploading...</span>}
+                        </div>
+                        {/* Show avatar preview */}
+                        {addForm.avatar && (
+                            <img src={addForm.avatar} alt='avatar' style={{ width: 80, height: 80, objectFit: 'cover', border: '1px solid #eee', borderRadius: 4 }} />
+                        )}
                         <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="Rating" value={addForm.rating} onChange={handleAddFormChange} />
                         <input name="status" placeholder="Status" value={addForm.status} onChange={handleAddFormChange} />
                         <input name="experienceYears" type="number" placeholder="Experience years" value={addForm.experienceYears} onChange={handleAddFormChange} />
@@ -507,7 +556,20 @@ const Doctor = () => {
                             value={editForm.experienceYears}
                             onChange={handleEditFormChange}
                         />
-                        <input name="avatar" placeholder="Avatar URL" value={addForm.avatar || ''} onChange={handleEditFormChange} />
+                        {/* Image */}
+                        <div style={{ marginBottom: 8 }}>
+                            <input 
+                                type="file" 
+                                accept='image/*'
+                                onChange={handleEditImageFileChange}
+                                disabled={editImageUploading}
+                            />
+                            {editImageUploading && <span>Uploading...</span>}
+                        </div>
+                        {/* Show avatar preview */}
+                        {editForm.avatar && (
+                            <img src={editForm.avatar} alt='avatar' style={{ width: 80, height: 80, objectFit: 'cover', border: '1px solid #eee', borderRadius: 4 }} />
+                        )}
                         <div className="doctor_add_form_buttons">
                             <button type="submit" className="doctor_add_button">Lưu</button>
                             <button type="button" className="doctor_cancel_button" onClick={handleCancelEdit}>Hủy</button>
@@ -587,7 +649,6 @@ const Doctor = () => {
                 <div>
                     Show {currentDoctors.length} / {sortedDoctors.length} doctors
                 </div>
-                
                 {totalPages > 1 && (
                     <div className="doctor_pagination">
                         <button
@@ -597,7 +658,6 @@ const Doctor = () => {
                         >
                             Before
                         </button>
-                        
                         {[...Array(totalPages)].map((_, index) => (
                             <button
                                 key={index + 1}
@@ -607,7 +667,6 @@ const Doctor = () => {
                                 {index + 1}
                             </button>
                         ))}
-                        
                         <button
                             onClick={handleNext}
                             disabled={currentPage === totalPages}
@@ -615,7 +674,6 @@ const Doctor = () => {
                         >
                             After
                         </button>
-                        
                         <div className="pagination_info">
                             Page {currentPage} / {totalPages}
                         </div>
