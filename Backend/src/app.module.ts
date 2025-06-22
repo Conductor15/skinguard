@@ -15,6 +15,7 @@ import { SkinLesionModule } from './skin-leision/skin-leision.module';
 import { ConsultModule } from './consult/consult.module';
 import { ProductModule } from './product/product.module';
 import { OrderDetailModule } from './order_detail/order_detail.module';
+import { UploadModule } from './cloudinary/upload.module';
 @Module({
   imports: [
     // MongooseModule.forRoot(
@@ -38,6 +39,7 @@ import { OrderDetailModule } from './order_detail/order_detail.module';
     ConsultModule,
     SkinLesionModule,
     OrderDetailModule,
+    UploadModule, // <-- CloudinaryModule
   ],  controllers: [AppController],
   providers: [
     AppService,
