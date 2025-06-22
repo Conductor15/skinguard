@@ -19,10 +19,15 @@ import GeneralSetting from "../pages/managers/GeneralSettings/GeneralSetting";
 import ConfigurationAI from "../pages/managers/AiConfiguration/ConfigurationAI";
 import PaymentSettings from "../pages/managers/PaymentSettings/PaymentSettings";
 import Register from "../pages/RegisterAndLogIn/RegisterLogIn";
-import RequireAuth from "../components/client/auth/RequireAuth";
+import NotFound from "../pages/NotFound";
+
 const Routes = () => {
     const elements = useRoutes(
         [
+            {
+                path:"*",
+                element: <NotFound/>
+            },
             // Client Routes
             {
                 path:"/",
@@ -109,7 +114,7 @@ const Routes = () => {
                         element: <PaymentSettings/>
                     }
                 ]
-            }
+            },
         ]
     );
     return elements;
