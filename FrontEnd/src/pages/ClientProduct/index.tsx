@@ -44,12 +44,16 @@ const ClientProduct = () => {
         "df"       // Dermatofibroma
     ];
 
-
-
     const sorts = [
         "Giá tăng dần",
         "Giá giảm dần",
     ]
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     const filteredAndSortedData = data
     .filter((item) => {
@@ -62,6 +66,9 @@ const ClientProduct = () => {
         if (sortSelected === "Giá giảm dần") return b.price - a.price;
         return 0;
     });
+
+    const currentItems = filteredAndSortedData.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredAndSortedData.length / itemsPerPage);
 
 
     return (
@@ -111,7 +118,7 @@ const ClientProduct = () => {
                     </div>
                 </div>
                 <div className="product__list">
-                    {filteredAndSortedData.map((product) => (
+                    {currentItems.map((product) => (
                         <ProductCard
                         key={product._id}
                         id={product._id}
@@ -121,7 +128,20 @@ const ClientProduct = () => {
                         description={product.description}
                         />
                     ))}
-                    </div>
+                </div>
+
+                <div className="pagination">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <button
+                        key={page}
+                        className={`pagination-btn ${page === currentPage ? 'active' : ''}`}
+                        onClick={() => setCurrentPage(page)}
+                        >
+                        {page}
+                        </button>
+                    ))}
+                </div>
+
 
 
             </div>

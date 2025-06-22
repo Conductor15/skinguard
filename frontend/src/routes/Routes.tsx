@@ -7,6 +7,8 @@ import Diagnose_Manager from "../pages/managers/DiagnoseManager/Diagnose_Manager
 import Appointment from "../pages/managers/Appointment/Appointment";
 import AboutUs from "../pages/AboutUs/tsx/AboutUs";
 import Profile from "../pages/Profile";
+import PatientAppointment from "../pages/PatientAppointment";
+import PatientDiagnose from "../pages/PatientDiagnose";
 import ClientProduct from "../pages/ClientProduct";
 import DoctorAI from "../pages/DoctorAI/tsx/DoctorAi";
 import Doctor from "../pages/managers/Doctors/Doctor";
@@ -58,8 +60,32 @@ const Routes = () => {
                   },
                   {
                       path:"/profile/:id",
-                      element: <Profile/>
+                      element:
+                      <PrivateRoute>
+                        <Profile/>
+                      </PrivateRoute>
                   },
+                  {
+                      path:"/appointment/:id",
+                      element:
+                      <PrivateRoute>
+                        <PatientAppointment/>
+                      </PrivateRoute>
+                  },
+                  {
+                      path:"/diagnose-history/:id",
+                      element:
+                      <PrivateRoute>
+                        <PatientDiagnose/>
+                      </PrivateRoute>
+                  },
+                //   {
+                //       path:"/setting/:id",
+                //       element:
+                //       <PrivateRoute>
+                //         <Profile/>
+                //       </PrivateRoute>
+                //   },
                 ]
             },
             // Public Routes
