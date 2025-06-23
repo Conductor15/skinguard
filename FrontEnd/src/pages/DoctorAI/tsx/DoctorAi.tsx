@@ -1,18 +1,60 @@
-import React, { useState } from "react";
-import "../css/DoctorAI.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import axiosInstance from "../../../api/Axios";
+import '../css/DoctorAI.css';
 
 const DoctorAI: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState("UNKNOWN");
+
+  // Lấy user info từ localStorage khi component mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setUserId(user.id);
+      } catch {
+        setUserId("UNKNOWN");
+      }
+    }
+  }, []);
+
+  // Hàm lấy diagnose_id tiếp theo
+  async function getNextDiagnoseId(): Promise<string> {
+    const prefix = "DGN";
+    try {
+      const res = await axiosInstance.get("/diagnose");
+      const diagnoses = res.data || [];
+      const usedNumbers = diagnoses
+        .map((d: any) => d.diagnose_id)
+        .filter((id: string) => id && id.startsWith(prefix))
+        .map((id: string) => parseInt(id.replace(prefix, ""), 10))
+        .filter((n: number) => !isNaN(n))
+        .sort((a: number, b: number) => a - b);
+
+      let nextNum = 1;
+      for (let num of usedNumbers) {
+        if (num === nextNum) nextNum++;
+        else break;
+      }
+      return prefix + nextNum.toString().padStart(5, "0");
+    } catch {
+      return prefix + "00001";
+    }
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedFile(file);
       setResult(null);
+      setConfidence(null);
       setError(null);
       setPreviewUrl(URL.createObjectURL(file));
     }
@@ -26,67 +68,49 @@ const DoctorAI: React.FC = () => {
     }
     setLoading(true);
     setResult(null);
+    setConfidence(null);
     setError(null);
 
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
-
-      const res = await fetch("http://localhost:5000/predict", {
-        method: "POST",
-        body: formData,
+      const uploadRes = await axiosInstance.post('/upload/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
+      const imageUrl = uploadRes.data.url;
 
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error("Lỗi server AI: " + err);
-      }
+      const aiForm = new FormData();
+      aiForm.append("file", selectedFile);
+      const aiRes = await axios.post("http://localhost:5000/predict", aiForm, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const data = aiRes.data;
 
-      const data = await res.json();
       if (data.prediction) {
         setResult(data.prediction);
+        setConfidence(data.confidence);
 
-        const storedUser = localStorage.getItem('user');
-        const token = localStorage.getItem('access_token');
-        if (!storedUser || !token) {
-          console.warn('Không có thông tin người dùng hoặc token');
-          return;
-        }
-
-
-        const user = JSON.parse(storedUser);
-        const userId = user.id || user.patient_id;
+        const diagnose_id = await getNextDiagnoseId();
 
         const diagnoseData = {
-          diagnose_id: "DGN" + Math.floor(100000 + Math.random() * 900000), // random ID tạm thời
+          diagnose_id,
           prediction: data.prediction,
-          image: "https://hoseiki.vn/wp-content/uploads/2025/03/meo-cute-8.jpg", // bạn có thể dùng URL ảnh preview hiện tại, hoặc ảnh upload URL từ server AI
-          description: "Normal", // có thể thay bằng phân tích thật
-          confidence: data.confidence || 70.0,
+          image: imageUrl,
+          description: "Normal",
+          confidence: Number(data.confidence) || 70.0,
           createdBy: userId,
         };
+        await axiosInstance.post('/diagnose', diagnoseData);
 
-        try {
-          const res = await fetch('http://localhost:8000/diagnose', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(diagnoseData),
-          });
-
-          if (!res.ok) {
-            console.error('Lưu kết quả chẩn đoán thất bại');
-          }
-        } catch (e) {
-          console.error('Lỗi khi gửi chẩn đoán đến server:', e);
-        }
       } else {
         setError("Không nhận được kết quả hợp lệ từ AI.");
       }
     } catch (err: any) {
-      setError(err.message || "Đã có lỗi xảy ra.");
+      if (err.response && err.response.data && err.response.data.message) {
+        setError("Lưu kết quả thất bại: " + err.response.data.message);
+      } else {
+        setError(err.message || "Đã có lỗi xảy ra.");
+      }
     } finally {
       setLoading(false);
     }
@@ -94,7 +118,9 @@ const DoctorAI: React.FC = () => {
 
   return (
     <div className="doctorai-container">
-      <h1 className="doctorai-title">Bác sĩ AI <span className="doctorai-emoji">🩺</span></h1>
+      <h1 className="doctorai-title">
+        Bác sĩ AI <span className="doctorai-emoji">🩺</span>
+      </h1>
       <form onSubmit={handleSubmit} className="doctorai-form">
         <label className="doctorai-upload-label">
           <input
@@ -125,15 +151,18 @@ const DoctorAI: React.FC = () => {
           )}
         </button>
       </form>
-      {error && (
-        <div className="doctorai-error">
-          {error}
-        </div>
-      )}
+      {error && <div className="doctorai-error">{error}</div>}
       {result && (
         <div className="doctorai-result-box">
           <h3>Kết quả AI:</h3>
-          <div className="doctorai-result">{result}</div>
+          <div className="doctorai-result">
+            Dự đoán: <b>{result}</b>
+          </div>
+          {confidence !== null && (
+            <div className="doctorai-result">
+              Độ tin cậy: <b>{confidence}%</b>
+            </div>
+          )}
           <div className="doctorai-tip">
             (Phân loại: bkl, nv, df, mel, vasc, bcc, akiec)
           </div>

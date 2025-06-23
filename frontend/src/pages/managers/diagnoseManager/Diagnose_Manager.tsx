@@ -4,6 +4,7 @@ import '../Doctors/Doctor.css';
 import { SearchIcon, DeleteIcon, FixIcon } from '../../../assets/SVG/Svg';
 
 type PatientType = {
+    _id: string;
     patient_id: string;
     fullName: string;
     email: string;
@@ -17,7 +18,7 @@ type DiagnoseType = {
     description?: string;
     confidence?: number;
     createdAt?: string;
-    createdBy: string; // patient_id
+    createdBy: string; // ObjectId (_id) của patient
     deleted?: boolean;
 };
 
@@ -38,42 +39,31 @@ const sortableFields: { label: string, value: SortField }[] = [
     { label: "Created At", value: "createdAt" },
 ];
 
+// Lấy diagnose_id tiếp theo
 function getNextDiagnoseId(diagnoses: DiagnoseType[]): string {
     const prefix = "DGN";
-    
-    // If no diagnoses data, start from 0001
-    if (!diagnoses || diagnoses.length === 0) {
-        console.log('No diagnoses found, starting from DGN0001');
-        return prefix + "0001";
-    }
-    
+    if (!diagnoses || diagnoses.length === 0) return prefix + "0001";
     const usedNumbers = diagnoses
         .map(d => d.diagnose_id)
         .filter(id => id && id.startsWith(prefix))
         .map(id => parseInt(id.replace(prefix, ""), 10))
         .filter(n => !isNaN(n))
         .sort((a, b) => a - b);
-
-    console.log('Used diagnose numbers:', usedNumbers);
-
     let nextNum = 1;
     for (let num of usedNumbers) {
         if (num === nextNum) nextNum++;
         else break;
     }
-    
-    const result = prefix + nextNum.toString().padStart(4, "0");
-    console.log('Next diagnose ID:', result);
-    return result;
+    return prefix + nextNum.toString().padStart(4, "0");
 }
 
 const DiagnoseManager = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [patients, setPatients] = useState<PatientType[]>([]);
     const [diagnoses, setDiagnoses] = useState<DiagnoseType[]>([]);
     const [rows, setRows] = useState<RowType[]>([]);
     const [loading, setLoading] = useState(false);
+    const [patientsMap, setPatientsMap] = useState<{ [key: string]: PatientType }>({});
 
     // Diagnose Form State
     const [showAddForm, setShowAddForm] = useState(false);
@@ -83,18 +73,12 @@ const DiagnoseManager = () => {
     const [sortField, setSortField] = useState<SortField>('');
     const [sortOrder, setSortOrder] = useState<SortOrder>('increase');
 
-    // Fetch all patients & diagnoses
+    // Fetch all diagnoses & patients
     useEffect(() => {
         const fetchAll = async () => {
             setLoading(true);
             try {
-                const patientsRes = await axiosInstance.get('/patient');
                 const diagnosesRes = await axiosInstance.get('/diagnose');
-                const patientList: PatientType[] = patientsRes.data.map((pat: any) => ({
-                    patient_id: pat.patient_id,
-                    fullName: pat.fullName,
-                    email: pat.email,
-                }));
                 const diagnoseList: DiagnoseType[] = diagnosesRes.data
                     .filter((d: any) => !d.deleted)
                     .map((diag: any) => ({
@@ -105,18 +89,31 @@ const DiagnoseManager = () => {
                         description: diag.description,
                         confidence: diag.confidence,
                         createdAt: diag.createdAt,
-                        createdBy: diag.createdBy,
+                        createdBy: diag.createdBy, // ObjectId của patient
                         deleted: diag.deleted,
-                    }));                setPatients(patientList);
+                    }));
                 setDiagnoses(diagnoseList);
-                
-                console.log('Loaded diagnoses:', diagnoseList);
-                console.log('Diagnose IDs:', diagnoseList.map(d => d.diagnose_id));
 
-                // Gắn patient cho mỗi diagnose
+                const patientPromises = Array.from(
+                    new Set(diagnoseList.map(d => d.createdBy))
+                ).map(async (patientObjId) => {
+                    try {
+                        const res = await axiosInstance.get(`/patient/${patientObjId}`);
+                        return { key: patientObjId, value: res.data as PatientType };
+                    } catch {
+                        return { key: patientObjId, value: null };
+                    }
+                });
+                const patientsArr = await Promise.all(patientPromises);
+                const pMap: { [key: string]: PatientType } = {};
+                patientsArr.forEach(({ key, value }) => {
+                    if (value) pMap[key] = value;
+                });
+                setPatientsMap(pMap);
+
                 let allRows: RowType[] = diagnoseList.map(diagnose => ({
                     diagnose,
-                    patient: patientList.find(p => p.patient_id === diagnose.createdBy) || null
+                    patient: pMap[diagnose.createdBy] || null
                 }));
                 setRows(allRows);
             } finally {
@@ -184,12 +181,9 @@ const DiagnoseManager = () => {
     const endIndex = startIndex + itemsPerPage;
     const currentRows = sortedRows.slice(startIndex, endIndex);
 
-    // ---- CRUD for Diagnose ----    // Add Diagnose
+    // Add Diagnose
     const handleAddDiagnose = () => {
-        console.log('Current diagnoses data:', diagnoses);
         const nextId = getNextDiagnoseId(diagnoses);
-        console.log('Generated next ID:', nextId);
-        
         setFormDiagnose({
             diagnose_id: nextId,
             prediction: '',
@@ -289,6 +283,9 @@ const DiagnoseManager = () => {
         else { setSortField(field); setSortOrder("increase"); }
     };
 
+    // Lấy danh sách patients cho form add/edit (từ patientsMap)
+    const patientsForSelect = Object.values(patientsMap);
+
     return (
         <div className="doctor_container">
             {/* Header */}
@@ -327,8 +324,8 @@ const DiagnoseManager = () => {
                             required
                         >
                             <option value="">-- Select Patient --</option>
-                            {patients.map(p =>
-                                <option key={p.patient_id} value={p.patient_id}>
+                            {patientsForSelect.map(p =>
+                                <option key={p._id} value={p._id}>
                                     {p.patient_id} - {p.fullName}
                                 </option>
                             )}
@@ -358,8 +355,8 @@ const DiagnoseManager = () => {
                             required
                         >
                             <option value="">-- Select Patient --</option>
-                            {patients.map(p =>
-                                <option key={p.patient_id} value={p.patient_id}>
+                            {patientsForSelect.map(p =>
+                                <option key={p._id} value={p._id}>
                                     {p.patient_id} - {p.fullName}
                                 </option>
                             )}
@@ -398,7 +395,7 @@ const DiagnoseManager = () => {
                     {loading ? (
                         <div className="doctor_no_results">Loading...</div>
                     ) : currentRows.length > 0 ? (
-                        currentRows.map((row, i) => (
+                        currentRows.map((row) => (
                             <div key={row.diagnose.diagnose_id} className="doctor_table_row">
                                 <div className="doctor_table_row_grid">
                                     <div>{row.diagnose.diagnose_id}</div>
