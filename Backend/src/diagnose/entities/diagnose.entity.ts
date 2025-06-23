@@ -58,9 +58,6 @@ export class Diagnose {
 
   @Prop({ required: true })
   createdBy: string; // patient_id
-
-  @Prop({ required: true })
-  createdAt: Date;
 }
 
 export const DiagnoseSchema = SchemaFactory.createForClass(Diagnose);

@@ -48,7 +48,8 @@ import { UpdateDiagnoseDto } from './dto/update-diagnose.dto';
 export class DiagnoseService {
   constructor(
     @InjectModel(Diagnose.name) private diagnoseModel: Model<DiagnoseDocument>,
-  ) {}  async create(createDiagnoseDto: CreateDiagnoseDto) {
+  ) {}
+  async create(createDiagnoseDto: CreateDiagnoseDto) {
     const created = new this.diagnoseModel({
       ...createDiagnoseDto,
       createdAt: new Date(),
@@ -81,23 +82,15 @@ export class DiagnoseService {
     );
   }
 
-  async getNextDiagnoseId(): Promise<string> {
-    const prefix = "DGN";
-    const diagnoses = await this.diagnoseModel.find({ deleted: false }).exec();
-    
-    const usedNumbers = diagnoses
-      .map(d => d.diagnose_id)
-      .filter(id => id && id.startsWith(prefix))
-      .map(id => parseInt(id.replace(prefix, ""), 10))
-      .filter(n => !isNaN(n))
-      .sort((a, b) => a - b);
 
-    let nextNum = 1;
-    for (let num of usedNumbers) {
-      if (num === nextNum) nextNum++;
-      else break;
-    }
-    
-    return prefix + nextNum.toString().padStart(4, "0");
+  //hard delete
+  async hardDelete(diagnose_id: string) {
+    return this.diagnoseModel.deleteOne({ diagnose_id }).exec();
+  }
+  async getAllUsedIds(): Promise<string[]> {
+    const allDiagnoses = await this.diagnoseModel
+      .find({}, { diagnose_id: 1 }) // Chỉ lấy diagnose_id
+      .exec();
+    return allDiagnoses.map((d) => d.diagnose_id);
   }
 }

@@ -193,13 +193,12 @@ export default function Patient() {
     }
     setAddLoading(false);
   };
-
   const handleEditFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setEditLoading(true);
     try {
       if (editForm._id) {
-        const dataToSend = { ...editForm };
+        const { _id, ...dataToSend } = editForm; 
         if (!dataToSend.password) delete dataToSend.password;
         await axiosInstance.patch(`/patient/${editForm._id}`, dataToSend);
       }

@@ -18,13 +18,12 @@ export class SkinLesionService {
   async create(createSkinLesionDto: CreateSkinLesionDto): Promise<SkinLesion> {
     const createdSkinLesion = new this.skinLesionModel(createSkinLesionDto);
     return createdSkinLesion.save();
-  }
-  async findAll(): Promise<SkinLesion[]> {
-    return this.skinLesionModel.find().populate('product_id_list').exec();
+  }  async findAll(): Promise<SkinLesion[]> {
+    return this.skinLesionModel.find().populate('relatedProducts').exec();
   }
 
   async findOne(id: string): Promise<SkinLesion> {
-    return this.skinLesionModel.findById(id).populate('product_id_list').exec();
+    return this.skinLesionModel.findById(id).populate('relatedProducts').exec();
   }
 
   async update(
@@ -47,17 +46,17 @@ export class SkinLesionService {
     // Tìm product bằng product_id field
     const product = await this.productModel
       .findOne({ product_id: productId })
-      .exec();
-    if (!product) {
+      .exec();    if (!product) {
       throw new Error(`Product with product_id ${productId} not found`);
-    } // Thêm ObjectId của product vào skin lesion
+    }
+    // Thêm ObjectId của product vào skin lesion
     return this.skinLesionModel
       .findByIdAndUpdate(
         skinLesionId,
-        { $addToSet: { product_id_list: product._id } },
+        { $addToSet: { relatedProducts: product._id } },
         { new: true },
       )
-      .populate('product_id_list')
+      .populate('relatedProducts')
       .exec();
   }
 
@@ -68,25 +67,24 @@ export class SkinLesionService {
     // Tìm product bằng product_id field
     const product = await this.productModel
       .findOne({ product_id: productId })
-      .exec();
-    if (!product) {
+      .exec();    if (!product) {
       throw new Error(`Product with product_id ${productId} not found`);
-    } // Xóa ObjectId của product khỏi skin lesion
+    }
+    // Xóa ObjectId của product khỏi skin lesion
     return this.skinLesionModel
       .findByIdAndUpdate(
         skinLesionId,
-        { $pull: { product_id_list: product._id } },
+        { $pull: { relatedProducts: product._id } },
         { new: true },
       )
-      .populate('product_id_list')
+      .populate('relatedProducts')
       .exec();
   }
-
   // Method để lấy chỉ những field cần thiết cho display
   async findAllForDisplay(): Promise<SkinLesion[]> {
     return this.skinLesionModel
       .find()
-      .populate('product_id_list', 'title price image availability')
+      .populate('relatedProducts', 'title price image availability')
       .exec();
   }
 
@@ -94,7 +92,7 @@ export class SkinLesionService {
   async findAllForAdmin(): Promise<SkinLesion[]> {
     return this.skinLesionModel
       .find()
-      .populate('product_id_list') // Full populate
+      .populate('relatedProducts') // Full populate
       .exec();
   }
 }
