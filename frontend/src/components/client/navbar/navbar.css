@@ -97,11 +97,12 @@
 
 .left_Navbar_2_item {
   height: 80px;
+  font-family: Arial, Helvetica, sans-serif;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   padding: 0 22px;
-  font-size: 1.08rem;
+  font-size: 1rem;
   font-weight: 500;
   border: none;
   background: none;
@@ -185,11 +186,13 @@
 
 .dashboard_greeting {
   font-size: 1.01rem;
+  font-family: Arial, Helvetica, sans-serif;
   font-weight: 500;
   color: #fff;
   margin-left: 10px;
   cursor: pointer;
   display: flex;
+  /* gap:30px; */
   align-items: center;
   user-select: none;
   transition: color 0.13s;

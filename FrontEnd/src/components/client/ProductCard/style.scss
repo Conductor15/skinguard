@@ -1,35 +1,98 @@
 .cart__item {
   border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   width: 100%;
-  padding: 8px 12px;
+  // padding: 8px 12px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-
+  overflow: hidden;
   min-height: 300px; 
 
   img {
     height: 180px;
     width: 100%;
     object-fit: cover;
-    border-radius: 6px;
+    // border-radius: 6px;
+    transition: all 0.3s ease;
+    &:hover{
+      transform: scale(1.05);
+    }
+  }
+
+  &__info{
+    padding: 12px 16px;
   }
 
   h2 {
     font-size: 18px;
     margin: 12px 0 6px;
     font-weight: bold;
+    color: #1f2937;
   }
 
   .cart__item__price {
     font-weight: bold;
-    color: green;
+    color: 	#16a34a;
     font-size: 16px;
     margin-bottom: 6px;
   }
 
   p {
     font-size: 14px;
-    color: #666;
+    color: #6b7280;
+  }
+
+  .cart__item__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    height: 30px;
+    &__add {
+        background-color: #e0f2fe; // vàng đậm vừa đủ (Tailwind: yellow-400)
+        color: #0369a1;             // text xám đậm (Tailwind: gray-800)
+        padding: 8px 12px;
+        border-radius: 1rem;
+        cursor: pointer;
+        border: none;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(3, 105, 161, 0.1);;
+
+        &:hover {
+          background-color: #bae6fd; 
+          box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: scale(0.97);
+        }
+      }
+
+    &__buy {
+      background-color: #0ea5e9;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 1rem;
+      cursor: pointer;
+      border: none;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(14, 165, 233, 0.1);
+
+      &:hover {
+        background-color: #0284c7; // đậm hơn một chút
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); // hiệu ứng nổi bật
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: scale(0.97);
+      }
+    }
+
   }
 }
