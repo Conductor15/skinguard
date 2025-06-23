@@ -16,10 +16,26 @@ export class OrderController {
   findAll() {
     return this.orderService.findAll();
   }
+  // New endpoint to get orders with products details
+  @Get('with-details')
+  async findAllWithDetails() {
+    try {
+      return await this.orderService.findAllWithDetails();
+    } catch (error) {
+      console.error('Error in findAllWithDetails:', error);
+      throw error;
+    }
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(id);
+  }
+
+  // New endpoint to get single order with details
+  @Get(':id/with-details')
+  findOneWithDetails(@Param('id') id: string) {
+    return this.orderService.findOneWithDetails(id);
   }
 
   @Patch(':id')

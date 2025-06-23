@@ -62,6 +62,11 @@ export class DiagnoseController {
     return this.diagnoseService.findAll();
   }
 
+  @Get('next-id')
+  getNextId() {
+    return this.diagnoseService.getNextDiagnoseId();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.diagnoseService.findOne(id);

@@ -9,10 +9,10 @@ export class Order {
   order_id: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Patient', required: true })
-  orderBy: Types.ObjectId; // FK to Patient
+  orderBy: string; // FK to Patient
 
   @Prop({ required: true })
-  orderDate: Date; // Đổi từ 'date' thành 'orderDate'
+  orderDate: Date; 
 
   @Prop({ required: true, default: 'pending' })
   status: string; // pending, confirmed, shipped, delivered, cancelled

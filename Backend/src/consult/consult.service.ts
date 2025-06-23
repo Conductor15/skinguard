@@ -71,21 +71,31 @@ export class ConsultService {
 
     return result;
   }
-
   async findAll(): Promise<Consult[]> {
-    return this.consultModel
-      .find()
-      .populate('doctor_id', 'fullName')
-      .populate('patient_id', 'fullName')
-      .exec();
+    try {
+      return this.consultModel
+        .find()
+        .populate('doctor_id', 'fullName')
+        .populate('patient_id', 'fullName')
+        .exec();
+    } catch (error) {
+      console.error('Error in consult findAll with populate:', error);
+      // Fallback: return without populate
+      return this.consultModel.find().exec();
+    }
   }
-
   async findOne(id: string): Promise<Consult | null> {
-    return this.consultModel
-      .findById(id)
-      .populate('doctor_id', 'fullName')
-      .populate('patient_id', 'fullName')
-      .exec();
+    try {
+      return this.consultModel
+        .findById(id)
+        .populate('doctor_id', 'fullName')
+        .populate('patient_id', 'fullName')
+        .exec();
+    } catch (error) {
+      console.error('Error in consult findOne with populate:', error);
+      // Fallback: return without populate
+      return this.consultModel.findById(id).exec();
+    }
   }
 
   async update(

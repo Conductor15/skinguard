@@ -40,6 +40,13 @@ const sortableFields: { label: string, value: SortField }[] = [
 
 function getNextDiagnoseId(diagnoses: DiagnoseType[]): string {
     const prefix = "DGN";
+    
+    // If no diagnoses data, start from 0001
+    if (!diagnoses || diagnoses.length === 0) {
+        console.log('No diagnoses found, starting from DGN0001');
+        return prefix + "0001";
+    }
+    
     const usedNumbers = diagnoses
         .map(d => d.diagnose_id)
         .filter(id => id && id.startsWith(prefix))
@@ -47,12 +54,17 @@ function getNextDiagnoseId(diagnoses: DiagnoseType[]): string {
         .filter(n => !isNaN(n))
         .sort((a, b) => a - b);
 
+    console.log('Used diagnose numbers:', usedNumbers);
+
     let nextNum = 1;
     for (let num of usedNumbers) {
         if (num === nextNum) nextNum++;
         else break;
     }
-    return prefix + nextNum.toString().padStart(4, "0");
+    
+    const result = prefix + nextNum.toString().padStart(4, "0");
+    console.log('Next diagnose ID:', result);
+    return result;
 }
 
 const DiagnoseManager = () => {
@@ -95,9 +107,11 @@ const DiagnoseManager = () => {
                         createdAt: diag.createdAt,
                         createdBy: diag.createdBy,
                         deleted: diag.deleted,
-                    }));
-                setPatients(patientList);
+                    }));                setPatients(patientList);
                 setDiagnoses(diagnoseList);
+                
+                console.log('Loaded diagnoses:', diagnoseList);
+                console.log('Diagnose IDs:', diagnoseList.map(d => d.diagnose_id));
 
                 // Gắn patient cho mỗi diagnose
                 let allRows: RowType[] = diagnoseList.map(diagnose => ({
@@ -170,12 +184,14 @@ const DiagnoseManager = () => {
     const endIndex = startIndex + itemsPerPage;
     const currentRows = sortedRows.slice(startIndex, endIndex);
 
-    // ---- CRUD for Diagnose ----
-
-    // Add Diagnose
+    // ---- CRUD for Diagnose ----    // Add Diagnose
     const handleAddDiagnose = () => {
+        console.log('Current diagnoses data:', diagnoses);
+        const nextId = getNextDiagnoseId(diagnoses);
+        console.log('Generated next ID:', nextId);
+        
         setFormDiagnose({
-            diagnose_id: getNextDiagnoseId(diagnoses),
+            diagnose_id: nextId,
             prediction: '',
             image: '',
             description: '',
