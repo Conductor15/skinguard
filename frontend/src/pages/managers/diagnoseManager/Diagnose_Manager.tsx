@@ -198,44 +198,44 @@ const DiagnoseManager = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentRows = sortedRows.slice(startIndex, endIndex);
 
-    // Add Diagnose
-    const handleAddDiagnose = () => {
-        const nextId = getNextDiagnoseId(diagnoses);
-        setFormDiagnose({
-            diagnose_id: nextId,
-            prediction: '',
-            image: '',
-            description: '',
-            confidence: undefined,
-            createdBy: '',
-        });
-        setShowAddForm(true);
-    };
-    const handleAddFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value, type } = e.target;
-        setFormDiagnose(prev => ({
-            ...prev,
-            [name]: type === 'number' ? Number(value) : value
-        }));
-    };
-    const handleAddFormSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!formDiagnose.diagnose_id || !formDiagnose.prediction || !formDiagnose.createdBy) {
-            alert("Please fill in all required fields.");
-            return;
-        }
-        try {
-            await axiosInstance.post('/diagnose', formDiagnose);
-            setShowAddForm(false);
-            window.location.reload();
-        } catch {
-            alert('Add diagnose failed!');
-        }
-    };
-    const handleCancelAdd = () => {
-        setShowAddForm(false);
-        setFormDiagnose({});
-    };
+  // Add Diagnose
+  const handleAddDiagnose = () => {
+      const nextId = getNextDiagnoseId(diagnoses);
+      setFormDiagnose({
+          diagnose_id: nextId,
+          prediction: '',
+          image: '',
+          description: '',
+          confidence: undefined,
+          createdBy: '',
+      });
+      setShowAddForm(true);
+  };
+  const handleAddFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      const { name, value, type } = e.target;
+      setFormDiagnose(prev => ({
+          ...prev,
+          [name]: type === 'number' ? Number(value) : value
+      }));
+  };
+  const handleAddFormSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!formDiagnose.diagnose_id || !formDiagnose.prediction || !formDiagnose.createdBy) {
+          alert("Please fill in all required fields.");
+          return;
+      }
+      try {
+          await axiosInstance.post('/diagnose', formDiagnose);
+          setShowAddForm(false);
+          window.location.reload();
+      } catch {
+          alert('Add diagnose failed!');
+      }
+  };
+  const handleCancelAdd = () => {
+      setShowAddForm(false);
+      setFormDiagnose({});
+  };
 
   // Edit Diagnose
   const handleEditDiagnose = (row: RowType) => {

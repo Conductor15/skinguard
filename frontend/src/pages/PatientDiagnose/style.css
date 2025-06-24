@@ -1,3 +1,4 @@
+/* Background */
 .background_diagnose_history {
     min-height: 100vh;
     width: 100vw;
@@ -5,8 +6,9 @@
     padding-bottom: 40px;
 }
 
+/* Header */
 .header_diagnose_history {
-    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,6 +19,47 @@
     letter-spacing: 2px;
 }
 
+/* Search */
+.search_container_diagnose_history {
+    position: relative;
+    max-width: 30rem;
+    left: 14%;
+    margin-bottom: 20px;
+}
+
+.search_icon_diagnose_history {
+    position: absolute;
+    top : 50%;
+    left: 2%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.search_input_diagnose_history {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    color: #111827;
+    outline: none;
+    transition: all 0.2s;
+    border-radius: 0.5rem;
+}
+
+.search_input_diagnose_history:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    border-color: #3b82f6;
+}
+
+.search_input_diagnose_history::placeholder {
+    color: #6b7280;
+}
+
+/* Table */
 .table_diagnose_history {
     display: flex;
     flex-direction: column;
@@ -30,19 +73,25 @@
     width: 95%;
 }
 
+/* Header Table */
 .header_table_diagnose_history {
     display: grid;
     grid-template-columns: 1.2fr 1fr 2fr 1fr 1.2fr 1.3fr;
     gap: 0;
     background: #e6eeff;
-    border-bottom: #d0dae9 2px solid;
     font-weight: 500;
     font-size: 19px;
     color: #244063;
-    padding: 18px 10px;
+    padding: 28px 20px;
     border-radius: 12px 12px 0 0;
+    white-space: nowrap;
 }
 
+.header_table_diagnose_history:hover {
+    cursor: pointer;
+}
+
+/* Row Table */
 .row_diagnose_history {
     display: grid;
     grid-template-columns: 1.2fr 1fr 2fr 1fr 1.2fr 1.3fr;
@@ -50,7 +99,7 @@
     gap: 0;
     background: #f4f8fd;
     margin-bottom: 0;
-    padding: 16px 10px;
+    padding: 24px 20px;
     font-size: 17px;
     color: #253a50;
     border-bottom: 1px solid #e8ecf2;
@@ -90,4 +139,12 @@
     font-size: 28px;
     color: #2b4360;
     background: #fff;
+}
+
+.diagnose_pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 200px;
 }
