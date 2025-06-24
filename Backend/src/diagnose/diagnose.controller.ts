@@ -24,6 +24,12 @@ export class DiagnoseController {
   findAll() {
     return this.diagnoseService.findAll();
   }
+  // Endpoint to get the next diagnose ID
+  // This is useful for generating unique IDs before creating a new diagnose
+  @Get('next-id')
+  getNextId() {
+    return this.diagnoseService.getNextDiagnoseId();
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -38,9 +44,9 @@ export class DiagnoseController {
     return this.diagnoseService.update(id, updateDiagnoseDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.diagnoseService.remove(id);
+  @Delete(':diagnose_id')
+  remove(@Param('diagnose_id') diagnose_id: string) {
+    return this.diagnoseService.remove(diagnose_id);
   }
 }
 // import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';

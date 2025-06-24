@@ -18,7 +18,8 @@ export class SkinLesionService {
   async create(createSkinLesionDto: CreateSkinLesionDto): Promise<SkinLesion> {
     const createdSkinLesion = new this.skinLesionModel(createSkinLesionDto);
     return createdSkinLesion.save();
-  }  async findAll(): Promise<SkinLesion[]> {
+  }
+  async findAll(): Promise<SkinLesion[]> {
     return this.skinLesionModel.find().populate('relatedProducts').exec();
   }
 
@@ -46,7 +47,8 @@ export class SkinLesionService {
     // Tìm product bằng product_id field
     const product = await this.productModel
       .findOne({ product_id: productId })
-      .exec();    if (!product) {
+      .exec();
+    if (!product) {
       throw new Error(`Product with product_id ${productId} not found`);
     }
     // Thêm ObjectId của product vào skin lesion
@@ -67,7 +69,8 @@ export class SkinLesionService {
     // Tìm product bằng product_id field
     const product = await this.productModel
       .findOne({ product_id: productId })
-      .exec();    if (!product) {
+      .exec();
+    if (!product) {
       throw new Error(`Product with product_id ${productId} not found`);
     }
     // Xóa ObjectId của product khỏi skin lesion
