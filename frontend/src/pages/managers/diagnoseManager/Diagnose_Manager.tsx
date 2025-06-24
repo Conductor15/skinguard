@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import axiosInstance from "../../../api/Axios";
 import "../Doctors/Doctor.css";
 import { SearchIcon, DeleteIcon, FixIcon } from "../../../assets/SVG/Svg";
@@ -47,23 +47,6 @@ const sortableFields: { label: string; value: SortField }[] = [
   { label: "Created At", value: "createdAt" },
 ];
 
-// Lấy diagnose_id tiếp theo
-// function getNextDiagnoseId(diagnoses: DiagnoseType[]): string {
-//     const prefix = "DGN";
-//     if (!diagnoses || diagnoses.length === 0) return prefix + "0001";
-//     const usedNumbers = diagnoses
-//         .map(d => d.diagnose_id)
-//         .filter(id => id && id.startsWith(prefix))
-//         .map(id => parseInt(id.replace(prefix, ""), 10))
-//         .filter(n => !isNaN(n))
-//         .sort((a, b) => a - b);
-//     let nextNum = 1;
-//     for (let num of usedNumbers) {
-//         if (num === nextNum) nextNum++;
-//         else break;
-//     }
-//     return prefix + nextNum.toString().padStart(4, "0");
-// }
 
 const DiagnoseManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,9 +54,7 @@ const DiagnoseManager = () => {
   const [diagnoses, setDiagnoses] = useState<DiagnoseType[]>([]);
   const [rows, setRows] = useState<RowType[]>([]);
   const [loading, setLoading] = useState(false);
-  const [patientsMap, setPatientsMap] = useState<{
-    [key: string]: PatientType;
-  }>({});
+  const [patients, setPatients] = useState<PatientType[]>([]);
 
   // Diagnose Form State
   const [showAddForm, setShowAddForm] = useState(false);
@@ -82,56 +63,54 @@ const DiagnoseManager = () => {
   const itemsPerPage = 5;
   const [sortField, setSortField] = useState<SortField>("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("increase");
-
+  const [addImageUploading, setAddImageUploading] = useState(false);
+  const [editImageUploading, setEditImageUploading] = useState(false);
   // Fetch all diagnoses & patients
   useEffect(() => {
-    const fetchAll = async () => {
-      setLoading(true);
-      try {
-        const diagnosesRes = await axiosInstance.get("/diagnose");
-        const diagnoseList: DiagnoseType[] = diagnosesRes.data
-          // .filter((d: any) => !d.deleted)
-          .map((diag: any) => ({
-            _id: diag._id,
-            diagnose_id: diag.diagnose_id,
-            prediction: diag.prediction,
-            image: diag.image,
-            description: diag.description,
-            confidence: diag.confidence,
-            createdAt: diag.createdAt,
-            createdBy: diag.createdBy, // ObjectId của patient
-            deleted: diag.deleted,
-          }));
-        setDiagnoses(diagnoseList);
-
-        const patientPromises = Array.from(
-          new Set(diagnoseList.map((d) => d.createdBy))
-        ).map(async (patientObjId) => {
-          try {
-            const res = await axiosInstance.get(`/patient/${patientObjId}`);
-            return { key: patientObjId, value: res.data as PatientType };
-          } catch {
-            return { key: patientObjId, value: null };
-          }
-        });
-        const patientsArr = await Promise.all(patientPromises);
-        const pMap: { [key: string]: PatientType } = {};
-        patientsArr.forEach(({ key, value }) => {
-          if (value) pMap[key] = value;
-        });
-        setPatientsMap(pMap);
-
-        let allRows: RowType[] = diagnoseList.map((diagnose) => ({
-          diagnose,
-          patient: pMap[diagnose.createdBy] || null,
-        }));
-        setRows(allRows);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAll();
+    fetchDiagnoses();
+    fetchPatients();
   }, []);
+
+  const fetchPatients = async () => {
+    try {
+      const res = await axiosInstance.get("/patient");
+      const patientList: PatientType[] = res.data.map((pat: any) => ({
+        _id: pat._id,
+        patient_id: pat.patient_id,
+        fullName: pat.fullName,
+        email: pat.email,
+      }));
+      setPatients(patientList);
+    } catch (error) {
+      console.error("Failed to fetch patients:", error);
+      setPatients([]);
+    }
+  };
+
+  const fetchDiagnoses = async () => {
+    setLoading(true);
+    try {
+      const diagnosesRes = await axiosInstance.get("/diagnose");
+      const diagnoseList: DiagnoseType[] = diagnosesRes.data
+        // .filter((d: any) => !d.deleted)
+        .map((diag: any) => ({
+          _id: diag._id,
+          diagnose_id: diag.diagnose_id,
+          prediction: diag.prediction,
+          image: diag.image,
+          description: diag.description,
+          confidence: diag.confidence,
+          createdAt: diag.createdAt,
+          createdBy: diag.createdBy, // ObjectId của patient
+          deleted: diag.deleted,
+        }));
+      setDiagnoses(diagnoseList);
+    } catch (error) {
+      console.error("Failed to fetch diagnoses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter/search
   const filteredRows = rows.filter(
@@ -255,6 +234,24 @@ const DiagnoseManager = () => {
     setFormDiagnose({});
   };
 
+  // Image upload for Add form
+  const handleAddImageFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAddImageUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await axiosInstance.post('/upload/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setFormDiagnose(prev => ({ ...prev, image: res.data.url }));
+    } catch (err) {
+      alert('Upload image failed!');
+    }
+    setAddImageUploading(false);
+  };
+
   // Edit Diagnose
   const handleEditDiagnose = (row: RowType) => {
     setFormDiagnose({ ...row.diagnose });
@@ -296,6 +293,24 @@ const DiagnoseManager = () => {
   const handleCancelEdit = () => {
     setShowEditForm(false);
     setFormDiagnose({});
+  };
+
+  // Image upload for Edit form
+  const handleEditImageFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setEditImageUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await axiosInstance.post('/upload/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setFormDiagnose(prev => ({ ...prev, image: res.data.url }));
+    } catch (err) {
+      alert('Upload image failed!');
+    }
+    setEditImageUploading(false);
   };
 
   // Delete Diagnose
@@ -341,9 +356,23 @@ const DiagnoseManager = () => {
       setSortOrder("increase");
     }
   };
+  // Create patient name lookup function
+  const getPatientName = (createdBy: string) => {
+    const patient = patients.find((p) => p._id === createdBy);
+    return patient?.fullName || "Unknown";
+  };
 
-  // Lấy danh sách patients cho form add/edit (từ patientsMap)
-  const patientsForSelect = Object.values(patientsMap);
+  // Update rows when diagnoses or patients change
+  useEffect(() => {
+    const allRows: RowType[] = diagnoses.map((diagnose) => ({
+      diagnose,
+      patient: patients.find((p) => p._id === diagnose.createdBy) || null,
+    }));
+    setRows(allRows);
+  }, [diagnoses, patients]);
+
+  // Lấy danh sách patients cho form add/edit
+  const patientsForSelect = patients;
 
   return (
     <div className="doctor_container">
@@ -396,15 +425,34 @@ const DiagnoseManager = () => {
               name="prediction"
               placeholder="Prediction"
               value={formDiagnose.prediction || ""}
-              onChange={handleAddFormChange}
-              required
+              onChange={handleAddFormChange}              required
             />
-            <input
-              name="image"
-              placeholder="Image URL"
-              value={formDiagnose.image || ""}
-              onChange={handleAddFormChange}
-            />
+            {/* Image upload */}
+            <div style={{ marginBottom: 8 }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleAddImageFileChange}
+                disabled={addImageUploading}
+                title="Upload diagnose image"
+              />
+              {addImageUploading && <span>Uploading...</span>}
+            </div>
+            {/* Show preview */}
+            {formDiagnose.image && (
+              <img 
+                src={formDiagnose.image} 
+                alt="preview" 
+                style={{ 
+                  width: 80, 
+                  height: 80, 
+                  objectFit: 'cover', 
+                  border: '1px solid #eee', 
+                  borderRadius: 4,
+                  marginBottom: 8 
+                }} 
+              />
+            )}
             <textarea
               name="description"
               placeholder="Description"
@@ -468,15 +516,34 @@ const DiagnoseManager = () => {
               name="prediction"
               placeholder="Prediction"
               value={formDiagnose.prediction || ""}
-              onChange={handleEditFormChange}
-              required
+              onChange={handleEditFormChange}              required
             />
-            <input
-              name="image"
-              placeholder="Image URL"
-              value={formDiagnose.image || ""}
-              onChange={handleEditFormChange}
-            />
+            {/* Image upload */}
+            <div style={{ marginBottom: 8 }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleEditImageFileChange}
+                disabled={editImageUploading}
+                title="Upload diagnose image"
+              />
+              {editImageUploading && <span>Uploading...</span>}
+            </div>
+            {/* Show preview */}
+            {formDiagnose.image && (
+              <img 
+                src={formDiagnose.image} 
+                alt="preview" 
+                style={{ 
+                  width: 80, 
+                  height: 80, 
+                  objectFit: 'cover', 
+                  border: '1px solid #eee', 
+                  borderRadius: 4,
+                  marginBottom: 8 
+                }} 
+              />
+            )}
             <textarea
               name="description"
               placeholder="Description"

@@ -97,6 +97,10 @@ export class DiagnoseService {
   async hardDelete(diagnose_id: string) {
     return this.diagnoseModel.deleteOne({ diagnose_id }).exec();
   }
+  /**
+   * Lấy tất cả diagnose_id đã sử dụng (bao gồm cả deleted)
+   * @returns Danh sách diagnose_id đã sử dụng
+   */
   async getAllUsedIds(): Promise<string[]> {
     const allDiagnoses = await this.diagnoseModel
       .find({}, { diagnose_id: 1 }) // Chỉ lấy diagnose_id
