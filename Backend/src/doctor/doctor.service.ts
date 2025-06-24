@@ -28,9 +28,8 @@ export class DoctorService {
     const createdDoctor = new this.doctorModel(doctorData);
     return createdDoctor.save();
   }
-
   async findAll(): Promise<Doctor[]> {
-    return this.doctorModel.find({ deleted: { $ne: true } }).exec();
+    return this.doctorModel.find({}).exec(); // Lấy tất cả kể cả deleted để frontend có thể hiển thị
   }
   async findOne(id: string): Promise<Doctor> {
     return this.doctorModel.findOne({ _id: id, deleted: { $ne: true } }).exec();
@@ -58,14 +57,49 @@ export class DoctorService {
    */
   async hardDelete(id: string): Promise<Doctor> {
     return this.doctorModel.findByIdAndDelete(id).exec();
-  }
-
-  /**
+  }  /**
    * soft delete a doctor by ID
    */
   async softDelete(id: string): Promise<Doctor> {
+    // Lấy doctor hiện tại để lưu previousStatus
+    const currentDoctor = await this.doctorModel.findById(id).exec();
+    if (!currentDoctor) {
+      throw new Error('Doctor not found');
+    }
+
     return this.doctorModel
-      .findByIdAndUpdate(id, { deleted: true }, { new: true })
+      .findByIdAndUpdate(
+        id, 
+        { 
+          deleted: true, 
+          previousStatus: currentDoctor.status, // Lưu status hiện tại
+          status: 'Suspended' 
+        }, 
+        { new: true }
+      )
+      .exec();
+  }
+
+  /**
+   * restore a soft deleted doctor by ID
+   */
+  async restore(id: string): Promise<Doctor> {
+    // Lấy doctor hiện tại để khôi phục previousStatus
+    const currentDoctor = await this.doctorModel.findById(id).exec();
+    if (!currentDoctor) {
+      throw new Error('Doctor not found');
+    }
+
+    const updateData: any = { deleted: false };
+    
+    // Nếu có previousStatus, khôi phục nó
+    if (currentDoctor.previousStatus) {
+      updateData.status = currentDoctor.previousStatus;
+      updateData.previousStatus = undefined; // Xóa previousStatus
+    }
+
+    return this.doctorModel
+      .findByIdAndUpdate(id, updateData, { new: true })
       .exec();
   }
 

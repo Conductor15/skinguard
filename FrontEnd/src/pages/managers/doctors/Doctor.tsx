@@ -86,11 +86,11 @@ const Doctor = () => {
                     email: doc.email,
                     password: '', // Không trả về password
                     discipline: doc.discipline,
-                    phoneNumber: doc.phoneNumber,
-                    avatar: doc.avatar,
+                    phoneNumber: doc.phoneNumber,                    avatar: doc.avatar,
                     rating: doc.rating,
                     status: doc.status,
-                    experienceYears: doc.experienceYears
+                    experienceYears: doc.experienceYears,
+                    deleted: doc.deleted || false
                 }));
                 setDoctorsData(filtered);
                 setLoading(false);
@@ -339,17 +339,28 @@ const Doctor = () => {
     const handleCancelEdit = () => {
         setShowEditForm(false);
         setEditForm(null);
-    };
-
-    // -------- Delete Doctor --------
+    };    // -------- Delete Doctor --------
     const handleDeleteDoctor = async (doctorId: string) => {
-        if (window.confirm('Are you sure you want to delete this doctor??')) {
+        if (window.confirm('Are you sure you want to delete this doctor?')) {
             try {
                 await axiosInstance.delete(`/doctor/${doctorId}`);
-                setDoctorsData(prev => prev.filter(doc => doc._id !== doctorId));
+                fetchDoctors(); // Refresh để cập nhật trạng thái deleted
                 alert('Doctor deleted successfully!');
             } catch (err: any) {
                 alert('Delete doctor failed!');
+            }
+        }
+    };
+
+    // -------- Restore Doctor --------
+    const handleRestoreDoctor = async (doctorId: string) => {
+        if (window.confirm('Are you sure you want to restore this doctor?')) {
+            try {
+                await axiosInstance.patch(`/doctor/${doctorId}/restore`);
+                fetchDoctors(); // Refresh để cập nhật trạng thái
+                alert('Doctor restored successfully!');
+            } catch (err: any) {
+                alert('Restore doctor failed!');
             }
         }
     };
@@ -634,30 +645,50 @@ const Doctor = () => {
                                     <div>{doctor.doctor_id}</div>
                                     <div>{doctor.fullName}</div>
                                     <div>{doctor.email}</div>
-                                    <div>{doctor.phoneNumber}</div>
-                                    <div>
-                                        {doctor.rating}
+                                    <div>{doctor.phoneNumber}</div>                                    <div>{doctor.rating}
                                         <span className="doctor_rating_star">⭐</span>
                                     </div>
-                                    <div>{doctor.status}</div>
+                                    <div>
+                                        <span style={{ 
+                                            color: doctor.deleted ? '#ff4444' : '#4caf50',
+                                            fontWeight: 'bold'
+                                        }}>
+                                            {doctor.status}
+                                        </span>
+                                        {doctor.deleted && <span style={{ color: '#ff4444', marginLeft: 8 }}>(Deleted)</span>}
+                                    </div>
                                     <div>{doctor.experienceYears}</div>
                                     <div className="doctor_actions">
-                                        <button
-                                            onClick={() => handleEditDoctor(doctor._id!)}
-                                            className="action_button edit_button"
-                                            title="Edit Profile"
-                                        >
-                                            <FixIcon className="action_icon" />
-                                            Fix
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteDoctor(doctor._id!)}
-                                            className="action_button delete_button"
-                                            title="Delete doctor"
-                                        >
-                                            <DeleteIcon className="action_icon" />
-                                            Delete
-                                        </button>
+                                        {!doctor.deleted ? (
+                                            <>
+                                                <button
+                                                    onClick={() => handleEditDoctor(doctor._id!)}
+                                                    className="action_button edit_button"
+                                                    title="Edit Profile"
+                                                >
+                                                    <FixIcon className="action_icon" />
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteDoctor(doctor._id!)}
+                                                    className="action_button delete_button"
+                                                    title="Delete doctor"
+                                                >
+                                                    <DeleteIcon className="action_icon" />
+                                                    Delete
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleRestoreDoctor(doctor._id!)}
+                                                className="action_button edit_button"
+                                                title="Restore doctor"
+                                                style={{ backgroundColor: '#4caf50' }}
+                                            >
+                                                <FixIcon className="action_icon" />
+                                                Undo
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

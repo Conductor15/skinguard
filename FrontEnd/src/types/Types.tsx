@@ -24,6 +24,7 @@ export type DoctorType = {
     status?: string;
     experienceYears?: number;
     consult_list_id?: string[];
+    deleted?: boolean;
 }
 
 // Patient

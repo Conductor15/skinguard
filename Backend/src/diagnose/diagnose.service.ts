@@ -73,17 +73,26 @@ export class DiagnoseService {
       { new: true },
     );
   }
-
   /**
    * Xóa một diagnose theo ID (soft delete)
    * @param diagnose_id ID của diagnose cần xóa
    * @returns Diagnose đã được xóa
    */
   async remove(diagnose_id: string) {
-    // Soft delete
+    // Find the diagnose first to save current status
+    const diagnose = await this.diagnoseModel.findOne({ diagnose_id });
+    if (!diagnose) {
+      throw new Error(`Diagnose with ID ${diagnose_id} not found`);
+    }
+
+    // Soft delete with status change
     return this.diagnoseModel.findOneAndUpdate(
       { diagnose_id },
-      { deleted: true },
+      { 
+        deleted: true,
+        // previousStatus: diagnose.status,
+        status: 'Suspended'
+      },
       { new: true },
     );
   }
@@ -97,6 +106,28 @@ export class DiagnoseService {
   async hardDelete(diagnose_id: string) {
     return this.diagnoseModel.deleteOne({ diagnose_id }).exec();
   }
+  /**
+   * Khôi phục một diagnose đã bị xóa mềm (restore)
+   * @param diagnose_id ID của diagnose cần khôi phục
+   * @returns Diagnose đã được khôi phục
+   */
+  async restore(diagnose_id: string) {
+    // Find the diagnose first to get previous status
+    const diagnose = await this.diagnoseModel.findOne({ diagnose_id });
+    if (!diagnose) {
+      throw new Error(`Diagnose with ID ${diagnose_id} not found`);
+    }
+
+    return this.diagnoseModel.findOneAndUpdate(
+      { diagnose_id },
+      { 
+        deleted: false,
+        // status: diagnose.previousStatus || 'Active'
+      },
+      { new: true },
+    );
+  }
+
   /**
    * Lấy tất cả diagnose_id đã sử dụng (bao gồm cả deleted)
    * @returns Danh sách diagnose_id đã sử dụng

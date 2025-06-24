@@ -23,11 +23,10 @@ export class Doctor {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Consult' }], default: [] })
   consult_list_id: Types.ObjectId[];
-
   @Prop()
   avatar: string;
 
-  @Prop({ required: true })
+  @Prop({ default: false })
   deleted: boolean;
 
   @Prop({ required: true })
@@ -39,9 +38,11 @@ export class Doctor {
 
   @Prop({ required: true })
   phoneNumber: string;
-
   @Prop()
   status: string;
+
+  @Prop()
+  previousStatus: string; // Lưu trữ status trước khi delete
 
   @Prop()
   experienceYears: number;

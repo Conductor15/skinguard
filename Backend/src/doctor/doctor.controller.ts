@@ -44,4 +44,9 @@ export class DoctorController {
   remove(@Param('id') id: string) {
     return this.doctorService.softDelete(id);
   }
+
+  @Patch(':id/restore')
+  restore(@Param('id') id: string) {
+    return this.doctorService.restore(id);
+  }
 }

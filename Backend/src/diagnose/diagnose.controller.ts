@@ -42,15 +42,21 @@ export class DiagnoseController {
     @Body() updateDiagnoseDto: UpdateDiagnoseDto,
   ) {
     return this.diagnoseService.update(id, updateDiagnoseDto);
-  }
-  // endpoint for soft delete
+  }  // endpoint for soft delete
   @Delete(':diagnose_id')
   remove(@Param('diagnose_id') diagnose_id: string) {
     return this.diagnoseService.remove(diagnose_id);
   }
+
   // endpoint for hard delete
   @Delete(':diagnose_id/hard')
   hardRemove(@Param('diagnose_id') diagnose_id: string) {
     return this.diagnoseService.hardDelete(diagnose_id);
+  }
+
+  // endpoint for restore soft deleted diagnose
+  @Patch(':diagnose_id/restore')
+  restore(@Param('diagnose_id') diagnose_id: string) {
+    return this.diagnoseService.restore(diagnose_id);
   }
 }
