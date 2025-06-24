@@ -17,6 +17,15 @@ const sortableFields: { label: string, value: SortField }[] = [
     { label: "Experience Years", value: "experienceYears" }
 ];
 
+// Doctor status options
+const doctorStatusOptions = [
+  { value: "Active", label: "Active - Đang hoạt động" },
+  { value: "Inactive", label: "Inactive - Tạm nghỉ" },
+  { value: "Available", label: "Available - Sẵn sàng" },
+  { value: "Busy", label: "Busy - Đang bận" },
+  { value: "Suspended", label: "Suspended - Đình chỉ" }
+];
+
 // Generate a unique ID for a new doctor 
 function getNextDoctorId(doctors: DoctorType[]): string {
     const prefix = "DCT";
@@ -135,27 +144,33 @@ const Doctor = () => {
     const totalPages = Math.ceil(sortedDoctors.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentDoctors = sortedDoctors.slice(startIndex, endIndex);
+    const currentDoctors = sortedDoctors.slice(startIndex, endIndex);    // -------- Add Doctor --------
+    const handleAddDoctor = async () => {
+        try {
+            // Gọi API để lấy next ID
+            const response = await axiosInstance.get('/doctor/next-id');
+            const nextId = response.data;
 
-    // -------- Add Doctor --------
-    const handleAddDoctor = () => {
-        const newId = getNextDoctorId(doctorsData);
-        setAddForm({
-            doctor_id: newId,
-            fullName: '',
-            email: '',
-            password: '',
-            discipline: '',
-            phoneNumber: '',
-            avatar: '',
-            rating: 1,
-            status: '',
-            experienceYears: 0
-        });
-        setShowAddForm(true);
+            setAddForm({
+                doctor_id: nextId,
+                fullName: '',
+                email: '',
+                password: '',
+                discipline: '',
+                phoneNumber: '',
+                avatar: '',
+                rating: 1,
+                status: 'Active',
+                experienceYears: 0
+            });
+            setShowAddForm(true);
+        } catch (error) {
+            console.error('Error getting next ID:', error);
+            alert('Failed to generate next ID. Please try again.');
+        }
     };
 
-    const handleAddFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAddFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setAddForm(prev => ({
             ...prev,
             [e.target.name]: e.target.type === "number"
@@ -248,7 +263,7 @@ const Doctor = () => {
         }
     };
 
-    const handleEditFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEditFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         if (!editForm) return;
         setEditForm({
             ...editForm,
@@ -473,11 +488,17 @@ const Doctor = () => {
                         {/* Show avatar preview */}
                         {addForm.avatar && (
                             <img src={addForm.avatar} alt='avatar' style={{ width: 80, height: 80, objectFit: 'cover', border: '1px solid #eee', borderRadius: 4 }} />
-                        )}
-
-                        <label htmlFor="rating">Rating</label>
-                        <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="" value={addForm.rating} onChange={handleAddFormChange} />
-                        <input name="status" placeholder="Status" value={addForm.status} onChange={handleAddFormChange} />
+                        )}                        <label htmlFor="rating">Rating</label>
+                        <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="Rating (1-5)" value={addForm.rating} onChange={handleAddFormChange} />
+                        
+                        <label htmlFor="status">Status</label>
+                        <select name="status" value={addForm.status} onChange={handleAddFormChange} required>
+                            {doctorStatusOptions.map(option => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
 
                         <label htmlFor="experienceYears">Experience Years</label>
                         <input name="experienceYears" type="number" placeholder="Type..." value={addForm.experienceYears} onChange={handleAddFormChange} />
@@ -545,14 +566,15 @@ const Doctor = () => {
                             step={0.1}
                             placeholder="Rating"
                             value={editForm.rating}
-                            onChange={handleEditFormChange}
-                        />
-                        <input
-                            name="status"
-                            placeholder="Status"
-                            value={editForm.status}
-                            onChange={handleEditFormChange}
-                        />
+                            onChange={handleEditFormChange}                        />
+                        <label htmlFor="status">Status</label>
+                        <select name="status" value={editForm.status} onChange={handleEditFormChange} required>
+                            {doctorStatusOptions.map(option => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
                         <input
                             name="experienceYears"
                             type="number"

@@ -25,6 +25,11 @@ export class DoctorController {
     return this.doctorService.findAll();
   }
 
+  @Get('next-id')
+  getNextId() {
+    return this.doctorService.getNextDoctorId();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.doctorService.findOne(id);
@@ -34,9 +39,9 @@ export class DoctorController {
   update(@Param('id') id: string, @Body() updateDoctorDto: UpdateDoctorDto) {
     return this.doctorService.update(id, updateDoctorDto);
   }
-
+ 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.doctorService.remove(id);
+    return this.doctorService.softDelete(id);
   }
 }

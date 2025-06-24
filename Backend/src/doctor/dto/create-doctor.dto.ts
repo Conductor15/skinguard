@@ -1,4 +1,21 @@
-import { IsEmail, IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  IsOptional,
+  IsNumber,
+  Min,
+  Max,
+  IsEnum,
+  IsBoolean,
+} from 'class-validator';
+
+export enum DoctorStatus {
+  ACTIVE = 'Active',
+  INACTIVE = 'Inactive',
+  AVAILABLE = 'Available',
+  BUSY = 'Busy',
+  SUSPENDED = 'Suspended',
+}
 
 export class CreateDoctorDto {
   @IsString()
@@ -28,10 +45,13 @@ export class CreateDoctorDto {
 
   @IsString()
   phoneNumber: string;
+  @IsOptional()
+  @IsEnum(DoctorStatus)
+  status?: DoctorStatus;
 
   @IsOptional()
-  @IsString()
-  status?: string;
+  @IsBoolean()
+  deleted?: boolean;
 
   @IsOptional()
   @IsNumber()
