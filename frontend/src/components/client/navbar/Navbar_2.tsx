@@ -19,9 +19,21 @@ const Navbar_2 = () => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) setUser(JSON.parse(storedUser));
-  }, []);
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
+    // Gọi API để lấy thông tin đầy đủ
+    fetch(`http://localhost:8000/patient/${parsedUser.id || parsedUser.patient_id}`)
+      .then(res => res.json())
+      .then(data => {
+        setUser(data);
+      })
+      .catch(err => {
+        console.error("Failed to fetch user info", err);
+      });
+  }
+}, []);
+
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -36,10 +48,12 @@ const Navbar_2 = () => {
   }, [menuOpen, dispatch]);
 
   const handleLogout = () => {
+  // Xoá toàn bộ dữ liệu liên quan đến phiên đăng nhập
   localStorage.removeItem('access_token');
   localStorage.removeItem('token_type');
   localStorage.removeItem('user');
 
+  // Cập nhật lại state ứng dụng
   setUser(null);
   dispatch(setNavbarMenuOpen(false));
   dispatch(setNavbarActiveItem('home'));
@@ -47,19 +61,17 @@ const Navbar_2 = () => {
   // (Tuỳ chọn) Reset UI store nếu có persist
   // dispatch(resetUI());
 
+  // Chuyển hướng người dùng về trang chủ hoặc login
   navigate('/register-login');
 };
 
 
   const handleMenuClick = (item: string) => {
     dispatch(setNavbarMenuOpen(false));
-    switch (item) {
-      case 'profile':
-        navigate(`/profile/${user.id || user.patient_id}`);
-        break;
-      default: break;
-    }
+
+    navigate(`/${item}/${user._id}`);
   };
+
 
   return (
     <div className='navbar_2'>
@@ -67,6 +79,7 @@ const Navbar_2 = () => {
         <span className={`left_Navbar_2_item ${activeItem === 'home' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('home')); navigate('/'); }}>Home</span>
         <span className={`left_Navbar_2_item ${activeItem === 'doctors-ai' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('doctors-ai')); navigate('/doctors-ai'); }}>Doctors AI</span>
         <span className={`left_Navbar_2_item ${activeItem === 'products' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('products')); navigate('/products'); }}>Products</span>
+        <span className={`left_Navbar_2_item ${activeItem === 'consult' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('consult')); navigate('/consult'); }}>Consult</span>
         <span className={`left_Navbar_2_item ${activeItem === 'about-us' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('about-us')); navigate('/about-us'); }}>About us</span>
       </div>
       <div className='right_Navbar_2'>
@@ -78,7 +91,7 @@ const Navbar_2 = () => {
         ) : (
           <div className="Main_Dashboard_avatar_menu_wrap" ref={menuRef}>
             <img
-              src={user.avatarUrl || user.avatar || avatarDefault}
+              src={user?.avatarUrl || user?.avatar || avatarDefault}
               alt="avatar"
               className="dashboard_avatar"
               onClick={() => dispatch(setNavbarMenuOpen(!menuOpen))}
@@ -88,17 +101,17 @@ const Navbar_2 = () => {
               onClick={() => dispatch(setNavbarMenuOpen(!menuOpen))}
             >
               Hi, {user?.fullName || user?.name || user?.username || user?.email || 'User'}
-              <span className="dashboard_greeting_arrow">▼</span>
+              {/* <i className="fa-solid fa-caret-down"></i> */}
             </span>
             {menuOpen && (
               <div className="Main_Dashboard_dropdown_menu">
-                <div className="dropdown_item" onClick={() => handleMenuClick('profile')}>Hồ sơ</div>
-                <div className="dropdown_item">Lịch hẹn</div>
-                <div className="dropdown_item">Lịch sử chẩn đoán</div>
+                <div className="dropdown_item" onClick={() => handleMenuClick('profile')}>Profile</div>
+                <div className="dropdown_item" onClick={() => handleMenuClick('appointment')}>Appointment</div>
+                <div className="dropdown_item" onClick={() => handleMenuClick('diagnose-history')}>Diagnose History</div>
                 <div className="dropdown_separator"></div>
-                <div className="dropdown_item">Cài đặt</div>
+                <div className="dropdown_item">Settings</div>
                 <div className="dropdown_separator"></div>
-                <div className="dropdown_item logout" onClick={handleLogout}>Thoát</div>
+                <div className="dropdown_item logout" onClick={handleLogout}>Logout</div>
               </div>
             )}
           </div>

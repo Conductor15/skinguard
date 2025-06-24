@@ -286,9 +286,9 @@ export default function Patient() {
               className="doctor_search_input"
             />
           </div>
-          <button onClick={handleAddPatient} className="doctor_add_button">
+          {/* <button onClick={handleAddPatient} className="doctor_add_button">
             Add new patient
-          </button>
+          </button> */}
         </div>
       </div>
 

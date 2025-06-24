@@ -12,7 +12,7 @@ const DoctorAI: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState("UNKNOWN");
 
-  // Lấy user info từ localStorage khi component mount
+  // Get user info
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -25,7 +25,7 @@ const DoctorAI: React.FC = () => {
     }
   }, []);
 
-  // Hàm lấy diagnose_id tiếp theo
+  // Generate diagnose_id
   async function getNextDiagnoseId(): Promise<string> {
     const prefix = "DGN";
     try {
@@ -43,7 +43,7 @@ const DoctorAI: React.FC = () => {
         if (num === nextNum) nextNum++;
         else break;
       }
-      return prefix + nextNum.toString().padStart(5, "0");
+      return prefix + nextNum.toString().padStart(2, "0");
     } catch {
       return prefix + "00001";
     }

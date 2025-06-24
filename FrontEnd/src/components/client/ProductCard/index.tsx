@@ -20,11 +20,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, image, title, price, desc
     return (
         <div className="cart__item" onClick={handleClick}>
             <img src={image} alt="" />
-            <h2>{title}</h2>
-            <div className="cart__item__price">
-                {price}$
+            <div className="cart__item__info">
+                <h2>{title}</h2>
+                <div className="cart__item__price">
+                    {price}$
+                </div>
+                <p>{description}</p>
+                <div className="cart__item__actions">
+                    <button className="cart__item__actions__add">Add to cart</button>
+                    <button className="cart__item__actions__buy">Buy now</button>
+                </div>
             </div>
-            <p>{description}</p>
         </div>
     );
 };

@@ -326,12 +326,12 @@ export default function Appointment() {
               className="doctor_search_input"
             />
           </div>
-          <button
+          {/* <button
             onClick={handleAddAppointment}
             className="doctor_add_button"
           >
             Add new appointment
-          </button>
+          </button> */}
         </div>
       </div>
 

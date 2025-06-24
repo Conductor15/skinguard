@@ -106,3 +106,16 @@ export type AppointmentType = {
     patient_description: string;
     result: string;
 };
+
+// Diagnose
+export type DiagnoseType = {
+    _id?: string;
+    diagnose_id: string;
+    prediction: string;
+    image?: string;
+    description?: string;
+    confidence?: number;
+    createdAt?: string;
+    createdBy: string; 
+    deleted?: boolean;
+};

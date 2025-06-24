@@ -474,9 +474,13 @@ const Doctor = () => {
                         {addForm.avatar && (
                             <img src={addForm.avatar} alt='avatar' style={{ width: 80, height: 80, objectFit: 'cover', border: '1px solid #eee', borderRadius: 4 }} />
                         )}
-                        <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="Rating" value={addForm.rating} onChange={handleAddFormChange} />
+
+                        <label htmlFor="rating">Rating</label>
+                        <input name="rating" type="number" min={1} max={5} step={0.1} placeholder="" value={addForm.rating} onChange={handleAddFormChange} />
                         <input name="status" placeholder="Status" value={addForm.status} onChange={handleAddFormChange} />
-                        <input name="experienceYears" type="number" placeholder="Experience years" value={addForm.experienceYears} onChange={handleAddFormChange} />
+
+                        <label htmlFor="experienceYears">Experience Years</label>
+                        <input name="experienceYears" type="number" placeholder="Type..." value={addForm.experienceYears} onChange={handleAddFormChange} />
                         <div className="doctor_add_form_buttons">
                             <button type="submit" className="doctor_add_button">Lưu</button>
                             <button type="button" className="doctor_cancel_button" onClick={handleCancelAdd}>Hủy</button>

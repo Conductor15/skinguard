@@ -34,7 +34,7 @@ const ClientProduct = () => {
     const [sortSelected, setSortSelected] = useState("Giá tăng dần")
 
     const categories = [
-        "All",     // All Categories
+        "All leision",     // All Categories
         "nv",      // Melanocytic nevi
         "mel",     // Melanoma
         "bkl",     // Benign keratosis-like lesions

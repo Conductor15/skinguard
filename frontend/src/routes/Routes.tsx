@@ -10,6 +10,8 @@ import Profile from "../pages/Profile";
 import PatientAppointment from "../pages/PatientAppointment";
 import PatientDiagnose from "../pages/PatientDiagnose";
 import ClientProduct from "../pages/ClientProduct";
+import ClientProductDetail from "../pages/ClientProductDetail";
+import ClientConsult from "../pages/ClientConsult";
 import DoctorAI from "../pages/DoctorAI/tsx/DoctorAi";
 import Doctor from "../pages/managers/Doctors/Doctor";
 import Patient from "../pages/managers/Patients/Patient";
@@ -57,6 +59,20 @@ const Routes = () => {
                       element: 
                         <PrivateRoute>
                             <ClientProduct/>
+                        </PrivateRoute>
+                  },
+                  {
+                      path:"/products/:id",
+                      element: 
+                        <PrivateRoute>
+                            <ClientProductDetail/>
+                        </PrivateRoute>
+                  },
+                  {
+                      path:"/consult",
+                      element: 
+                        <PrivateRoute>
+                            <ClientConsult/>
                         </PrivateRoute>
                   },
                   {
