@@ -21,6 +21,9 @@ export class CreateDiagnoseDto {
   @IsNumber()
   confidence?: number;
 
+  @IsOptional()
+  deleted?: boolean;
+
   @IsString()
   @IsNotEmpty()
   createdBy: string; // patient_id

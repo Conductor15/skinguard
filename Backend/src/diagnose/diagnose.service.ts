@@ -42,13 +42,12 @@ export class DiagnoseService {
     });
     return created.save();
   }
-
   /**
-   * Lấy tất cả diagnoses chưa bị xóa
+   * Lấy tất cả diagnoses (bao gồm cả đã xóa)
    * @returns Danh sách diagnoses
    */
   async findAll() {
-    return this.diagnoseModel.find({ deleted: false });
+    return this.diagnoseModel.find({});
   }
 
   /**
@@ -79,19 +78,16 @@ export class DiagnoseService {
    * @returns Diagnose đã được xóa
    */
   async remove(diagnose_id: string) {
-    // Find the diagnose first to save current status
     const diagnose = await this.diagnoseModel.findOne({ diagnose_id });
     if (!diagnose) {
       throw new Error(`Diagnose with ID ${diagnose_id} not found`);
     }
 
-    // Soft delete with status change
+    // Soft delete 
     return this.diagnoseModel.findOneAndUpdate(
       { diagnose_id },
       { 
         deleted: true,
-        // previousStatus: diagnose.status,
-        status: 'Suspended'
       },
       { new: true },
     );
@@ -112,7 +108,6 @@ export class DiagnoseService {
    * @returns Diagnose đã được khôi phục
    */
   async restore(diagnose_id: string) {
-    // Find the diagnose first to get previous status
     const diagnose = await this.diagnoseModel.findOne({ diagnose_id });
     if (!diagnose) {
       throw new Error(`Diagnose with ID ${diagnose_id} not found`);
@@ -122,7 +117,6 @@ export class DiagnoseService {
       { diagnose_id },
       { 
         deleted: false,
-        // status: diagnose.previousStatus || 'Active'
       },
       { new: true },
     );

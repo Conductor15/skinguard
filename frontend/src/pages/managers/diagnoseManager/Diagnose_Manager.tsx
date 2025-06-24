@@ -47,7 +47,6 @@ const sortableFields: { label: string; value: SortField }[] = [
   { label: "Created At", value: "createdAt" },
 ];
 
-
 const DiagnoseManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -251,9 +250,12 @@ const DiagnoseManager = () => {
     }
     setAddImageUploading(false);
   };
-
   // Edit Diagnose
   const handleEditDiagnose = (row: RowType) => {
+    if (row.diagnose.deleted) {
+      alert("Cannot edit a deleted diagnose. Please restore it first.");
+      return;
+    }
     setFormDiagnose({ ...row.diagnose });
     setShowEditForm(true);
   };
@@ -322,6 +324,19 @@ const DiagnoseManager = () => {
         window.location.reload();
       } catch {
         alert("Delete diagnose failed!");
+      }
+    }
+  };
+
+  // Restore Diagnose
+  const handleRestoreDiagnose = async (row: RowType) => {
+    if (!row.diagnose.diagnose_id) return;
+    if (window.confirm("Are you sure you want to restore this diagnose?")) {
+      try {
+        await axiosInstance.patch(`/diagnose/${row.diagnose.diagnose_id}/restore`);
+        window.location.reload();
+      } catch {
+        alert("Restore diagnose failed!");
       }
     }
   };
@@ -611,11 +626,11 @@ const DiagnoseManager = () => {
                     {row.diagnose.confidence !== undefined
                       ? row.diagnose.confidence
                       : "-"}
-                  </div>
-                  <div>
+                  </div>                  <div>
                     {row.diagnose.createdAt
                       ? new Date(row.diagnose.createdAt).toLocaleString()
                       : "-"}
+                    {row.diagnose.deleted && <span style={{ color: '#ff4444', marginLeft: 8 }}>(Deleted)</span>}
                   </div>
                   <div>
                     {row.diagnose.image ? (
@@ -633,22 +648,36 @@ const DiagnoseManager = () => {
                     )}
                   </div>
                   <div className="doctor_actions">
-                    <button
-                      onClick={() => handleEditDiagnose(row)}
-                      className="action_button edit_button"
-                      title="Edit Diagnose"
-                    >
-                      <FixIcon className="action_icon" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteDiagnose(row)}
-                      className="action_button delete_button"
-                      title="Delete Diagnose"
-                    >
-                      <DeleteIcon className="action_icon" />
-                      Delete
-                    </button>
+                    {!row.diagnose.deleted ? (
+                      <>
+                        <button
+                          onClick={() => handleEditDiagnose(row)}
+                          className="action_button edit_button"
+                          title="Edit Diagnose"
+                        >
+                          <FixIcon className="action_icon" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDiagnose(row)}
+                          className="action_button delete_button"
+                          title="Delete Diagnose"
+                        >
+                          <DeleteIcon className="action_icon" />
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => handleRestoreDiagnose(row)}
+                        className="action_button edit_button"
+                        title="Restore Diagnose"
+                        style={{ backgroundColor: '#4caf50' }}
+                      >
+                        <FixIcon className="action_icon" />
+                        Undo
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
