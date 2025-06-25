@@ -77,9 +77,9 @@ const RegisterLogIn: React.FC = () => {
       // Redirect based on user type
       setTimeout(() => {
         if (response.user.userType === 'doctor') {
-          navigate('/doctor-dashboard');
+          navigate('/admin/dashboard');
         } else {
-          navigate('/patient-dashboard');
+          navigate('/');
         }
       }, 1500);
 

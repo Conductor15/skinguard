@@ -41,13 +41,7 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    if (req.user.userType !== 'patient') {
-      return {
-        message: 'Access denied. Only patients can login through this system.',
-        error: 'PATIENT_ONLY_ACCESS',
-      };
-    }
-    console.log(' AuthController.login - patient validated:', req.user.email);
+    console.log('AuthController.login - user validated:', req.user.email, 'as', req.user.userType);
 
     // Generate JWT token
     const tokenData = await this.authService.generateJwtToken(
@@ -90,14 +84,10 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     try {
-      response.clearCookie('refresh_token');
-      if (req.user && req.user.id) {
-        await this.patientService.updatePatientToken('', req.user.id);
-      }
-
+      const result = await this.authService.logout(response, req.user);
+      
       return {
-        statuscode: 201,
-        message: 'Logout successful',
+        ...result,
         success: true,
         timestamp: new Date().toISOString(),
       };
@@ -114,15 +104,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('account')
   async getProfile(@Request() req) {
-    if (req.user.userType !== 'patient') {
-      return {
-        message: 'Access denied. Only patients can access account.',
-        error: 'PATIENT_ONLY_ACCESS',
-      };
-    }
-
     return {
-      message: 'account accessed successfully',
+      message: 'Account accessed successfully',
       user: req.user,
       timestamp: new Date().toISOString(),
     };

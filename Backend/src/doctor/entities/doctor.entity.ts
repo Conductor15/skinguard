@@ -46,6 +46,9 @@ export class Doctor {
 
   @Prop()
   experienceYears: number;
+
+  @Prop()
+  refreshToken: string;
 }
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);

@@ -4,18 +4,20 @@ import { Model } from 'mongoose';
 import { Doctor, DoctorDocument } from './entities/doctor.entity';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
-import { AuthService } from '../auth/auth.service';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class DoctorService {
+  private readonly saltRounds = 12;
+  
   constructor(
     @InjectModel(Doctor.name) private doctorModel: Model<DoctorDocument>,
-    private authService: AuthService, // Inject AuthService
   ) {}
   async create(createDoctorDto: CreateDoctorDto): Promise<Doctor> {
     // Hash password trước khi lưu
-    const hashedPassword = await this.authService.hashPassword(
+    const hashedPassword = await bcrypt.hash(
       createDoctorDto.password,
+      this.saltRounds,
     );
 
     const doctorData = {
@@ -38,8 +40,9 @@ export class DoctorService {
   async update(id: string, updateDoctorDto: UpdateDoctorDto): Promise<Doctor> {
     // Nếu có password trong update, hash nó
     if (updateDoctorDto.password) {
-      updateDoctorDto.password = await this.authService.hashPassword(
+      updateDoctorDto.password = await bcrypt.hash(
         updateDoctorDto.password,
+        this.saltRounds,
       );
     }
 
@@ -117,7 +120,7 @@ export class DoctorService {
 
     if (
       doctor &&
-      (await this.authService.comparePassword(password, doctor.password))
+      (await bcrypt.compare(password, doctor.password))
     ) {
       return doctor;
     }
@@ -148,5 +151,26 @@ export class DoctorService {
     const nextNum = maxNum + 1;
     
     return prefix + nextNum.toString().padStart(3, "0");
+  }
+
+  /**
+   * Update doctor refresh token
+   */
+  async updateDoctorToken(refreshToken: string, doctorId: string): Promise<Doctor> {
+    return this.doctorModel.findByIdAndUpdate(
+      doctorId,
+      { refreshToken },
+      { new: true }
+    ).exec();
+  }
+
+  /**
+   * Find doctor by refresh token
+   */
+  async findDoctorByToken(refreshToken: string): Promise<Doctor | null> {
+    return this.doctorModel.findOne({ 
+      refreshToken, 
+      deleted: { $ne: true } 
+    }).exec();
   }
 }

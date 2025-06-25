@@ -9,17 +9,29 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Patient, PatientDocument } from '../patient/entities/patient.entity';
 import { PatientService } from '../patient/patient.service';
+import { Doctor, DoctorDocument } from '../doctor/entities/doctor.entity';
+import { DoctorService } from '../doctor/doctor.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
+import { AUTH_CONSTANTS, UserType } from './constants/auth.constants';
+import {
+  JwtPayload,
+  TokenResponse,
+  UserInfo,
+} from './interfaces/auth.interfaces';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
   private readonly saltRounds = 12;
   constructor(
     @InjectModel(Patient.name) private patientModel: Model<PatientDocument>,
+    @InjectModel(Doctor.name) private doctorModel: Model<DoctorDocument>,
     @Inject(forwardRef(() => PatientService))
     private patientService: PatientService,
+    @Inject(forwardRef(() => DoctorService))
+    private doctorService: DoctorService,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
@@ -41,149 +53,228 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword);
   }
   /**
-   * Validate user credentials - only allows patient login
+   * Validate user credentials - allows both patient and doctor login
    */
   async validateUser(email: string, password: string): Promise<any> {
-    // Chỉ kiểm tra patient, không cho phép doctor đăng nhập
+    if (!email || !password) {
+      console.error('Email and password are required');
+      return null;
+    }
+
+    if (!this.isValidEmail(email)) {
+      console.error('Invalid email format:', email);
+      return null;
+    }
+
+    // Kiểm tra patient trước
     try {
       const patient = await this.patientModel.findOne({ email }).exec();
       if (patient && (await this.comparePassword(password, patient.password))) {
         const { password: _, ...result } = patient.toObject();
-        return { ...result, userType: 'patient' };
+        return { ...result, userType: UserType.PATIENT };
       }
     } catch (error) {
-      // Ignore error
+      console.error('Error validating patient:', error);
+    }
+
+    // Nếu không phải patient, kiểm tra doctor
+    try {
+      const doctor = await this.doctorModel.findOne({ 
+        email, 
+        deleted: { $ne: true } 
+      }).exec();
+      if (doctor && (await this.comparePassword(password, doctor.password))) {
+        const { password: _, ...result } = doctor.toObject();
+        return { ...result, userType: UserType.DOCTOR };
+      }
+    } catch (error) {
+      console.error('Error validating doctor:', error);
     }
 
     return null;
   }
+
   /**
-   * create refresh token
+   * Validate email format
    */
-  createRefreshToken = (payload) => {
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+  /**
+   * Create refresh token
+   */
+  async createRefreshToken(payload: JwtPayload): Promise<string> {
+    return this.jwtService.sign(payload, {
+      secret: this.getRequiredConfig('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: this.getRequiredConfig('JWT_REFRESH_EXPIRATION'),
     });
-    return refreshToken;
-  };
+  }
+
+  /**
+   * Get required configuration value
+   */
+  private getRequiredConfig(key: string): string {
+    const value = this.configService.get<string>(key);
+    if (!value) {
+      throw new Error(`Missing required configuration: ${key}`);
+    }
+    return value;
+  }
   /**
    * Generate JWT token for authenticated user
    */
-  async generateJwtToken(user: any, response: any) {
-    const payload = {
-      sub: user._id, // User ID
-      email: user.email, // User email
-      userType: user.userType,
-    }; // const expirationTime = ms(
-    //   this.configService.get<string>('JWT_ACCESS_EXPIRATION', '3600s'),
-    // );
-    const refreshToken = this.createRefreshToken(payload);
+  async generateJwtToken(
+    user: any,
+    response: Response,
+  ): Promise<TokenResponse> {
+    const payload: JwtPayload = {
+      sub: user._id,
+      email: user.email,
+      userType: user.userType, // Sử dụng userType từ validateUser
+    };
 
-    //update patient with refresh token
-    await this.patientService.updatePatientToken(refreshToken, user._id); //set refresh token as cookie
-    const refreshExpiration = this.configService.get<string>(
-      'JWT_REFRESH_EXPIRATION',
-    );
+    const refreshToken = await this.createRefreshToken(payload);
+
+    // Update token dựa trên user type
+    if (user.userType === UserType.PATIENT) {
+      await this.patientService.updatePatientToken(refreshToken, user._id);
+    } else if (user.userType === UserType.DOCTOR) {
+      await this.doctorService.updateDoctorToken(refreshToken, user._id);
+    }
+
+    // Set refresh token as cookie
+    const refreshExpiration = this.getRequiredConfig('JWT_REFRESH_EXPIRATION');
     response.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      maxAge: ms(refreshExpiration), //milisecond
+      httpOnly: AUTH_CONSTANTS.COOKIE_OPTIONS.HTTP_ONLY,
+      maxAge: ms(refreshExpiration),
     });
 
     return {
-      statusCode: 201,
+      statusCode: AUTH_CONSTANTS.STATUS_CODES.CREATED,
       access_token: this.jwtService.sign(payload),
-      token_type: 'Bearer',
-      // refresh_token: refreshToken,
-      // expires_in: expirationTime, //dùng jwt nên không cần tính toán thời gian hết hạn
+      token_type: AUTH_CONSTANTS.TOKEN_TYPES.BEARER,
       user: {
         id: user._id,
         email: user.email,
         fullName: user.fullName,
+        userType: user.userType,
       },
     };
   }
+
   /**
-   * Validate JWT payload - only validates patient tokens
+   * Extract user info safely
    */
-  async validateJwtPayload(payload: any): Promise<any> {
-    if (payload.userType !== 'patient') {
+  private extractUserInfo(user: any, userType: UserType): UserInfo {
+    const { password, refreshToken, ...userInfo } = user.toObject();
+    return {
+      ...userInfo,
+      id: user._id,
+      userType: userType,
+    };
+  }
+  /**
+   * Validate JWT payload - validates both patient and doctor tokens
+   */
+  async validateJwtPayload(payload: JwtPayload): Promise<any> {
+    try {
+      if (payload.userType === UserType.PATIENT) {
+        const user = await this.patientModel.findById(payload.sub).exec();
+        if (!user) {
+          console.warn('Patient not found for JWT payload sub:', payload.sub);
+          return null;
+        }
+        return this.extractUserInfo(user, UserType.PATIENT);
+      } 
+      
+      if (payload.userType === UserType.DOCTOR) {
+        const user = await this.doctorModel.findById(payload.sub).exec();
+        if (!user || user.deleted) {
+          console.warn('Doctor not found for JWT payload sub:', payload.sub);
+          return null;
+        }
+        return this.extractUserInfo(user, UserType.DOCTOR);
+      }
+
+      console.warn('Invalid user type in JWT payload:', payload.userType);
+      return null;
+    } catch (error) {
+      console.error('Error validating JWT payload:', error);
       return null;
     }
-
-    const user = await this.patientModel.findById(payload.sub).exec();
-
-    if (!user) {
-      return null;
-    }
-
-    const { password: _, ...result } = user.toObject();
-    return { ...result, userType: 'patient' };
   }
 
   /**
    * Verify refresh token and generate new access token
    */
-  async processNewToken(refreshtoken: string, response: any) {
+  async processNewToken(
+    refreshtoken: string,
+    response: Response,
+  ): Promise<TokenResponse> {
     try {
       // Verify refresh token
       this.jwtService.verify(refreshtoken, {
-        secret: this.configService.get<string>(
-          'JWT_REFRESH_TOKEN_SECRET',
-          'default_refresh_secret',
-        ),
+        secret: this.getRequiredConfig('JWT_REFRESH_TOKEN_SECRET'),
       });
 
-      // Find patient by refresh token
-      const patient = await this.patientService.findpatientByToken(
-        refreshtoken,
-      );
+      // Tìm user (patient hoặc doctor)
+      let user: any = await this.patientService.findpatientByToken(refreshtoken);
+      let userType = UserType.PATIENT;
 
-      if (!patient) {
-        throw new BadRequestException('Invalid refresh token, please login');
+      if (!user) {
+        user = await this.doctorService.findDoctorByToken(refreshtoken);
+        userType = UserType.DOCTOR;
+      }
+
+      if (!user) {
+        throw new BadRequestException(
+          AUTH_CONSTANTS.MESSAGES.INVALID_REFRESH_TOKEN,
+        );
       }
 
       // Create new payload for new tokens
-      const newPayload = {
-        sub: patient._id,
-        email: patient.email,
-        userType: 'patient',
+      const newPayload: JwtPayload = {
+        sub: user._id,
+        email: user.email,
+        userType: userType,
       };
 
       // Generate new refresh token
-      const newRefreshToken = this.createRefreshToken(newPayload);
+      const newRefreshToken = await this.createRefreshToken(newPayload);
 
-      // Update patient with new refresh token
-      await this.patientService.updatePatientToken(
-        newRefreshToken,
-        patient._id,
-      );
+      // Update token dựa trên user type
+      if (userType === UserType.PATIENT) {
+        await this.patientService.updatePatientToken(newRefreshToken, user._id);
+      } else {
+        await this.doctorService.updateDoctorToken(newRefreshToken, user._id);
+      }
 
       // Set new refresh token as cookie
-      const refreshExpiration = this.configService.get<string>(
+      const refreshExpiration = this.getRequiredConfig(
         'JWT_REFRESH_EXPIRATION',
-        '7d',
       );
-      response.clearCookie('refresh_token'); // Clear old cookie
+      response.clearCookie('refresh_token');
       response.cookie('refresh_token', newRefreshToken, {
-        httpOnly: true,
+        httpOnly: AUTH_CONSTANTS.COOKIE_OPTIONS.HTTP_ONLY,
         maxAge: ms(refreshExpiration),
       });
 
       // Return new access token and user info
       return {
-        statusCode: 201,
+        statusCode: AUTH_CONSTANTS.STATUS_CODES.CREATED,
         access_token: this.jwtService.sign(newPayload),
-        token_type: 'Bearer',
+        token_type: AUTH_CONSTANTS.TOKEN_TYPES.BEARER,
         user: {
-          id: patient._id,
-          email: patient.email,
-          fullName: patient.fullName,
+          id: user._id,
+          email: user.email,
+          fullName: user.fullName,
         },
       };
     } catch (error) {
+      console.error('Error processing new token:', error);
       throw new BadRequestException(
-        'Invalid refresh token, please login again',
+        AUTH_CONSTANTS.MESSAGES.INVALID_REFRESH_TOKEN,
       );
     }
   }
@@ -191,12 +282,29 @@ export class AuthService {
   /**
    * Logout user by clearing refresh token
    */
-  logout = async (response: any, user: any) => {
-    await this.patientService.updatePatientToken('', user._id);
-    response.clearCookie('refresh_token'); // Clear refresh token cookie
-    return {
-      statusCode: 200,
-      message: 'Logout successful',
-    };
-  };
+  async logout(
+    response: Response,
+    user: any,
+  ): Promise<{ statusCode: number; message: string }> {
+    try {
+      // Clear token dựa trên user type
+      if (user.userType === UserType.PATIENT) {
+        await this.patientService.updatePatientToken('', user._id);
+      } else if (user.userType === UserType.DOCTOR) {
+        await this.doctorService.updateDoctorToken('', user._id);
+      }
+      
+      response.clearCookie('refresh_token');
+
+      console.log('User logged out successfully:', user.email, 'as', user.userType);
+
+      return {
+        statusCode: AUTH_CONSTANTS.STATUS_CODES.SUCCESS,
+        message: AUTH_CONSTANTS.MESSAGES.LOGOUT_SUCCESS,
+      };
+    } catch (error) {
+      console.error('Error during logout:', error);
+      throw new BadRequestException('Logout failed');
+    }
+  }
 }
