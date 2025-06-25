@@ -1,0 +1,61 @@
+.consult-background {
+    min-height: 100vh;
+    width: 100vw;
+    background: #fff;
+    padding-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.consult-container {
+    display: flex;
+    flex-direction: column;
+    margin: 50px 0;
+    justify-content: center;
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 50px 40px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    min-width: 350px;
+}
+
+.consult-title {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    font-size: 38px;
+    font-weight: 600;
+    color: #2b4360;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    justify-content: center; 
+}
+
+.consult-form {
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    font-weight: 200;
+    gap: 18px;
+}
+
+.consult-form input[type="date"],
+.consult-form textarea,
+.consult-form select {
+    font-size: 18px;
+    padding: 8px 14px;
+    border-radius: 5px;
+    border: 1px solid #b0b0b0;
+    margin-bottom: 8px;
+}
+
+.consult-form button {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.17s;
+}

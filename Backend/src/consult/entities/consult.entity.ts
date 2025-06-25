@@ -60,7 +60,8 @@ export class Consult {
   patient_id: Types.ObjectId;
 
   @Prop({ required: true })
-  date: Date;
+  // date: Date;
+  date: string;
 
   @Prop()
   patient_description: string;

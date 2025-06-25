@@ -69,10 +69,15 @@ const Order = () => {
         paymentStatus: 'pending',
         notes: ''
     });
-    const [editForm, setEditForm] = useState<OrderType | null>(null);    useEffect(() => {
+
+    const [editForm, setEditForm] = useState<OrderType | null>(null);   
+    
+    useEffect(() => {
         fetchOrders();
         fetchPatients();
-    }, []);    const fetchPatients = async () => {
+    }, []);    
+    
+    const fetchPatients = async () => {
         try {
             const res = await axiosInstance.get('/patient');
             const patientList: PatientType[] = res.data.map((pat: any) => ({
@@ -86,7 +91,9 @@ const Order = () => {
             console.error('Failed to fetch patients:', error);
             setPatients([]);
         }
-    };    const fetchOrders = async () => {
+    };    
+    
+    const fetchOrders = async () => {
         setLoading(true);
         try {
             const res = await axiosInstance.get('/order');
@@ -110,7 +117,9 @@ const Order = () => {
             setOrdersData([]);
         }
         setLoading(false);
-    };// Filter and search
+    };
+    
+    // Filter and search
     const filteredOrders = ordersData.filter(order => {
         return (
             order.order_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -359,25 +368,29 @@ const Order = () => {
             {showAddForm && (
                 <div className="doctor_add_form_overlay">
                     <form className="doctor_add_form" onSubmit={handleAddFormSubmit}>
-                        <h3>Add New Order</h3>                        <input
+                        <h3>Add New Order</h3>                        
+                        <input
                             name="order_id"
                             placeholder="Order ID"
                             value={addForm.order_id}
                             readOnly
                             required
-                        />                        <select
+                        />                        
+                        <select
                             name="orderBy"
                             title="Select Patient"
                             value={addForm.orderBy}
                             onChange={handleAddFormChange}
                             required
-                        >                            <option value="">-- Select Patient --</option>
+                        >                            
+                            <option value="">-- Select Patient --</option>
                             {patients.map((p, index) =>
                                 <option key={`add-${p.patient_id}-${index}`} value={p._id}>
                                     {p.patient_id} - {p.fullName}
                                 </option>
                             )}
-                        </select><input
+                        </select>
+                        <input
                             name="orderDate"
                             type="date"
                             title="Order Date"

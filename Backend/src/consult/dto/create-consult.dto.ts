@@ -4,9 +4,10 @@ export class CreateConsultDto {
   @IsString()
   @IsNotEmpty()
   consult_id: string;
-  @IsString()
+  @IsDateString()
   @IsNotEmpty()
-  date: Date;
+  // date: Date;
+  date: string;
 
   @IsString()
   @IsNotEmpty()
