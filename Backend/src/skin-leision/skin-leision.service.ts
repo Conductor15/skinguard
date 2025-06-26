@@ -98,4 +98,9 @@ export class SkinLesionService {
       .populate('relatedProducts') // Full populate
       .exec();
   }
+  async createMany(
+    createSkinLesionDtos: CreateSkinLesionDto[],
+  ): Promise<SkinLesion[]> {
+    return this.skinLesionModel.insertMany(createSkinLesionDtos);
+  }
 }

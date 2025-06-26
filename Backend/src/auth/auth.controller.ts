@@ -16,7 +16,7 @@ import { PatientService } from '../patient/patient.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { CreatePatientDto } from '../patient/dto/create-patient.dto'; // <-- Sử dụng DTO chuẩn
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString ,IsOptional } from 'class-validator';
 
 export class LoginDto {
   @IsEmail()
@@ -24,8 +24,12 @@ export class LoginDto {
 
   @IsString()
   password: string;
-}
 
+  
+  @IsString()
+  @IsOptional()
+  userType: 'patient' | 'doctor'; 
+}
 
 @Controller('auth')
 export class AuthController {
@@ -41,7 +45,12 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    console.log('AuthController.login - user validated:', req.user.email, 'as', req.user.userType);
+    console.log(
+      'AuthController.login - user validated:',
+      req.user.email,
+      'as',
+      req.user.userType,
+    );
 
     // Generate JWT token
     const tokenData = await this.authService.generateJwtToken(
@@ -85,7 +94,7 @@ export class AuthController {
   ) {
     try {
       const result = await this.authService.logout(response, req.user);
-      
+
       return {
         ...result,
         success: true,

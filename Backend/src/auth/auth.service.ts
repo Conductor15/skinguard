@@ -79,10 +79,12 @@ export class AuthService {
 
     // Nếu không phải patient, kiểm tra doctor
     try {
-      const doctor = await this.doctorModel.findOne({ 
-        email, 
-        deleted: { $ne: true } 
-      }).exec();
+      const doctor = await this.doctorModel
+        .findOne({
+          email,
+          deleted: { $ne: true },
+        })
+        .exec();
       if (doctor && (await this.comparePassword(password, doctor.password))) {
         const { password: _, ...result } = doctor.toObject();
         return { ...result, userType: UserType.DOCTOR };
@@ -186,8 +188,8 @@ export class AuthService {
           return null;
         }
         return this.extractUserInfo(user, UserType.PATIENT);
-      } 
-      
+      }
+
       if (payload.userType === UserType.DOCTOR) {
         const user = await this.doctorModel.findById(payload.sub).exec();
         if (!user || user.deleted) {
@@ -219,7 +221,9 @@ export class AuthService {
       });
 
       // Tìm user (patient hoặc doctor)
-      let user: any = await this.patientService.findpatientByToken(refreshtoken);
+      let user: any = await this.patientService.findpatientByToken(
+        refreshtoken,
+      );
       let userType = UserType.PATIENT;
 
       if (!user) {
@@ -293,10 +297,15 @@ export class AuthService {
       } else if (user.userType === UserType.DOCTOR) {
         await this.doctorService.updateDoctorToken('', user._id);
       }
-      
+
       response.clearCookie('refresh_token');
 
-      console.log('User logged out successfully:', user.email, 'as', user.userType);
+      console.log(
+        'User logged out successfully:',
+        user.email,
+        'as',
+        user.userType,
+      );
 
       return {
         statusCode: AUTH_CONSTANTS.STATUS_CODES.SUCCESS,
