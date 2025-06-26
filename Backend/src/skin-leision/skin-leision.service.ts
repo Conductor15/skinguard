@@ -103,4 +103,24 @@ export class SkinLesionService {
   ): Promise<SkinLesion[]> {
     return this.skinLesionModel.insertMany(createSkinLesionDtos);
   }
+  async findByName(name: string): Promise<SkinLesion> {
+    return this.skinLesionModel
+      .findOne({ name: name.toUpperCase() }) // Convert to uppercase để match với DB
+      .populate('relatedProducts')
+      .exec();
+  }
+
+  async updateRelatedProductsByName(
+    name: string,
+    relatedProducts: string[],
+  ): Promise<SkinLesion> {
+    return this.skinLesionModel
+      .findOneAndUpdate(
+        { name: name.toUpperCase() },
+        { relatedProducts },
+        { new: true },
+      )
+      .populate('relatedProducts')
+      .exec();
+  }
 }
