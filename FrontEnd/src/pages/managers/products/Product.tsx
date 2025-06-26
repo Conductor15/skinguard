@@ -53,6 +53,10 @@ const Product = () => {
         image: '',
     });
     const [editForm, setEditForm] = useState<ProductType | null>(null);
+
+    const [selectedLeision, setSelectedLeision] = useState('nv');
+
+
     const itemsPerPage = 5;
 
     // Image upload
@@ -180,6 +184,9 @@ const Product = () => {
             alert('Please upload product image!');
             return;
         }
+
+        const productIdToAdd = addForm.product_id;
+
         try {
             await axiosInstance.post('/product', addForm);
             setShowAddForm(false);
@@ -196,6 +203,27 @@ const Product = () => {
             alert('Product added successfully!');
         } catch (err: any) {
             alert('Add failed product!');
+        }
+
+
+        try {
+             const res = await axiosInstance.get(`/skin-leision/${selectedLeision}`);
+            const currentLeision = res.data;
+
+            // 2. Thêm productId nếu chưa có
+            const updatedProducts = currentLeision.relatedProducts || [];
+
+            if (!updatedProducts.includes(productIdToAdd)) {
+                updatedProducts.push(productIdToAdd);
+            }
+
+            // 3. Gửi PATCH toàn bộ lại
+            await axiosInstance.patch(`/skin-leision/${selectedLeision}`, {
+                relatedProducts: updatedProducts
+            });
+        
+        } catch (err: any) {
+            alert('Add failed product to leision table!');
         }
     };
 
@@ -403,8 +431,11 @@ const Product = () => {
                         />
                         <input name="title" placeholder="Title" value={addForm.title} onChange={handleAddFormChange} required />
                         <input name="description" placeholder="Description" value={addForm.description} onChange={handleAddFormChange} required />
+                        <label htmlFor="price">Price</label>
                         <input name="price" type="number" placeholder="Price" value={addForm.price} onChange={handleAddFormChange} required />
+                        <label htmlFor="sold_count">sold count</label>
                         <input name="sold_count" type="number" placeholder="Sold Count" value={addForm.sold_count} onChange={handleAddFormChange} />
+                        <label htmlFor="availability">availability</label>
                         <select name="availability" value={addForm.availability ? "true" : "false"} onChange={handleAddFormChange} required>
                             <option value="true">Yes</option>
                             <option value="false">No</option>
@@ -421,10 +452,29 @@ const Product = () => {
                         </div>
                         {/* Show preview */}
                         {addForm.image && <img src={addForm.image} alt="preview" style={{ width: 80, height: 80, objectFit: 'cover', border: '1px solid #eee', borderRadius: 4 }} />}
+
+                       <label htmlFor="leision">Leision</label>
+                        <select
+                            name="leision"
+                            value={selectedLeision}
+                            onChange={(e) => setSelectedLeision(e.target.value)}
+                            required
+                        >
+                            <option value="akiec">Actinic Keratoses (akiec)</option>
+                            <option value="bcc">Basal Cell Carcinoma (bcc)</option>
+                            <option value="bkl">Benign Keratosis-like Lesions (bkl)</option>
+                            <option value="df">Dermatofibroma (df)</option>
+                            <option value="mel">Melanoma (mel)</option>
+                            <option value="nv">Melanocytic Nevi (nv)</option>
+                            <option value="vasc">Vascular Lesions (vasc)</option>
+                        </select>
+
+
                         <div className="doctor_add_form_buttons">
                             <button type="submit" className="doctor_add_button">Lưu</button>
                             <button type="button" className="doctor_cancel_button" onClick={handleCancelAdd}>Hủy</button>
                         </div>
+
                     </form>
                 </div>
             )}

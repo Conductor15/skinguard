@@ -22,16 +22,30 @@ const Navbar_2 = () => {
   const storedUser = localStorage.getItem('user');
   if (storedUser) {
     const parsedUser = JSON.parse(storedUser);
-    // Gọi API để lấy thông tin đầy đủ
-    fetch(`http://localhost:8000/patient/${parsedUser.id || parsedUser.patient_id}`)
+
+    if(parsedUser.userType === "doctor"){
+      fetch(`http://localhost:8000/doctor/${parsedUser.id || parsedUser.patient_id}`)
       .then(res => res.json())
       .then(data => {
         setUser(data);
       })
       .catch(err => {
-        console.error("Failed to fetch user info", err);
+        console.error("Failed to fetch doctor info", err);
       });
+    }
+    else{
+      fetch(`http://localhost:8000/patient/${parsedUser.id || parsedUser.patient_id}`)
+      .then(res => res.json())
+      .then(data => {
+        setUser(data);
+      })
+      .catch(err => {
+        console.error("Failed to fetch patient info", err);
+      });
+    }
+    // Gọi API để lấy thông tin đầy đủ
   }
+
 }, []);
 
 
@@ -72,14 +86,39 @@ const Navbar_2 = () => {
     navigate(`/${item}/${user._id}`);
   };
 
+  let type;
+
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
+    type = parsedUser.userType;
+  }
+
+  let patient;
+  if(type === "patient"){
+    patient = true;
+  }else{
+    patient = false;
+  }
+
+  const handleCart = () => {
+    navigate("cart");
+  }
 
   return (
     <div className='navbar_2'>
       <div className='left_Navbar_2'>
         <span className={`left_Navbar_2_item ${activeItem === 'home' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('home')); navigate('/'); }}>Home</span>
-        <span className={`left_Navbar_2_item ${activeItem === 'doctors-ai' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('doctors-ai')); navigate('/doctors-ai'); }}>Doctors AI</span>
-        <span className={`left_Navbar_2_item ${activeItem === 'products' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('products')); navigate('/products'); }}>Products</span>
-        <span className={`left_Navbar_2_item ${activeItem === 'consult' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('consult')); navigate('/consult'); }}>Consult</span>
+        { patient? (
+          <><span className={`left_Navbar_2_item ${activeItem === 'doctors-ai' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('doctors-ai')); navigate('/doctors-ai'); }}>Doctors AI</span>
+          <span className={`left_Navbar_2_item ${activeItem === 'products' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('products')); navigate('/products'); }}>Products</span>
+          <span className={`left_Navbar_2_item ${activeItem === 'consult' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('consult')); navigate('/consult'); }}>Consult</span>
+          </>)
+          :
+          (
+            <span className={`left_Navbar_2_item ${activeItem === 'appointments' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('appointments')); navigate('/appointments'); }}>Appointment</span>
+          )
+        }
         <span className={`left_Navbar_2_item ${activeItem === 'about-us' ? 'now' : ''}`} onClick={() => { dispatch(setNavbarActiveItem('about-us')); navigate('/about-us'); }}>About us</span>
       </div>
       <div className='right_Navbar_2'>
@@ -103,11 +142,15 @@ const Navbar_2 = () => {
               Hi, {user?.fullName || user?.name || user?.username || user?.email || 'User'}
               {/* <i className="fa-solid fa-caret-down"></i> */}
             </span>
+            {patient && 
+              <i className="fa-solid fa-cart-shopping" onClick={handleCart}></i>
+            }
             {menuOpen && (
               <div className="Main_Dashboard_dropdown_menu">
                 <div className="dropdown_item" onClick={() => handleMenuClick('profile')}>Profile</div>
                 <div className="dropdown_item" onClick={() => handleMenuClick('appointment')}>Appointment</div>
                 <div className="dropdown_item" onClick={() => handleMenuClick('diagnose-history')}>Diagnose History</div>
+                <div className="dropdown_item" onClick={() => handleMenuClick('diagnose-history')}>Orders</div>
                 <div className="dropdown_separator"></div>
                 <div className="dropdown_item">Settings</div>
                 <div className="dropdown_separator"></div>

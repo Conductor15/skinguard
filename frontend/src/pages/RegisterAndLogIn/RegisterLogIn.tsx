@@ -117,9 +117,11 @@ const Register: React.FC = () => {
         setTimeout(() => {
           dispatch(setNavbarActiveItem('home'));
           if (response.data.user.userType === 'doctor') {
-            navigate('/admin/dashboard');
+            // console.log("doctor");
+            navigate('/');
           } else {
             navigate('/');
+            // console.log("patient");
           }
         }, 500);
       }

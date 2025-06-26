@@ -206,6 +206,12 @@
   user-select: none;
 }
 
+.Main_Dashboard_avatar_menu_wrap i{
+  color: white;
+  margin-left: 30px;
+  font-size: 20px;
+}
+
 .Main_Dashboard_dropdown_menu {
   position: absolute;
   top: 120%;

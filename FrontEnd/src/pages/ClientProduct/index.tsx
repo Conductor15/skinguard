@@ -32,6 +32,8 @@ const ClientProduct = () => {
 
     const [openSort, setOpenSort] = useState(false);
     const [sortSelected, setSortSelected] = useState("Giá tăng dần")
+    const [relatedProductIds, setRelatedProductIds] = useState<string[]>([]);
+
 
     const categories = [
         "All leision",     // All Categories
@@ -55,10 +57,26 @@ const ClientProduct = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
+
+    // Fetch related products
+    useEffect(() => {
+        if (filterSelected === "All") {
+            setRelatedProductIds([]);
+        } else {
+            fetch(`http://localhost:8000/skin-leision/${filterSelected}`)
+                .then(res => res.json())
+                .then(data => {
+                    setRelatedProductIds(data.relatedProducts || []);
+                })
+                .catch(() => setRelatedProductIds([]));
+        }
+    }, [filterSelected]);
+
+
     const filteredAndSortedData = data
     .filter((item) => {
         if (filterSelected === "All") return true;
-        return item.description.toLowerCase().includes(filterSelected.toLowerCase());
+        return relatedProductIds.includes(item.product_id);
     })
     
     .sort((a, b) => {
