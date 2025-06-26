@@ -24,6 +24,23 @@ export class SkinLesionController {
   findAll() {
     return this.skinLesionService.findAll();
   }
+
+  @Post('bulk')
+  async createMany(@Body() createSkinLesionDtos: CreateSkinLesionDto[]) {
+    return this.skinLesionService.createMany(createSkinLesionDtos);
+  }
+
+  @Patch(':name')
+  async updateRelatedProducts(
+    @Param('name') name: string,
+    @Body('relatedProducts') relatedProducts: string[],
+  ) {
+    return this.skinLesionService.updateRelatedProductsByName(
+      name,
+      relatedProducts,
+    );
+  }
+
   @Get(':name')
   async findByName(@Param('name') name: string) {
     return this.skinLesionService.findByName(name);
@@ -45,20 +62,5 @@ export class SkinLesionController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.skinLesionService.remove(id);
-  }
-  @Post('bulk')
-  async createMany(@Body() createSkinLesionDtos: CreateSkinLesionDto[]) {
-    return this.skinLesionService.createMany(createSkinLesionDtos);
-  }
-
-  @Patch(':name/related-products')
-  async updateRelatedProducts(
-    @Param('name') name: string,
-    @Body('relatedProducts') relatedProducts: string[],
-  ) {
-    return this.skinLesionService.updateRelatedProductsByName(
-      name,
-      relatedProducts,
-    );
   }
 }
