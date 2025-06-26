@@ -19,6 +19,7 @@
         "buffer-to-stream": "^1.0.0",
         "cloudinary": "^2.7.0",
         "multer": "^2.0.1",
+        "redux": "^5.0.1",
         "soft-delete-plugin-mongoose": "1.0.15"
     }
 }

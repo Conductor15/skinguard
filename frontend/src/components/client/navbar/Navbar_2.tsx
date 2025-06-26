@@ -8,6 +8,7 @@ import {
   setNavbarMenuOpen,
   resetUI,
 } from '../../../stores/UiStore';
+import CartItem from '../../CartItem';
 
 const Navbar_2 = () => {
   const navigate = useNavigate();
@@ -101,9 +102,6 @@ const Navbar_2 = () => {
     patient = false;
   }
 
-  const handleCart = () => {
-    navigate("cart");
-  }
 
   return (
     <div className='navbar_2'>
@@ -142,8 +140,7 @@ const Navbar_2 = () => {
               Hi, {user?.fullName || user?.name || user?.username || user?.email || 'User'}
               {/* <i className="fa-solid fa-caret-down"></i> */}
             </span>
-            {patient && 
-              <i className="fa-solid fa-cart-shopping" onClick={handleCart}></i>
+            {patient && <CartItem/>
             }
             {menuOpen && (
               <div className="Main_Dashboard_dropdown_menu">

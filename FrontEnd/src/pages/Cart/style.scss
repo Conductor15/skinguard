@@ -1,0 +1,104 @@
+.cart-container {
+  padding: 20px;
+  color: #333;
+  width: 1200px;
+  margin: auto;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .empty {
+    font-size: 16px;
+    color: #888;
+  }
+
+  .cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cart-item {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fafafa;
+
+    img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .item-details {
+      flex: 1;
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      p {
+        margin: 4px 0;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .item-meta {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .quantity-controls {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          button {
+            padding: 4px 10px;
+            font-size: 14px;
+            cursor: pointer;
+          }
+
+          span {
+            font-size: 14px;
+            font-weight: bold;
+          }
+        }
+      }
+
+      .remove-btn {
+        margin-top: 10px;
+        color: red;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .cart-summary {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+
+    .order-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #1565c0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 30px;
+    }
+  }
+}

@@ -26,6 +26,7 @@ import PaymentSettings from "../pages/managers/PaymentSettings/PaymentSettings";
 import Register from "../pages/RegisterAndLogIn/RegisterLogIn";
 import NotFound from "../pages/NotFound";
 import PrivateRoute from "../components/client/auth/PrivateRoute";
+import Cart from "../pages/Cart";
 
 const Routes = () => {
     const elements = useRoutes(
@@ -46,6 +47,10 @@ const Routes = () => {
                   {
                       path:"/about-us",
                       element: <AboutUs/>
+                  },
+                  {
+                      path:"/cart",
+                      element: <Cart/>
                   },
                   {
                       path:"/doctors-ai",
