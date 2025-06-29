@@ -49,7 +49,7 @@ const OrderWithDetails = () => {
     const filteredOrders = ordersData.filter(order => {
         return (
             order.order_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.orderBy?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (typeof order.orderBy === 'string' ? order.orderBy.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
             order.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             order.paymentMethod?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             order.paymentStatus?.toLowerCase().includes(searchTerm.toLowerCase()) ||
